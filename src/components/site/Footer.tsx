@@ -1,9 +1,11 @@
 import { Container } from "@/components/ui/Container";
+import { AnimatedDots } from "@/components/ui/AnimatedDots";
 
 export function Footer() {
   const year = new Date().getFullYear();
   return (
-    <footer className="border-t border-border py-12">
+    <footer className="relative overflow-hidden border-t border-border py-12">
+      <AnimatedDots className="pointer-events-none absolute inset-0 -z-10 h-full w-full" />
       <Container className="flex flex-col items-center justify-between gap-6 sm:flex-row">
         <div className="flex items-center gap-2.5 font-semibold tracking-tight">
           <span className="grid h-8 w-8 place-items-center rounded-lg accent-gradient text-background font-bold">

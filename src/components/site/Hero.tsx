@@ -131,14 +131,10 @@ function HeroDashboard() {
           {/* centered circular badge */}
           <div className="pointer-events-none absolute inset-0 grid place-items-center">
             <div className="reveal rounded-full accent-gradient p-[2px] shadow-2xl" style={{ animationDelay: "0.9s" }}>
-              <div className="flex h-28 w-28 flex-col items-center justify-center gap-1 rounded-full bg-surface/90 text-center backdrop-blur">
-                <span className="grid h-9 w-9 place-items-center rounded-full accent-gradient">
-                  <Check className="h-5 w-5 text-background" strokeWidth={3} />
+              <div className="grid h-36 w-36 place-items-center rounded-full bg-surface/90 backdrop-blur">
+                <span className="grid h-16 w-16 place-items-center rounded-full accent-gradient">
+                  <Check className="h-9 w-9 text-background" strokeWidth={3} />
                 </span>
-                <div className="mt-1 text-sm font-semibold text-foreground">Delivered</div>
-                <div className="text-[10px] uppercase tracking-wide text-muted-2">
-                  auto-emailed
-                </div>
               </div>
             </div>
           </div>

@@ -95,31 +95,47 @@ export function AnimatedDots({ className }: { className?: string }) {
       }
     };
 
+    let running = false;
+    let inView = false;
+
     const loop = (time: number) => {
       draw(time);
       raf = requestAnimationFrame(loop);
     };
+    const start = () => {
+      if (running || reduced) return;
+      running = true;
+      raf = requestAnimationFrame(loop);
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+    // Animate only while the canvas is on-screen AND the tab is visible — so
+    // several instances (hero, contact, footer) don't all run off-screen.
+    const sync = () => (inView && !document.hidden ? start() : stop());
 
     if (reduced) {
-      // Draw a few frames so layout settles, then hold a static frame.
+      // Draw a static frame once layout settles.
       draw(0);
       requestAnimationFrame(() => draw(0));
-    } else {
-      raf = requestAnimationFrame(loop);
     }
 
-    // Pause when the tab is hidden to save resources.
-    const onVisibility = () => {
-      if (document.hidden) {
-        cancelAnimationFrame(raf);
-      } else if (!reduced) {
-        raf = requestAnimationFrame(loop);
-      }
-    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        inView = entries[0]?.isIntersecting ?? false;
+        sync();
+      },
+      { threshold: 0 },
+    );
+    io.observe(canvas);
+
+    const onVisibility = () => sync();
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
-      cancelAnimationFrame(raf);
+      stop();
+      io.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);

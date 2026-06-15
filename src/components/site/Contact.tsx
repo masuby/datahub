@@ -1,13 +1,15 @@
 import { Mail, MapPin, Clock } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
+import { AnimatedDots } from "@/components/ui/AnimatedDots";
 import { ContactForm } from "./ContactForm";
 
 const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "hello@datahub.co.tz";
 
 export function Contact() {
   return (
-    <section id="contact" className="scroll-mt-20 border-t border-border py-24">
+    <section id="contact" className="relative overflow-hidden scroll-mt-20 border-t border-border py-24">
+      <AnimatedDots className="pointer-events-none absolute inset-0 -z-10 h-full w-full" />
       <Container>
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal>
