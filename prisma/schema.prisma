@@ -1,0 +1,40 @@
+// DataHub — Prisma schema
+// Self-hosted PostgreSQL. Run migrations with: npx prisma migrate deploy
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// A contact-form submission (a sales lead).
+model Lead {
+  id        String     @id @default(cuid())
+  name      String
+  email     String
+  company   String?
+  service   String?
+  message   String
+  status    LeadStatus @default(NEW)
+
+  // Lightweight audit metadata captured server-side (never trusted from client body).
+  ipHash    String? // salted hash of the source IP — not the raw IP (privacy)
+  userAgent String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([status])
+  @@map("leads")
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  WON
+  ARCHIVED
+}
