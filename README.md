@@ -64,6 +64,70 @@ npm run dev                   # http://localhost:3000
 
 ---
 
+## Deploying on Vercel
+
+The production site (`www.datahub.co.tz`) runs on Vercel, deployed automatically
+from the `main` branch of `github.com/masuby/datahub`. The Docker setup below is
+kept as an alternative self-hosting path; the two do not conflict.
+
+### Migrations
+
+Vercel has no equivalent of the compose `migrate` service, so migrations run as
+part of the build. Vercel prefers the **`vercel-build`** script over `build`:
+
+```jsonc
+"build":        "prisma generate && next build",                          // Docker: DB not reachable at image-build time
+"vercel-build": "prisma generate && prisma migrate deploy && next build", // Vercel: apply migrations, then build
+```
+
+Keep them separate. Putting `migrate deploy` into `build` breaks the Docker
+image build, because the Dockerfile sets a placeholder `DATABASE_URL`.
+
+> If your Postgres provider gives a **pooled** connection string (Neon, Supabase
+> pgbouncer), `migrate deploy` may fail against it. Add a `DIRECT_URL` env var
+> with the direct (non-pooled) connection string and a matching
+> `directUrl = env("DIRECT_URL")` line in `prisma/schema.prisma`.
+
+### Required environment variables
+
+Set these in **Project → Settings → Environment Variables** (Production), then
+redeploy. `NEXT_PUBLIC_*` values are inlined at build time, so **changing them
+requires a new deployment** — saving the variable alone does nothing.
+
+| Variable | Notes |
+| --- | --- |
+| `DATABASE_URL` | Hosted Postgres. Not the compose `db:5432` hostname. |
+| `NEXT_PUBLIC_SITE_URL` | `https://www.datahub.co.tz` |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | `hello@datahub.co.tz` |
+| `NEXT_PUBLIC_WHATSAPP_NUMBER` | `255622890230` — digits only. Unset = every WhatsApp button hidden. |
+| `NEXT_PUBLIC_WHATSAPP_DISPLAY` | `+255 622 890 230` |
+| `NEXT_PUBLIC_WHATSAPP_MESSAGE` | Pre-filled first WhatsApp message |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` | Gmail SMTP + App Password |
+| `CONTACT_NOTIFY_EMAIL` | Where lead notifications land |
+| `IP_HASH_SALT` | 32-byte hex; salts the stored IP hash |
+| `REDIS_URL` | **Leave unset on Vercel** unless it is a real reachable host (see below) |
+
+### Rate limiting on serverless — a real caveat
+
+`src/lib/rate-limit.ts` falls back to an in-memory window when `REDIS_URL` is
+unset or unreachable. On Docker that is a single long-lived process, so the
+limit holds. **On Vercel each function instance has its own memory**, so the
+in-memory limiter is close to useless — an attacker spread across instances gets
+far more than 5 requests per 10 minutes.
+
+If the contact form starts attracting spam, add a serverless-friendly Redis
+(Upstash has a free tier and integrates with Vercel) and set `REDIS_URL`. Until
+then the honeypot and Zod validation are doing most of the work.
+
+### Notes
+
+- `output: "standalone"` in `next.config.ts` exists for the Docker image. Vercel
+  ignores it; leave it if you want to keep the self-hosting option.
+- Deployment protection is set to *all except custom domains*, so
+  `www.datahub.co.tz` is public while the `*.vercel.app` preview URLs require login.
+
+---
+
 ## Deploying on your server (Docker)
 
 The whole stack — web app, PostgreSQL, Redis, and the migration step — is defined
