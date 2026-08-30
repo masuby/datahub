@@ -1,10 +1,14 @@
-import { Mail, MapPin, Clock } from "lucide-react";
+import { Mail, MapPin, Clock, MessageCircle } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { AnimatedDots } from "@/components/ui/AnimatedDots";
 import { ContactForm } from "./ContactForm";
-
-const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "hello@datahub.co.tz";
+import {
+  CONTACT_EMAIL,
+  WHATSAPP_DISPLAY,
+  WHATSAPP_HREF,
+  WHATSAPP_NUMBER,
+} from "@/lib/contact-info";
 
 export function Contact() {
   return (
@@ -35,6 +39,19 @@ export function Contact() {
                 </span>
                 {CONTACT_EMAIL}
               </a>
+              {WHATSAPP_NUMBER && (
+                <a
+                  href={WHATSAPP_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 text-sm text-muted transition-colors hover:text-foreground"
+                >
+                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent/10 text-accent">
+                    <MessageCircle className="h-5 w-5" strokeWidth={1.75} />
+                  </span>
+                  {WHATSAPP_DISPLAY} · WhatsApp
+                </a>
+              )}
               <div className="flex items-center gap-3 text-sm text-muted">
                 <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent/10 text-accent">
                   <MapPin className="h-5 w-5" strokeWidth={1.75} />

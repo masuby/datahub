@@ -20,11 +20,14 @@ export function Footer() {
           <a href="#services" className="transition-colors hover:text-foreground">Services</a>
           <a href="#process" className="transition-colors hover:text-foreground">How we work</a>
           <a href="#why" className="transition-colors hover:text-foreground">Why DataHub</a>
+          <a href="#about" className="transition-colors hover:text-foreground">About</a>
           <a href="#contact" className="transition-colors hover:text-foreground">Contact</a>
         </nav>
 
-        <p className="text-xs text-muted-2">
-          © {year} DataHub. All rights reserved.
+        <p className="text-center text-xs text-muted-2 sm:text-right">
+          © {year} DataHub · Founded by Daniel Clement Masubi
+          <br className="hidden sm:block" />
+          <span className="sm:ml-0">Tanzania. All rights reserved.</span>
         </p>
       </Container>
     </footer>

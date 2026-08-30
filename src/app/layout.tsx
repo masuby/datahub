@@ -29,9 +29,15 @@ export const metadata: Metadata = {
     "reporting automation",
     "business intelligence",
     "custom software",
+    "software company Tanzania",
+    "dashboard developer Dar es Salaam",
     "Tanzania",
   ],
-  authors: [{ name: "DataHub" }],
+  applicationName: "DataHub",
+  authors: [{ name: "Daniel Clement Masubi" }],
+  creator: "Daniel Clement Masubi",
+  publisher: "DataHub",
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: siteUrl,
@@ -39,6 +45,7 @@ export const metadata: Metadata = {
     description:
       "Custom dashboards, automated reporting, and high-quality software that streamlines your operations end to end.",
     siteName: "DataHub",
+    locale: "en_TZ",
   },
   twitter: {
     card: "summary_large_image",

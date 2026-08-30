@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 /**
  * Static security headers. The Content-Security-Policy is intentionally NOT here
- * — it is set per-request (with a fresh nonce) in src/middleware.ts.
+ * — it is set per-request (with a fresh nonce) in src/proxy.ts.
  */
 const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },

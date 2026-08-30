@@ -16,9 +16,14 @@ model Lead {
   name      String
   email     String
   company   String?
+  phone     String?
   service   String?
   message   String
   status    LeadStatus @default(NEW)
+
+  /// Where the lead came from — set from ?ref= / ?utm_source= on the landing URL
+  /// so we can tell which campaign (instagram, facebook, whatsapp…) actually works.
+  source    String?
 
   // Lightweight audit metadata captured server-side (never trusted from client body).
   ipHash    String? // salted hash of the source IP — not the raw IP (privacy)
@@ -29,6 +34,7 @@ model Lead {
 
   @@index([createdAt])
   @@index([status])
+  @@index([source])
   @@map("leads")
 }
 

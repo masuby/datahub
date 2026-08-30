@@ -46,6 +46,8 @@ export async function sendLeadNotification(lead: ContactInput): Promise<void> {
 
   const serviceLabel = lead.service ? SERVICE_LABELS[lead.service] : "—";
   const company = lead.company?.trim() || "—";
+  const phone = lead.phone?.trim() || "";
+  const source = lead.source?.trim() || "direct";
 
   const html = `
     <div style="font-family:system-ui,Segoe UI,Arial,sans-serif;max-width:560px;margin:auto;color:#0f172a">
@@ -56,8 +58,14 @@ export async function sendLeadNotification(lead: ContactInput): Promise<void> {
         <table style="width:100%;border-collapse:collapse;font-size:14px">
           <tr><td style="padding:6px 0;color:#64748b;width:120px">Name</td><td style="padding:6px 0"><strong>${esc(lead.name)}</strong></td></tr>
           <tr><td style="padding:6px 0;color:#64748b">Email</td><td style="padding:6px 0"><a href="mailto:${esc(lead.email)}">${esc(lead.email)}</a></td></tr>
+          ${
+            phone
+              ? `<tr><td style="padding:6px 0;color:#64748b">Phone</td><td style="padding:6px 0"><a href="tel:${esc(phone.replace(/[^0-9+]/g, ""))}">${esc(phone)}</a> · <a href="https://wa.me/${esc(phone.replace(/[^0-9]/g, ""))}">WhatsApp</a></td></tr>`
+              : ""
+          }
           <tr><td style="padding:6px 0;color:#64748b">Company</td><td style="padding:6px 0">${esc(company)}</td></tr>
           <tr><td style="padding:6px 0;color:#64748b">Interested in</td><td style="padding:6px 0">${esc(serviceLabel)}</td></tr>
+          <tr><td style="padding:6px 0;color:#64748b">Came from</td><td style="padding:6px 0"><strong>${esc(source)}</strong></td></tr>
         </table>
         <div style="margin-top:14px;padding-top:14px;border-top:1px solid #e2e8f0">
           <div style="color:#64748b;font-size:13px;margin-bottom:6px">Message</div>
@@ -68,9 +76,10 @@ export async function sendLeadNotification(lead: ContactInput): Promise<void> {
 
   const text = `New contact request · DataHub
 Name: ${lead.name}
-Email: ${lead.email}
+Email: ${lead.email}${phone ? `\nPhone: ${phone}` : ""}
 Company: ${company}
 Interested in: ${serviceLabel}
+Came from: ${source}
 
 Message:
 ${lead.message}`;

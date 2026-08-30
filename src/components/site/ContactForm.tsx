@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Send, Loader2, CheckCircle2 } from "lucide-react";
+import { WHATSAPP_HREF, WHATSAPP_NUMBER } from "@/lib/contact-info";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -15,6 +16,19 @@ const services = [
 
 const inputClass =
   "w-full rounded-xl border border-border bg-surface-2 px-4 py-3 text-sm text-foreground placeholder:text-muted-2 outline-none transition focus:border-accent/60 focus:ring-2 focus:ring-[var(--ring)]";
+
+/**
+ * Campaign attribution — reads ?ref= / ?utm_source= from the landing URL so we
+ * know which post or channel sent this lead. Read at submit time rather than on
+ * mount: the query string does not change while the page is open, so no state
+ * or effect is needed. Sanitised here and validated again on the server.
+ */
+function readSource(): string {
+  if (typeof window === "undefined") return "";
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get("ref") ?? params.get("utm_source") ?? "";
+  return raw.toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40);
+}
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
@@ -33,8 +47,10 @@ export function ContactForm() {
       name: String(fd.get("name") ?? ""),
       email: String(fd.get("email") ?? ""),
       company: String(fd.get("company") ?? ""),
+      phone: String(fd.get("phone") ?? ""),
       service: String(fd.get("service") ?? "") || undefined,
       message: String(fd.get("message") ?? ""),
+      source: readSource(),
       website: String(fd.get("hp") ?? ""), // honeypot (field named "hp" to avoid browser autofill)
     };
 
@@ -127,9 +143,22 @@ export function ContactForm() {
       </div>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <Field label="Phone / WhatsApp" optional error={fieldErrors.phone?.[0]}>
+          <input
+            name="phone"
+            type="tel"
+            maxLength={30}
+            inputMode="tel"
+            placeholder="+255 7XX XXX XXX"
+            className={inputClass}
+          />
+        </Field>
         <Field label="Company" optional error={fieldErrors.company?.[0]}>
           <input name="company" maxLength={140} placeholder="Company name" className={inputClass} />
         </Field>
+      </div>
+
+      <div className="mt-4">
         <Field label="Interested in" optional error={fieldErrors.service?.[0]}>
           <select name="service" defaultValue="" className={inputClass}>
             {services.map((s) => (
@@ -175,6 +204,20 @@ export function ContactForm() {
           </>
         )}
       </button>
+      {WHATSAPP_NUMBER && (
+        <p className="mt-4 text-center text-xs text-muted-2">
+          Prefer to chat?{" "}
+          <a
+            href={WHATSAPP_HREF}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-accent-2 underline-offset-2 hover:underline"
+          >
+            Message us on WhatsApp
+          </a>{" "}
+          instead.
+        </p>
+      )}
       <p className="mt-3 text-center text-xs text-muted-2">
         We only use your details to respond to your enquiry.
       </p>

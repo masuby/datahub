@@ -47,6 +47,9 @@ services:
       args:
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
         NEXT_PUBLIC_CONTACT_EMAIL: ${NEXT_PUBLIC_CONTACT_EMAIL}
+        NEXT_PUBLIC_WHATSAPP_NUMBER: ${NEXT_PUBLIC_WHATSAPP_NUMBER:-}
+        NEXT_PUBLIC_WHATSAPP_DISPLAY: ${NEXT_PUBLIC_WHATSAPP_DISPLAY:-}
+        NEXT_PUBLIC_WHATSAPP_MESSAGE: ${NEXT_PUBLIC_WHATSAPP_MESSAGE:-}
     restart: unless-stopped
     environment:
       NODE_ENV: production
@@ -63,6 +66,12 @@ services:
       RATE_LIMIT_WINDOW_SECONDS: ${RATE_LIMIT_WINDOW_SECONDS:-600}
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
       NEXT_PUBLIC_CONTACT_EMAIL: ${NEXT_PUBLIC_CONTACT_EMAIL}
+      # NEXT_PUBLIC_* values are inlined at build time (see build.args above), so
+      # these are not strictly required at runtime — kept for consistency with the
+      # two vars above, and so nothing breaks if a future usage is not inlined.
+      NEXT_PUBLIC_WHATSAPP_NUMBER: ${NEXT_PUBLIC_WHATSAPP_NUMBER:-}
+      NEXT_PUBLIC_WHATSAPP_DISPLAY: ${NEXT_PUBLIC_WHATSAPP_DISPLAY:-}
+      NEXT_PUBLIC_WHATSAPP_MESSAGE: ${NEXT_PUBLIC_WHATSAPP_MESSAGE:-}
     depends_on:
       db:
         condition: service_healthy
