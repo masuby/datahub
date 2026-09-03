@@ -1,15 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 
+// Root-relative so these still work from /services/* — those sections only
+// exist on the homepage. #contact is rendered on every page, so it stays local.
 const links = [
-  { href: "#services", label: "Services" },
-  { href: "#process", label: "How we work" },
-  { href: "#why", label: "Why DataHub" },
-  { href: "#about", label: "About" },
-  { href: "#faq", label: "FAQ" },
+  { href: "/#services", label: "Services" },
+  { href: "/#process", label: "How we work" },
+  { href: "/#why", label: "Why DataHub" },
+  { href: "/#about", label: "About" },
+  { href: "/#faq", label: "FAQ" },
 ];
 
 export function Navbar() {
@@ -33,24 +36,24 @@ export function Navbar() {
       )}
     >
       <Container className="flex h-16 items-center justify-between">
-        <a href="#top" className="flex items-center gap-2.5 font-semibold tracking-tight">
+        <Link href="/" className="flex items-center gap-2.5 font-semibold tracking-tight">
           <span className="grid h-8 w-8 place-items-center rounded-lg accent-gradient text-background font-bold">
             D
           </span>
           <span className="text-foreground">
             Data<span className="text-gradient">Hub</span>
           </span>
-        </a>
+        </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
           {links.map((l) => (
-            <a
+            <Link
               key={l.href}
               href={l.href}
               className="text-sm text-muted transition-colors hover:text-foreground"
             >
               {l.label}
-            </a>
+            </Link>
           ))}
           <a
             href="#contact"
@@ -79,14 +82,14 @@ export function Navbar() {
         <div className="border-t border-border bg-background/95 backdrop-blur-md md:hidden">
           <Container className="flex flex-col gap-1 py-4">
             {links.map((l) => (
-              <a
+              <Link
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-2.5 text-sm text-muted hover:bg-surface hover:text-foreground"
               >
                 {l.label}
-              </a>
+              </Link>
             ))}
             <a
               href="#contact"

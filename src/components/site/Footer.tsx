@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { AnimatedDots } from "@/components/ui/AnimatedDots";
 
@@ -20,11 +21,11 @@ export function Footer() {
         </div>
 
         <nav className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2 text-sm text-muted">
-          <a href="#services" className="transition-colors hover:text-foreground">Services</a>
-          <a href="#process" className="transition-colors hover:text-foreground">How we work</a>
-          <a href="#why" className="transition-colors hover:text-foreground">Why DataHub</a>
-          <a href="#about" className="transition-colors hover:text-foreground">About</a>
-          <a href="#faq" className="transition-colors hover:text-foreground">FAQ</a>
+          <Link href="/#services" className="transition-colors hover:text-foreground">Services</Link>
+          <Link href="/#process" className="transition-colors hover:text-foreground">How we work</Link>
+          <Link href="/#why" className="transition-colors hover:text-foreground">Why DataHub</Link>
+          <Link href="/#about" className="transition-colors hover:text-foreground">About</Link>
+          <Link href="/#faq" className="transition-colors hover:text-foreground">FAQ</Link>
           <a href="#contact" className="transition-colors hover:text-foreground">Contact</a>
         </nav>
 
