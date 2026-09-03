@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "avatar": "node scripts/make-avatar.mjs",
+    "gbp": "node scripts/make-gbp-assets.mjs",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",

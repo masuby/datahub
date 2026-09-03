@@ -45,3 +45,6 @@ next-env.d.ts
 /.claude/skills/
 /skills-lock.json
 /.neon
+
+# Generated Google Business Profile images (npm run gbp recreates them)
+/marketing/google-business/*.png
