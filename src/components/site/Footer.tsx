@@ -24,6 +24,7 @@ export function Footer() {
           <a href="#process" className="transition-colors hover:text-foreground">How we work</a>
           <a href="#why" className="transition-colors hover:text-foreground">Why DataHub</a>
           <a href="#about" className="transition-colors hover:text-foreground">About</a>
+          <a href="#faq" className="transition-colors hover:text-foreground">FAQ</a>
           <a href="#contact" className="transition-colors hover:text-foreground">Contact</a>
         </nav>
 

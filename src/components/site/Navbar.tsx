@@ -9,6 +9,7 @@ const links = [
   { href: "#process", label: "How we work" },
   { href: "#why", label: "Why DataHub" },
   { href: "#about", label: "About" },
+  { href: "#faq", label: "FAQ" },
 ];
 
 export function Navbar() {
