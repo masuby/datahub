@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { ImageResponse } from "next/og";
 import { getPoster, posterSize, type PosterKind, type Poster } from "@/lib/posters";
 
@@ -16,6 +18,34 @@ import { getPoster, posterSize, type PosterKind, type Poster } from "@/lib/poste
  */
 
 export const runtime = "nodejs";
+
+/**
+ * Geist — the site's own typeface — loaded as TTF because Satori supports
+ * TTF/OTF/WOFF but not WOFF2, which is all next/font emits. Without this the
+ * renderer silently falls back to its bundled default and every poster comes
+ * out in a typeface that is not the brand's.
+ *
+ * Read once per process rather than per request.
+ */
+let fontCache: { name: string; data: Buffer; weight: 400 | 600 | 700; style: "normal" }[] | null =
+  null;
+
+async function brandFonts() {
+  if (fontCache) return fontCache;
+  const dir = path.join(process.cwd(), "assets", "fonts");
+  const load = async (file: string, weight: 400 | 600 | 700) => ({
+    name: "Geist",
+    data: await readFile(path.join(dir, file)),
+    weight,
+    style: "normal" as const,
+  });
+  fontCache = await Promise.all([
+    load("Geist-Regular.ttf", 400),
+    load("Geist-SemiBold.ttf", 600),
+    load("Geist-Bold.ttf", 700),
+  ]);
+  return fontCache;
+}
 
 const BG = "#0a0f1d";
 const SURFACE = "#0f1626";
@@ -146,7 +176,7 @@ export async function GET(
           justifyContent: "space-between",
           background: BG,
           padding: `${padY}px ${padX}px`,
-          fontFamily: "sans-serif",
+          fontFamily: "Geist",
         }}
       >
         {/* Wordmark */}
@@ -289,6 +319,6 @@ export async function GET(
         </div>
       </div>
     ),
-    { ...size },
+    { ...size, fonts: await brandFonts() },
   );
 }

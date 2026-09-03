@@ -17,6 +17,13 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // The poster route reads the Geist TTFs from disk at request time. Tracing
+  // cannot follow a runtime path.join, so without this the fonts are left out
+  // of the serverless bundle and the route 500s in production while working
+  // perfectly in dev.
+  outputFileTracingIncludes: {
+    "/api/poster/\\[kind\\]/\\[slug\\]": ["./assets/fonts/**/*"],
+  },
   // Produces a minimal standalone server bundle for Docker.
   output: "standalone",
   poweredByHeader: false,
