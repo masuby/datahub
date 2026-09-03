@@ -40,6 +40,20 @@ marketing/
 drift apart. When a post is published, add a `— posted YYYY-MM-DD` line at the
 bottom of its `caption.md` so you always know what has already gone out.
 
+### Regenerating the posters
+
+All 24 posters are generated, not hand-made. The copy lives in
+`src/lib/posters.ts`; edit it there and re-run:
+
+```bash
+npm run dev      # in one terminal
+npm run posters  # in another
+```
+
+Each PNG is written straight into the right folder at the right size — 1080x1350
+for feed posts, 1080x1920 for Status. Change a headline once and the poster
+updates; there is no separate design file to keep in sync.
+
 ---
 
 ## Poster sizes
