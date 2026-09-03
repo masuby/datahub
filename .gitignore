@@ -40,3 +40,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Neon CLI skills (tooling, not application code)
+/.claude/skills/
+/skills-lock.json
+/.neon

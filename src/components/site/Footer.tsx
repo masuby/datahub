@@ -3,8 +3,11 @@ import { AnimatedDots } from "@/components/ui/AnimatedDots";
 
 export function Footer() {
   const year = new Date().getFullYear();
+  // The extra bottom padding keeps the copyright clear of the floating WhatsApp
+  // button, which is fixed to the bottom-right corner and would otherwise sit
+  // on top of it.
   return (
-    <footer className="relative overflow-hidden border-t border-border py-12">
+    <footer className="relative overflow-hidden border-t border-border pt-12 pb-28 sm:pb-24">
       <AnimatedDots className="pointer-events-none absolute inset-0 -z-10 h-full w-full" />
       <Container className="flex flex-col items-center justify-between gap-6 sm:flex-row">
         <div className="flex items-center gap-2.5 font-semibold tracking-tight">
@@ -26,8 +29,8 @@ export function Footer() {
 
         <p className="text-center text-xs text-muted-2 sm:text-right">
           © {year} DataHub · Founded by Daniel Clement Masubi
-          <br className="hidden sm:block" />
-          <span className="sm:ml-0">Tanzania. All rights reserved.</span>
+          <br />
+          Dar es Salaam, Tanzania · All rights reserved.
         </p>
       </Container>
     </footer>

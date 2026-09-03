@@ -21,7 +21,7 @@ export function Hero() {
             className="reveal text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
             style={{ animationDelay: "0.05s" }}
           >
-            We turn your data into{" "}
+            We help turn your data into{" "}
             <span className="text-gradient">dashboards, insights,</span> and
             automation.
           </h1>

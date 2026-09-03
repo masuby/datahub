@@ -75,7 +75,7 @@ export default async function Image() {
               letterSpacing: "-0.02em",
             }}
           >
-            We turn your data into
+            We help turn your data into
           </div>
           <div
             style={{
