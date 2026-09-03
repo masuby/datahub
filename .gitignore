@@ -48,3 +48,6 @@ next-env.d.ts
 
 # Generated Google Business Profile images (npm run gbp recreates them)
 /marketing/google-business/*.png
+
+# Packaged marketing kit (rebuild from marketing/ whenever needed)
+/DataHub-Marketing-Kit.zip

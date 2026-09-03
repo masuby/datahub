@@ -13,6 +13,17 @@
 
 export type PosterKind = "post" | "status";
 
+/**
+ * Layout. Ten structurally identical text cards in a feed read as noise, so
+ * each poster picks the shape that fits its idea:
+ *   default  — eyebrow, headline, supporting line
+ *   stat     — one number carries the message
+ *   bars     — a chart motif, for anything about reporting speed or volume
+ *   contrast — the wrong way beside the right way
+ *   portrait — the founder photo, for the personal post
+ */
+export type PosterVariant = "default" | "stat" | "bars" | "contrast" | "portrait";
+
 export type Poster = {
   kind: PosterKind;
   /** Folder name under marketing/{posts,status}/ */
@@ -21,6 +32,11 @@ export type Poster = {
   eyebrow?: string;
   headline: string;
   sub: string;
+  variant?: PosterVariant;
+  /** variant "stat" only. */
+  stat?: { value: string; label: string };
+  /** variant "contrast" only. */
+  contrast?: { bad: string; good: string };
 };
 
 /** Feed posts — Instagram and Facebook, 1080x1350 (4:5). */
@@ -28,6 +44,7 @@ const POSTS: Poster[] = [
   {
     kind: "post",
     slug: "01-hours-to-seconds",
+    variant: "bars",
     eyebrow: "MASAA → SEKUNDE",
     headline: "Hours of reporting, done in seconds.",
     sub: "Tell us which report is eating your week.",
@@ -35,6 +52,8 @@ const POSTS: Poster[] = [
   {
     kind: "post",
     slug: "02-one-source-of-truth",
+    variant: "contrast",
+    contrast: { bad: "412,000,000", good: "One engine. One answer." },
     eyebrow: "ONE SOURCE OF TRUTH",
     headline: "One number. One answer.",
     sub: "When finance and operations disagree, it is a systems problem — not a people problem.",
@@ -49,6 +68,7 @@ const POSTS: Poster[] = [
   {
     kind: "post",
     slug: "04-executive-dashboard",
+    variant: "bars",
     eyebrow: "DASHBOARDS",
     headline: "The dashboard your manager actually opens.",
     sub: "Ten seconds to know whether things are fine.",
@@ -70,6 +90,7 @@ const POSTS: Poster[] = [
   {
     kind: "post",
     slug: "07-loan-portfolio",
+    variant: "bars",
     eyebrow: "FOR LENDERS",
     headline: "PAR by branch. By officer. Today.",
     sub: "Not last month, when you can no longer prevent it.",
@@ -77,6 +98,8 @@ const POSTS: Poster[] = [
   {
     kind: "post",
     slug: "08-tailored-not-templated",
+    variant: "contrast",
+    contrast: { bad: "A rigid template", good: "Built around your workflow" },
     eyebrow: "HOW WE BUILD",
     headline: "Tailored, not templated.",
     sub: "The system fits how you work — not the other way around.",
@@ -84,6 +107,8 @@ const POSTS: Poster[] = [
   {
     kind: "post",
     slug: "09-what-does-it-cost",
+    variant: "stat",
+    stat: { value: "TSh 0", label: "the first conversation" },
     eyebrow: "PRICING",
     headline: "What does it cost?",
     sub: "It depends on what you need — and the first conversation costs nothing.",
@@ -91,6 +116,7 @@ const POSTS: Poster[] = [
   {
     kind: "post",
     slug: "10-who-builds-it",
+    variant: "portrait",
     eyebrow: "WHO BUILDS IT",
     headline: "Daniel Clement Masubi",
     sub: "Data Engineer. You deal with the engineer directly, not an account manager.",
@@ -109,6 +135,8 @@ const STATUS: Poster[] = [
   {
     kind: "status",
     slug: "02-monday-report",
+    variant: "stat",
+    stat: { value: "2 hrs", label: "every single Monday" },
     eyebrow: "JUMATATU",
     headline: "The same report. The same two hours.",
     sub: "What if it was already waiting in your inbox?",
@@ -116,6 +144,8 @@ const STATUS: Poster[] = [
   {
     kind: "status",
     slug: "03-two-versions",
+    variant: "contrast",
+    contrast: { bad: "Two answers", good: "One answer" },
     eyebrow: "ONE SOURCE OF TRUTH",
     headline: "Two people. Two answers.",
     sub: "That is a systems problem, not a people problem.",
@@ -137,6 +167,8 @@ const STATUS: Poster[] = [
   {
     kind: "status",
     slug: "06-automatic-email",
+    variant: "stat",
+    stat: { value: "07:00", label: "sent, without anyone remembering" },
     eyebrow: "SCHEDULED",
     headline: "Reports that send themselves.",
     sub: "Every Monday at 07:00. Nobody has to remember.",
@@ -144,6 +176,7 @@ const STATUS: Poster[] = [
   {
     kind: "status",
     slug: "07-what-is-a-dashboard",
+    variant: "bars",
     eyebrow: "WHAT IS A DASHBOARD?",
     headline: "A dashboard is not decoration.",
     sub: "It is the panel in your car. At a glance — are we fine?",
@@ -151,6 +184,8 @@ const STATUS: Poster[] = [
   {
     kind: "status",
     slug: "08-free-consultation",
+    variant: "stat",
+    stat: { value: "TSh 0", label: "for the first conversation" },
     eyebrow: "MAZUNGUMZO YA KWANZA NI BURE",
     headline: "The first conversation costs nothing.",
     sub: "Tell me which report wastes the most time.",
@@ -193,6 +228,7 @@ const STATUS: Poster[] = [
   {
     kind: "status",
     slug: "14-what-we-built",
+    variant: "bars",
     eyebrow: "ALREADY RUNNING",
     headline: "Not theory. Working systems.",
     sub: "Reporting platforms, automated data pipelines, multi-agency bulletins.",
