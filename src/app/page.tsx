@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { Navbar } from "@/components/site/Navbar";
 import { Hero } from "@/components/site/Hero";
+import { Ticker } from "@/components/site/Ticker";
 import { Services } from "@/components/site/Services";
 import { Process } from "@/components/site/Process";
 import { WhyUs } from "@/components/site/WhyUs";
@@ -47,6 +48,7 @@ export default async function Home() {
       <Navbar />
       <main className="flex-1">
         <Hero />
+        <Ticker />
         <Services />
         <Process />
         <WhyUs />

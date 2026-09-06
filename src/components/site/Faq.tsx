@@ -57,7 +57,7 @@ export function Faq() {
     >
       <Container>
         <Reveal className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-accent">
+          <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-accent">
             Questions
           </p>
           <h2 className="mx-auto mt-3 max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">

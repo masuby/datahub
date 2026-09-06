@@ -17,7 +17,7 @@ export function Contact() {
       <Container>
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal>
-            <p className="text-sm font-semibold uppercase tracking-wider text-accent">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-accent">
               Get in touch
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">

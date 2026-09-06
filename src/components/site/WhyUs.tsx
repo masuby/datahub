@@ -1,6 +1,7 @@
 import { Check, X, ShieldCheck, Gauge, Layers, Headset } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 const comparison = [
   ["Reports take hours or days to prepare", "Reports generated in seconds"],
@@ -39,7 +40,7 @@ export function WhyUs() {
       <Container>
         <div className="grid gap-14 lg:grid-cols-2 lg:items-center">
           <Reveal>
-            <p className="text-sm font-semibold uppercase tracking-wider text-accent">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-accent">
               Why DataHub
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -54,7 +55,7 @@ export function WhyUs() {
               {comparison.map(([before, after]) => (
                 <div
                   key={after}
-                  className="grid grid-cols-1 gap-2 py-3.5 sm:grid-cols-2"
+                  className="grid grid-cols-1 gap-2 rounded-lg px-2 py-3.5 transition-colors hover:bg-surface sm:grid-cols-2"
                 >
                   <div className="flex items-start gap-2 text-sm text-muted-2">
                     <X className="mt-0.5 h-4 w-4 shrink-0 text-rose-400/70" strokeWidth={2} />
@@ -69,16 +70,16 @@ export function WhyUs() {
             </div>
           </Reveal>
 
-          <div className="grid gap-x-8 gap-y-9 sm:grid-cols-2">
+          <div className="grid gap-5 sm:grid-cols-2">
             {reasons.map((r, i) => (
-              <Reveal key={r.title} delay={i * 0.08}>
-                {/* gradient accent bar on the left instead of a bordered card */}
-                <div className="relative h-full pl-5">
-                  <span className="absolute left-0 top-1 h-[calc(100%-0.5rem)] w-[3px] rounded-full accent-gradient" />
-                  <r.icon className="h-6 w-6 text-accent-2" strokeWidth={1.5} />
-                  <h3 className="mt-3 font-semibold">{r.title}</h3>
+              <Reveal key={r.title} delay={i * 0.08} className="h-full">
+                <SpotlightCard className="h-full p-6">
+                  <span className="grid h-10 w-10 place-items-center rounded-lg bg-accent/10 text-accent-2">
+                    <r.icon className="h-5 w-5" strokeWidth={1.75} />
+                  </span>
+                  <h3 className="mt-4 font-semibold">{r.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted">{r.desc}</p>
-                </div>
+                </SpotlightCard>
               </Reveal>
             ))}
           </div>

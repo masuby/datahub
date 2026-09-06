@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
 // Root-relative so these still work from /services/* — those sections only
 // exist on the homepage. #contact is rendered on every page, so it stays local.
@@ -35,6 +36,7 @@ export function Navbar() {
           : "border-b border-transparent",
       )}
     >
+      <ScrollProgress />
       <Container className="flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 font-semibold tracking-tight">
           <span className="grid h-8 w-8 place-items-center rounded-lg accent-gradient text-background font-bold">
@@ -57,7 +59,7 @@ export function Navbar() {
           ))}
           <a
             href="#contact"
-            className="rounded-full accent-gradient px-4 py-2 text-sm font-semibold text-background transition-transform hover:scale-[1.03]"
+            className="btn-shine rounded-full accent-gradient px-4 py-2 text-sm font-semibold text-background transition-transform hover:scale-[1.03]"
           >
             Contact us
           </a>
