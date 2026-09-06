@@ -31,10 +31,9 @@ export function Hero() {
       <Container className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
           <div
-            className="reveal inline-flex items-center gap-2.5 rounded-full border border-border bg-surface/70 py-1.5 pl-2 pr-4 font-mono text-[10px] uppercase tracking-[0.12em] text-muted backdrop-blur sm:text-[11px] sm:tracking-[0.18em]"
+            className="reveal inline-flex items-center rounded-full border border-border bg-surface/70 px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-muted backdrop-blur sm:text-[11px] sm:tracking-[0.18em]"
             style={{ animationDelay: "0s" }}
           >
-            <span className="live-dot h-2 w-2 rounded-full bg-accent-2" />
             Data systems for Tanzanian organisations
           </div>
 
@@ -121,13 +120,7 @@ function HeroDashboard() {
               <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-2">
                 Performance overview
               </div>
-              <div className="mt-1 flex items-center gap-2 text-sm font-semibold">
-                Monthly KPIs
-                <span className="flex items-center gap-1.5 rounded-full bg-accent-2/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-accent-2">
-                  <span className="live-dot h-1.5 w-1.5 rounded-full bg-accent-2" />
-                  live
-                </span>
-              </div>
+              <div className="mt-1 text-sm font-semibold">Monthly KPIs</div>
             </div>
             <div className="flex gap-1.5">
               <span className="h-2.5 w-2.5 rounded-full bg-accent/40" />
