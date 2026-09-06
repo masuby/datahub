@@ -51,7 +51,13 @@ npm run posters  # in another
 ```
 
 Each PNG is written straight into the right folder at the right size — 1080x1350
-for feed posts, 1080x1920 for Status. Change a headline once and the poster
+for feed posts, 1080x1920 for Status.
+
+Every poster also carries a background "net" (seeded by its slug, so it is
+different per poster but identical on every re-run) and a QR code on a white
+tile. The QR points at `?ref=qr` so scans are attributed. It is verified to
+decode at full size and at half size on every regeneration — if you change the
+target URL in `src/lib/poster-art.ts`, re-run the decode check before posting. Change a headline once and the poster
 updates; there is no separate design file to keep in sync.
 
 ---
@@ -93,6 +99,7 @@ the email you receive shows a **"Came from"** line.
 | WhatsApp Status | `https://www.datahub.co.tz/?ref=wa_status` |
 | WhatsApp direct message | `https://www.datahub.co.tz/?ref=wa_dm` |
 | LinkedIn | `https://www.datahub.co.tz/?ref=linkedin` |
+| QR code on any poster | `https://www.datahub.co.tz/?ref=qr` — baked into every poster automatically |
 
 Tags must be lowercase letters, numbers, `_` or `-` only — anything else is
 rejected by the server and the lead saves with no source.

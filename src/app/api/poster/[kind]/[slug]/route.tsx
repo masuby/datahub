@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
 import { getPoster, posterSize, type PosterKind, type Poster } from "@/lib/posters";
+import { netSvgDataUri, qrSvgDataUri } from "@/lib/poster-art";
 
 /**
  * Renders a campaign poster as a PNG.
@@ -165,10 +166,17 @@ export async function GET(
 
   const origin = new URL(req.url).origin;
 
+  // Seeded by slug: each poster gets its own net, and re-running the script
+  // reproduces the same image byte for byte.
+  const net = netSvgDataUri(`${kind}/${slug}`, size.width, size.height);
+  const qr = await qrSvgDataUri();
+  const qrSize = isStatus ? 200 : 176;
+
   return new ImageResponse(
     (
       <div
         style={{
+          position: "relative",
           width: "100%",
           height: "100%",
           display: "flex",
@@ -179,6 +187,28 @@ export async function GET(
           fontFamily: "Geist",
         }}
       >
+        {/* Background net — full-bleed, behind everything. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={net}
+          width={size.width}
+          height={size.height}
+          alt=""
+          style={{ position: "absolute", top: 0, left: 0 }}
+        />
+        {/* A soft vignette so the net fades where the headline sits, keeping
+            contrast high exactly where legibility matters most. */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: size.width,
+            height: size.height,
+            background: `radial-gradient(ellipse at 30% 55%, ${BG} 0%, rgba(10,15,29,0.85) 38%, rgba(10,15,29,0) 75%)`,
+          }}
+        />
+
         {/* Wordmark */}
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
           <div
@@ -295,26 +325,56 @@ export async function GET(
           </div>
         </div>
 
-        {/* The address. Every poster carries it — that is the whole point. */}
+        {/* The address. Every poster carries it — that is the whole point.
+            The QR beside it goes to the same place with ?ref=qr, so scans are
+            attributed like any other channel. */}
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "space-between",
             borderTop: `2px solid ${BORDER}`,
             paddingTop: 28,
           }}
         >
-          <div style={{ display: "flex", fontSize: 26, color: MUTED }}>Visit</div>
-          <div
-            style={{
-              display: "flex",
-              marginTop: 8,
-              fontSize: 46,
-              fontWeight: 700,
-              color: ACCENT_2,
-            }}
-          >
-            www.datahub.co.tz
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", fontSize: 26, color: MUTED }}>Visit</div>
+            <div
+              style={{
+                display: "flex",
+                marginTop: 8,
+                fontSize: 46,
+                fontWeight: 700,
+                color: ACCENT_2,
+              }}
+            >
+              www.datahub.co.tz
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                padding: 12,
+                borderRadius: 18,
+                background: "#ffffff",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={qr} width={qrSize} height={qrSize} alt="" />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                marginTop: 10,
+                fontSize: 22,
+                fontWeight: 600,
+                letterSpacing: "0.14em",
+                color: MUTED,
+              }}
+            >
+              SCAN
+            </div>
           </div>
         </div>
       </div>
