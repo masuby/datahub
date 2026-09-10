@@ -14,7 +14,7 @@
     "_comment": "Instagram feed + Facebook Page. Every 3 days, morning.",
     "enabled": true,
     "everyDays": 3,
-    "anchorDate": "2026-09-11",
+    "anchorDate": "2026-09-10",
     "channels": ["facebook", "instagram"],
     "rotation": [
       "01-hours-to-seconds",
@@ -37,7 +37,7 @@
       "Sunday is a rest day, so the automation honours it."
     ],
     "enabled": true,
-    "anchorDate": "2026-09-11",
+    "anchorDate": "2026-09-10",
     "restDays": [0],
     "channels": ["instagram_story", "whatsapp_email"],
     "rotation": [
