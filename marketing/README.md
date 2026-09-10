@@ -4,6 +4,11 @@ Everything needed to run the DataHub campaign on Instagram, Facebook and
 WhatsApp. One poster, one caption, one link — repeated until people in Dar know
 the name.
 
+> **The campaign posts itself now.** Facebook and Instagram are automated.
+> WhatsApp Status cannot be — no API exists for it — so the poster and caption
+> are emailed to you each evening instead. Setup, tokens and troubleshooting:
+> **[AUTOMATION.md](AUTOMATION.md)**.
+
 ---
 
 ## The two cadences
