@@ -1,0 +1,77 @@
+name: Campaign
+
+# Posts the DataHub campaign on a schedule.
+#
+# Times are UTC; Tanzania is UTC+3. GitHub runs scheduled jobs on a best-effort
+# basis and is often 5-15 minutes late under load, which is irrelevant for a
+# social post but is the reason these are not set to the exact minute.
+#
+# GitHub disables scheduled workflows in a repository with no commits for 60
+# days. The weekly Claude routine commits to this repo, which keeps it alive.
+
+on:
+  schedule:
+    - cron: "0 5 * * *" # 08:00 EAT — feed post (Instagram + Facebook), every 3rd day
+    - cron: "0 17 * * *" # 20:00 EAT — status (Instagram Story + WhatsApp pack), daily except Sunday
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: Which slot to run
+        type: choice
+        options: [feed, status]
+        default: status
+      slug:
+        description: Force a specific poster slug (optional)
+        type: string
+      dry_run:
+        description: Resolve and print, but do not post
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: campaign-${{ github.event.schedule || inputs.slot }}
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Only nodemailer is needed at runtime. A full `npm ci` would build
+      # Next.js and Prisma for a script that makes four HTTP calls.
+      - run: npm install --no-save --ignore-scripts nodemailer@^7
+
+      - name: Post
+        env:
+          META_PAGE_ID: ${{ secrets.META_PAGE_ID }}
+          META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
+          META_IG_USER_ID: ${{ secrets.META_IG_USER_ID }}
+          META_GRAPH_VERSION: ${{ vars.META_GRAPH_VERSION }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
+        run: |
+          if [ -n "${{ inputs.slot }}" ]; then
+            SLOT="${{ inputs.slot }}"
+          elif [ "${{ github.event.schedule }}" = "0 5 * * *" ]; then
+            SLOT="feed"
+          else
+            SLOT="status"
+          fi
+
+          ARGS="--slot=$SLOT"
+          [ "${{ inputs.dry_run }}" = "true" ] && ARGS="$ARGS --dry-run"
+          [ -n "${{ inputs.slug }}" ] && ARGS="$ARGS --slug=${{ inputs.slug }}"
+
+          node scripts/social-post.mjs $ARGS

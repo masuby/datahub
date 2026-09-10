@@ -1,0 +1,60 @@
+{
+  "_comment": [
+    "Machine-readable campaign schedule, read by scripts/social-post.mjs.",
+    "It is a ROTATION, not a dated list: the campaign cannot run out of content",
+    "and die in week five. Each slot walks its rotation and wraps around.",
+    "To add a new poster: create the folder under marketing/{posts,status}/,",
+    "add the entry to src/lib/posters.ts, then append the slug here.",
+    "posting-schedule.md is the human calendar; this file is what actually runs."
+  ],
+  "timezone": "Africa/Dar_es_Salaam",
+  "siteUrl": "https://www.datahub.co.tz",
+
+  "feed": {
+    "_comment": "Instagram feed + Facebook Page. Every 3 days, morning.",
+    "enabled": true,
+    "everyDays": 3,
+    "anchorDate": "2026-09-11",
+    "channels": ["facebook", "instagram"],
+    "rotation": [
+      "01-hours-to-seconds",
+      "02-one-source-of-truth",
+      "03-excel-full-time-job",
+      "04-executive-dashboard",
+      "05-built-in-tanzania",
+      "06-security-first",
+      "07-loan-portfolio",
+      "08-tailored-not-templated",
+      "09-what-does-it-cost",
+      "10-who-builds-it"
+    ]
+  },
+
+  "status": {
+    "_comment": [
+      "WhatsApp Status + Instagram Story. Daily except the rest day.",
+      "restDays uses JS day numbers: 0 = Sunday. The README's own rule is that",
+      "Sunday is a rest day, so the automation honours it."
+    ],
+    "enabled": true,
+    "anchorDate": "2026-09-11",
+    "restDays": [0],
+    "channels": ["instagram_story", "whatsapp_email"],
+    "rotation": [
+      "01-still-doing-manually",
+      "02-monday-report",
+      "03-two-versions",
+      "04-one-click-excel",
+      "05-any-browser",
+      "06-automatic-email",
+      "07-what-is-a-dashboard",
+      "08-free-consultation",
+      "09-no-more-copy-paste",
+      "10-your-data-is-safe",
+      "11-question-to-ask",
+      "12-message-me",
+      "13-small-business-too",
+      "14-what-we-built"
+    ]
+  }
+}

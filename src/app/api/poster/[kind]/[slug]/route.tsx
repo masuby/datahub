@@ -172,7 +172,7 @@ export async function GET(
   const qr = await qrSvgDataUri();
   const qrSize = isStatus ? 200 : 176;
 
-  return new ImageResponse(
+  const image = new ImageResponse(
     (
       <div
         style={{
@@ -381,4 +381,26 @@ export async function GET(
     ),
     { ...size, fonts: await brandFonts() },
   );
+
+  /**
+   * Instagram's content-publishing API accepts JPEG only — it rejects a PNG
+   * container outright — so the social automation asks for ?format=jpg.
+   * Satori emits PNG and nothing else, hence the conversion here rather than a
+   * second renderer. Facebook and the marketing folder keep using the PNG.
+   */
+  const format = new URL(req.url).searchParams.get("format");
+  if (format !== "jpg" && format !== "jpeg") return image;
+
+  const { default: sharp } = await import("sharp");
+  const jpeg = await sharp(Buffer.from(await image.arrayBuffer()))
+    .flatten({ background: BG })
+    .jpeg({ quality: 88, chromaSubsampling: "4:4:4" })
+    .toBuffer();
+
+  return new Response(new Uint8Array(jpeg), {
+    headers: {
+      "Content-Type": "image/jpeg",
+      "Cache-Control": "public, max-age=3600, s-maxage=86400",
+    },
+  });
 }
