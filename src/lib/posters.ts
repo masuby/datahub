@@ -233,6 +233,13 @@ const STATUS: Poster[] = [
     headline: "Not theory. Working systems.",
     sub: "Reporting platforms, automated data pipelines, multi-agency bulletins.",
   },
+  {
+    kind: "status",
+    slug: "15-one-wrong-formula",
+    eyebrow: "SILENT ERROR",
+    headline: "One wrong formula. Nobody notices.",
+    sub: "A system checks itself. A spreadsheet does not.",
+  },
 ];
 
 export const POSTERS: Poster[] = [...POSTS, ...STATUS];
