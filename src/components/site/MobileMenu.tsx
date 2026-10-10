@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { usePathname } from "next/navigation";
 import { BrandLockup } from "@/components/brand/BrandMark";
 import { ButtonPrimary } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { cn } from "@/lib/utils";
-import { scrollToSection } from "@/lib/scroll-to-section";
+import { landOnSection, scrollToSection } from "@/lib/scroll-to-section";
 
 /*
  * Client islands of the site chrome: the header shell (scroll state, progress
@@ -20,6 +21,9 @@ const MENU_EVENT = "dh-menu-change";
 const SECTION_IDS = ["services", "dashboards", "estimator", "process", "security", "team", "faq", "contact"] as const;
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/** True until the first page of this document has handled its URL fragment. */
+let documentArrival = true;
 
 function menuIsOpen(): boolean {
   return document.documentElement.dataset.menu === "open";
@@ -123,6 +127,23 @@ export function HeaderShell({ children, progressLabel }: { children: ReactNode; 
     sections.forEach((s) => io.observe(s));
     return () => io.disconnect();
   }, []);
+
+  // Arriving with a section in the URL — /#contact from a service page, a
+  // shared link, a reload — the browser's or the router's own fragment
+  // scroll aims at placeholder heights (see scroll-to-section.ts), so land
+  // on it once the page is up. Not on a back/forward load, where the
+  // browser restores the visitor's own position.
+  const pathname = usePathname();
+  useEffect(() => {
+    const first = documentArrival;
+    documentArrival = false;
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+    const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    if (first && nav?.type === "back_forward") return;
+    const target = document.getElementById(decodeURIComponent(hash));
+    if (target) landOnSection(target);
+  }, [pathname]);
 
   // Same-page section links keep the query string. Capture phase, so it runs
   // before next/link's handler (which then sees defaultPrevented and stands down).

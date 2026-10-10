@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 const primary =
   "inline-flex items-center justify-center gap-2 rounded-full bg-action px-7 font-sans text-base font-semibold text-on-action " +
   "transition-colors duration-[160ms] hover:bg-action-hover hover:text-on-action-hover " +
-  "disabled:cursor-not-allowed aria-busy:cursor-progress";
+  "disabled:cursor-not-allowed disabled:opacity-60 aria-busy:cursor-progress";
 
 const sizes = {
   default: "h-[52px] lg:h-14",

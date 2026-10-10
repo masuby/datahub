@@ -695,6 +695,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `form.status.invalid` → Your message could not be read. Please try again.
 - `form.status.server` → Your message did not go through. Please try again, or message us on WhatsApp.
 - `form.status.network` → No connection. Check your internet and try again.
+- `form.status.loading` → The form is still loading. You can also reach us on WhatsApp or by email.
 - `form.success.title` → Thank you.
 - `form.success.body` → Your message has reached us. We will reply to talk through what you need.
 - `form.success.again` → Send another message

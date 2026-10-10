@@ -133,6 +133,12 @@ for (const [path, lang] of [
   ["/sw/services/nope", "sw-TZ"],
   ["/index.html", "en-TZ"],
   ["/sw/index.html", "sw-TZ"],
+  ["/team", "en-TZ"],
+  ["/brand", "en-TZ"],
+  ["/icon.png", "en-TZ"],
+  ["/apple-icon", "en-TZ"],
+  ["/opengraph-image.png", "en-TZ"],
+  ["/manifest.webmanifest", "en-TZ"],
 ]) {
   const res = await fetch(`${base}${path}`, { redirect: "manual" });
   const html = await res.text();
@@ -156,8 +162,24 @@ for (const name of readdirSync(publicDir)) {
   const res = await fetch(`${base}/${file}`, { redirect: "manual" });
   const type = res.headers.get("content-type") ?? "";
   if (res.status !== 200 || type.startsWith("text/html")) {
-    fail(`/${file}`, `status ${res.status} type ${type} (missing from PUBLIC_ENTRIES in src/proxy.ts?)`);
+    fail(`/${file}`, `status ${res.status} type ${type} (missing from PUBLIC_DIRS / PUBLIC_FILES in src/proxy.ts?)`);
   } else pass(`/${file}`, `${res.status} ${type}`);
+}
+
+// The favicon browsers ask for unprompted.
+{
+  const res = await fetch(`${base}/favicon.ico`);
+  const type = res.headers.get("content-type") ?? "";
+  if (res.status !== 200 || !type.startsWith("image/")) fail("/favicon.ico", `status ${res.status} type ${type}`);
+  else pass("/favicon.ico", `${res.status} ${type}`);
+}
+
+// A client cannot choose the language of a 404 with its own x-locale header.
+{
+  const res = await fetch(`${base}/api/nope`, { headers: { "x-locale": "sw" } });
+  const html = await res.text();
+  if (html.includes('<html lang="sw-TZ"')) fail("x-locale from the client", "the 404 spoke the language the client asked for");
+  else pass("x-locale from the client", "ignored");
 }
 
 // Contact: exact JSON media type, same-site only.

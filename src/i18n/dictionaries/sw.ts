@@ -972,7 +972,8 @@ const sw = {
       "rateLimited": "Jumbe nyingi mno kutoka kwenye muunganisho huu. Tafadhali subiri dakika chache kisha ujaribu tena, au tutumie ujumbe WhatsApp.",
       "invalid": "Hatukuweza kusoma ujumbe wako. Tafadhali jaribu tena.",
       "server": "Ujumbe wako haukufika. Tafadhali jaribu tena, au tutumie ujumbe WhatsApp.",
-      "network": "Hakuna muunganisho. Kagua intaneti yako kisha ujaribu tena."
+      "network": "Hakuna muunganisho. Kagua intaneti yako kisha ujaribu tena.",
+      "loading": "Fomu bado inapakia. Unaweza pia kutufikia kwa WhatsApp au barua pepe."
     },
     "success": {
       "title": "Asante.",

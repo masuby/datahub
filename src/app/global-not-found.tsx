@@ -8,6 +8,8 @@ import { MarkSprite } from "@/components/brand/MarkSprite";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SilkField } from "@/components/silk/SilkField";
+import { HardLinks } from "@/components/system/HardLinks";
+import { RefKeeper } from "@/components/system/RefKeeper";
 import { ThemeScript } from "@/components/system/ThemeScript";
 import { Container } from "@/components/ui/Container";
 import { Grid } from "@/components/ui/Grid";
@@ -33,6 +35,8 @@ import styles from "./global-not-found.module.css";
  *
  * It receives no params; src/proxy.ts sets `x-locale` (and the CSP nonce) on
  * every page request, so it knows the language and can run the theme script.
+ * Its links are full page loads (see HardLinks): it has its own <html>, and
+ * client-side navigation cannot cross into the site's root layout.
  */
 
 const SILK = PRESETS.service;
@@ -68,8 +72,11 @@ export default async function GlobalNotFound() {
     <html lang={LANG_TAG[lang]} suppressHydrationWarning className={fontVariables}>
       <head>
         <ThemeScript nonce={nonce} />
+        <HardLinks nonce={nonce} />
       </head>
       <body className="flex min-h-svh flex-col">
+        {/* A dead link from a poster or QR code still carries ?ref=: keep it. */}
+        <RefKeeper />
         <MarkSprite />
         <Header lang={lang} />
         <main id="main" className="flex-1">

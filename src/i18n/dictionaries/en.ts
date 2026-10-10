@@ -971,7 +971,8 @@ const en = {
       "rateLimited": "Too many messages from this connection. Please wait a few minutes and try again, or message us on WhatsApp.",
       "invalid": "Your message could not be read. Please try again.",
       "server": "Your message did not go through. Please try again, or message us on WhatsApp.",
-      "network": "No connection. Check your internet and try again."
+      "network": "No connection. Check your internet and try again.",
+      "loading": "The form is still loading. You can also reach us on WhatsApp or by email."
     },
     "success": {
       "title": "Thank you.",

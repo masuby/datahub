@@ -8,6 +8,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type ChangeEvent,
   type FormEvent,
   type ReactNode,
@@ -44,6 +45,8 @@ import styles from "./ContactForm.module.css";
  */
 
 export type FormStrings = Dictionary["form"];
+
+const subscribeNothing = () => () => {};
 
 const SERVICE_VALUES = [
   "dashboards",
@@ -209,6 +212,8 @@ export function ContactForm({
   const successRef = useRef<HTMLHeadingElement>(null);
   const tick = useRef(0);
 
+  // false on the server and while hydrating, true once the handlers run.
+  const ready = useSyncExternalStore(subscribeNothing, () => true, () => false);
   const [values, setValues] = useState<Values>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
   const [attempted, setAttempted] = useState(false);
@@ -506,10 +511,11 @@ export function ContactForm({
   return (
     <div>
       {politeRegion}
-      {/* method="post": if a submit ever happens before hydration (or where
-        the bundle cannot run), the fields go in the request body, never in
-        the URL, history, access logs or Referer. The JS path below is the
-        real pipeline (fetch POST /api/contact, JSON) and calls preventDefault. */}
+      {/* method="post": if a submit ever happens where the bundle cannot run,
+        the fields go in the request body, never in the URL, history, access
+        logs or Referer. The JS path below is the real pipeline (fetch POST
+        /api/contact, JSON) and calls preventDefault. Until it is ready the
+        send button is disabled (see `ready`), so nothing is lost on the way. */}
       <form
         ref={formRef}
         method="post"
@@ -727,8 +733,12 @@ export function ContactForm({
           )}
         </p>
 
+        {/* Before hydration a submit would post the page to itself and the
+          message would be lost, so the button waits; the line under it says
+          why and points to the other ways in. */}
         <ButtonPrimary
           type="submit"
+          disabled={!ready}
           aria-busy={sending || undefined}
           className="mt-4 w-full sm:w-auto"
         >
@@ -753,6 +763,7 @@ export function ContactForm({
           {sending ? strings.sending : strings.submit}
         </ButtonPrimary>
 
+        {!ready && <p className="t-small mt-3 text-muted">{strings.status.loading}</p>}
         <p className="t-small mt-6 text-muted">{altLine}</p>
         <p className="t-small mt-2 text-muted">
           {privacy.text}{" "}
