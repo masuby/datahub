@@ -10,7 +10,8 @@ import { Contact } from "@/components/site/Contact";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { AnimatedDots } from "@/components/ui/AnimatedDots";
-import { SERVICES, getService } from "@/lib/services";
+import { SERVICES, getService, servicesFor } from "@/lib/services";
+import { hasLocale, localePath, LANG_TAG } from "@/i18n/config";
 import { SITE_URL, faqSchema, serviceSchema, breadcrumbSchema } from "@/lib/seo";
 
 // Same reason as the homepage: the per-request CSP nonce from proxy.ts has to be
@@ -24,17 +25,25 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ lang: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const service = getService(slug);
+  const { lang, slug } = await params;
+  if (!hasLocale(lang)) return {};
+  const service = getService(slug, lang);
   if (!service) return {};
 
   const url = `${SITE_URL}/services/${service.slug}`;
   return {
     title: service.metaTitle,
     description: service.metaDescription,
-    alternates: { canonical: `/services/${service.slug}` },
+    alternates: {
+      canonical: localePath(lang, `/services/${service.slug}`),
+      languages: {
+        [LANG_TAG.en]: `/services/${service.slug}`,
+        [LANG_TAG.sw]: `/sw/services/${service.slug}`,
+        "x-default": `/services/${service.slug}`,
+      },
+    },
     openGraph: {
       type: "article",
       url,
@@ -54,14 +63,15 @@ export async function generateMetadata({
 export default async function ServicePage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ lang: string; slug: string }>;
 }) {
-  const { slug } = await params;
-  const service = getService(slug);
+  const { lang, slug } = await params;
+  if (!hasLocale(lang)) notFound();
+  const service = getService(slug, lang);
   if (!service) notFound();
 
   const nonce = (await headers()).get("x-nonce") ?? undefined;
-  const others = SERVICES.filter((s) => s.slug !== service.slug);
+  const others = servicesFor(lang).filter((s) => s.slug !== service.slug);
 
   const schemas = [
     serviceSchema(service),

@@ -13,6 +13,9 @@
  * because they were sprinkled in.
  */
 
+import type { Locale } from "@/i18n/config";
+import { SERVICES_SW } from "./services.sw";
+
 export type Service = {
   slug: string;
   /** <h1> on the page. */
@@ -186,6 +189,11 @@ export const SERVICES: Service[] = [
   },
 ];
 
-export function getService(slug: string): Service | undefined {
-  return SERVICES.find((s) => s.slug === slug);
+/** The service list in a locale — same slugs and order in every language. */
+export function servicesFor(lang: Locale): Service[] {
+  return lang === "sw" ? SERVICES_SW : SERVICES;
+}
+
+export function getService(slug: string, lang: Locale = "en"): Service | undefined {
+  return servicesFor(lang).find((s) => s.slug === slug);
 }

@@ -1,4 +1,7 @@
+import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { notFound } from "next/navigation";
+import { hasLocale, localePath, LANG_TAG } from "@/i18n/config";
 import { Navbar } from "@/components/site/Navbar";
 import { Hero } from "@/components/site/Hero";
 import { Ticker } from "@/components/site/Ticker";
@@ -17,7 +20,20 @@ import { organizationSchema, websiteSchema, faqSchema } from "@/lib/seo";
 // prerendered and 'strict-dynamic' would block all scripts in production.
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
+export async function generateMetadata({ params }: PageProps<"/[lang]">): Promise<Metadata> {
+  const { lang } = await params;
+  if (!hasLocale(lang)) return {};
+  return {
+    alternates: {
+      canonical: localePath(lang, "/"),
+      languages: { [LANG_TAG.en]: "/", [LANG_TAG.sw]: "/sw", "x-default": "/" },
+    },
+  };
+}
+
+export default async function Home({ params }: PageProps<"/[lang]">) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) notFound();
   // The same nonce proxy.ts put in the CSP header. Applied to the JSON-LD
   // blocks below so a strict script-src cannot drop our structured data.
   const nonce = (await headers()).get("x-nonce") ?? undefined;
