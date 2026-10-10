@@ -1,0 +1,101 @@
+/* 00 Hero — spec §6.1. Only geometry, masks and the crossfade live here;
+   colours are tokens, animations are inline (CSS Modules would rename the
+   global dh-* keyframes). */
+
+.hero {
+  --mark-size: clamp(240px, 26vw, 380px);
+}
+
+/* Text sits on plain --bg on mobile; on desktop it clears the header. */
+.text {
+  padding-top: clamp(48px, 9vh, 88px);
+  padding-bottom: clamp(40px, 7vh, 64px);
+}
+
+/* Mobile silk band: the same wash, centred on the mark. */
+.band {
+  background: radial-gradient(
+    60% 70% at 50% 50%,
+    color-mix(in srgb, var(--silk-wash) 55%, transparent),
+    transparent 72%
+  );
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    min-height: max(640px, min(100svh - var(--header-h), 920px));
+  }
+  /* The stage is everything above the service index, so its bottom edge is
+     the index rule: the silk layer, the wash and the mark all measure from it. */
+  .stage {
+    background: radial-gradient(
+      48% 62% at 80% 46%,
+      color-mix(in srgb, var(--silk-wash) 55%, transparent),
+      transparent 72%
+    );
+  }
+  .text {
+    padding-top: clamp(96px, 14vh, 160px);
+    /* Small: the stage plus the 112px index must fit min(100svh - header,
+       920px) on 800–900px-tall laptops. The pause control sits right of the
+       CTA row, so it needs no room of its own here. */
+    padding-bottom: clamp(24px, 9vh - 40px, 64px);
+  }
+}
+@media (min-width: 1024px) and (max-width: 1279.98px) {
+  .hero {
+    --mark-size: clamp(200px, 22vw, 300px);
+  }
+}
+
+/* Pause control: right edge at no more than 90% of the stage, so it stays
+   clear of the decision filament's last drop (it reaches the button's band
+   at ~0.94 of the width and lands at 0.96); on wide screens it follows the
+   container's right edge instead. */
+.pause {
+  right: max(10%, (100% - 1320px) / 2, var(--gutter-x));
+}
+
+/* The mark's centre is the silk's sink: (0.80, 0.46) of the silk layer. */
+.markLg {
+  left: 80%;
+  top: 46%;
+  width: var(--mark-size);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+}
+
+/* Text-safe zone: inside x < 64%, y < 74% of the layer, filaments render at
+   --silk-safe-alpha of their alpha (contrast verified in spec §1.3). Mask
+   colours are alpha sources, not design colours. */
+.safe {
+  --a: var(--silk-safe-alpha);
+  -webkit-mask-image:
+    linear-gradient(to bottom, rgb(0 0 0 / var(--a)) 0 74%, #000 84%),
+    linear-gradient(to right, transparent 0 64%, #000 74%);
+  mask-image:
+    linear-gradient(to bottom, rgb(0 0 0 / var(--a)) 0 74%, #000 84%),
+    linear-gradient(to right, transparent 0 64%, #000 74%);
+  -webkit-mask-composite: source-over;
+  mask-composite: add;
+}
+
+/* Crossfade: the canvas fades in over 600ms once its first frame is drawn;
+   the static SVG underneath fades out after it. If the canvas is removed the
+   SVG simply comes back. */
+.live {
+  opacity: 0;
+  transition: opacity 600ms var(--ease-silk);
+}
+.live[data-silk-live="true"] {
+  opacity: 1;
+}
+.still {
+  transition: opacity 300ms linear;
+}
+/* Only the fade-out waits for the canvas to finish fading in; when the
+   canvas goes away the SVG returns at once. */
+.scope:has(> [data-silk-live="true"]) > .still {
+  opacity: 0;
+  transition-delay: 600ms;
+}

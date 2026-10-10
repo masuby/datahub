@@ -1,11 +1,20 @@
+"use client";
+
 import { PRESETS, filamentPath, sheenBucket, silkSheen, type SilkPresetName } from "@/lib/silk";
 
 /**
- * Tier-0 silk: a static server-rendered SVG of the silk function at t = 0.
+ * Tier-0 silk: a static SVG of the silk function at t = 0.
  *
- * Zero JavaScript. Colour and opacity come from CSS custom properties set in
- * the `style` attribute (custom properties do not work in SVG presentation
- * attributes), so switching theme repaints it with no re-render. Strokes are
+ * A client component on purpose, though it has no state or effects: it is
+ * still rendered into the server HTML for first paint, but a client
+ * component's output is not repeated in the React payload — only its props
+ * ({ preset }) are. As a server component every filament was sent twice,
+ * which made silk the heaviest thing on the page. The function is
+ * deterministic, so hydration recomputes exactly the same paths.
+ *
+ * Colour and opacity come from CSS custom properties set in the `style`
+ * attribute (custom properties do not work in SVG presentation attributes),
+ * so switching theme repaints it with no re-render. Strokes are
  * `non-scaling-stroke`, so the hairlines stay 1px however the box scales.
  */
 export function SilkField({

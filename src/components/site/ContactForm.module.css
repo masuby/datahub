@@ -1,0 +1,32 @@
+/*
+  The message field is "ruled paper": R1 hairlines every 1.75rem that scroll
+  with the text (background-attachment: local), so each line of writing sits
+  on its own rule. No padding-top, so the rules and the line boxes coincide.
+  Grows from 5 to 12 lines (field-sizing where supported, a resize in
+  ContactForm otherwise), then scrolls.
+*/
+.paper {
+  line-height: 1.75rem;
+  padding-block: 0;
+  background-color: transparent;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 calc(1.75rem - 1px),
+    var(--rule) calc(1.75rem - 1px) 1.75rem
+  );
+  background-attachment: local;
+  min-block-size: calc(5 * 1.75rem);
+  max-block-size: calc(12 * 1.75rem);
+  resize: none;
+  overflow-y: auto;
+}
+@supports (field-sizing: content) {
+  .paper {
+    field-sizing: content;
+  }
+}
+@media (forced-colors: active) {
+  .paper {
+    background-image: none;
+  }
+}

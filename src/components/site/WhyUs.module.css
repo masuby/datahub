@@ -1,0 +1,75 @@
+/*
+ * 05 — Why DataHub. Ledger strike-through and the column divider.
+ *
+ * The strike is drawn as a 1px background line on the inline text run (with
+ * box-decoration-break: clone, so every wrapped line of a long Kiswahili item
+ * is struck, not just one). The text itself is plain — not <del> — so screen
+ * readers read it normally after an sr-only "Today:" prefix.
+ *
+ * Keyframe is `from` only: with animation off the strike is simply there.
+ */
+
+.struck {
+  color: var(--fg-subtle);
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 55%;
+  background-size: 100% 1px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  animation: strike var(--dur-draw) var(--ease-thread) both;
+}
+
+@keyframes strike {
+  from {
+    background-size: 0% 1px;
+  }
+}
+
+/* Wait for <Reveal>, like the global .a-* utilities. */
+:global(.reveal-init) .struck {
+  animation-play-state: paused;
+}
+
+/* Vertical R1 between "Today" and "With DataHub" (two columns from 640px):
+   sits in the middle of the gutter between the halves. */
+.divider {
+  display: none;
+}
+@media (min-width: 640px) {
+  .divider {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+}
+
+/* The policy wraps rather than scrolling sideways. */
+.policy {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+
+@media (forced-colors: active) {
+  .struck {
+    background-image: none;
+    text-decoration: line-through;
+  }
+}
+
+/* R1 on top of a row whose element cannot hold a <Rule> child (dl > div). */
+.rowRule {
+  background: linear-gradient(var(--rule), var(--rule)) top / 100% 1px no-repeat;
+}
+
+/* The policy reads as a quotation: one rule on its left, nothing else. */
+.policyBlock {
+  padding-left: 16px;
+  background: linear-gradient(var(--rule-strong), var(--rule-strong)) left / 1px 100% no-repeat;
+}

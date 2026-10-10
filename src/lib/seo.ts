@@ -1,6 +1,6 @@
 import { CONTACT_EMAIL, WHATSAPP_DISPLAY } from "@/lib/contact-info";
 import { servicesFor, type Service } from "@/lib/services";
-import { LANG_TAG, localePath, type Locale } from "@/i18n/config";
+import { LANG_TAG, OG_LOCALE, localePath, type Locale } from "@/i18n/config";
 
 /**
  * Structured data (JSON-LD).
@@ -22,6 +22,40 @@ export const absoluteUrl = (lang: Locale, path = "/") => {
   const p = localePath(lang, path);
   return p === "/" ? SITE_URL : `${SITE_URL}${p}`;
 };
+
+/**
+ * The complete share card (Open Graph + Twitter) for one page.
+ *
+ * Next does not deep-merge these: a page that sets `openGraph` replaces its
+ * layout's object outright, and the root opengraph-image file is only merged
+ * at its own segment. A page that restated only url/title/description shipped
+ * with no image, so links shared on WhatsApp, Facebook or LinkedIn showed no
+ * picture. Every page builds its whole card here instead. The image itself is
+ * the same for both languages; its alt text is localised.
+ */
+export function shareCard(o: {
+  lang: Locale;
+  path?: string;
+  title: string;
+  description: string;
+  siteName: string;
+  imageAlt: string;
+  type?: "website" | "article";
+}) {
+  const images = [{ url: "/opengraph-image", width: 1200, height: 630, alt: o.imageAlt }];
+  return {
+    openGraph: {
+      type: o.type ?? "website",
+      siteName: o.siteName,
+      url: absoluteUrl(o.lang, o.path),
+      locale: OG_LOCALE[o.lang],
+      title: o.title,
+      description: o.description,
+      images,
+    },
+    twitter: { card: "summary_large_image" as const, title: o.title, description: o.description, images },
+  };
+}
 
 type TeamMember = { name: string; alternateName?: string; jobTitle: string; image: string };
 

@@ -32,6 +32,21 @@ export const runtime = "nodejs";
 type Weight = 400 | 500 | 600 | 700 | 800;
 let fontCache: { name: string; data: Buffer; weight: Weight; style: "normal" }[] | null = null;
 
+let portraitCache: string | null = null;
+
+/**
+ * The CTO portrait as a data URI, read from disk like the fonts. It used to
+ * be fetched over HTTP from the request's own origin, which behind a
+ * TLS-terminating proxy pointed at https://localhost and failed silently —
+ * the poster rendered with an empty circle.
+ */
+async function portraitDataUri(): Promise<string> {
+  if (portraitCache) return portraitCache;
+  const file = path.join(process.cwd(), "public", "team", "daniel-masubi-avatar.png");
+  portraitCache = `data:image/png;base64,${(await readFile(file)).toString("base64")}`;
+  return portraitCache;
+}
+
 async function brandFonts() {
   if (fontCache) return fontCache;
   const dir = path.join(process.cwd(), "assets", "fonts");
@@ -170,7 +185,7 @@ export async function GET(
   const padY = isStatus ? 250 : 92;
   const headlineSize = variant === "default" ? (isStatus ? 88 : 82) : 66;
 
-  const origin = new URL(req.url).origin;
+  const portrait = variant === "portrait" ? await portraitDataUri() : null;
 
   // Seeded by slug: each poster gets its own net, and re-running the script
   // reproduces the same image byte for byte.
@@ -231,12 +246,12 @@ export async function GET(
         <div style={{ display: "flex", flexDirection: "column" }}>
           {variant === "bars" && <Bars />}
 
-          {variant === "portrait" && (
+          {portrait && (
             // next/image cannot be used here: this tree is rendered by Satori
             // into a PNG, not by React into a DOM, so a plain <img> is correct.
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={`${origin}/daniel-masubi.png`}
+              src={portrait}
               width={260}
               height={260}
               alt=""

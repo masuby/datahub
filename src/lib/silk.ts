@@ -22,8 +22,11 @@ export type SilkPreset = {
   H: number;
   /** Number of filaments. */
   N: number;
-  /** Points sampled per filament for the static SVG. */
-  samples: number;
+  /**
+   * Static SVG only: how far (px, before rounding) a drawn curve may stray
+   * from the function. Smaller is truer and heavier.
+   */
+  tol: number;
   sinkX: number;
   sinkY: number;
   leftY: number;
@@ -36,10 +39,10 @@ export type SilkPreset = {
 };
 
 export const PRESETS = {
-  "hero-desktop": { W: 1440, H: 900, N: 40, samples: 24, sinkX: 0.8, sinkY: 0.46, leftY: 0.86, spreadIn: 0.3, spreadPinch: 0.1, spreadOut: 0.34, amp: 0.09, decision: 19 },
-  "hero-mobile": { W: 390, H: 300, N: 24, samples: 18, sinkX: 0.5, sinkY: 0.5, leftY: 0.6, spreadIn: 0.7, spreadPinch: 0.2, spreadOut: 0.6, amp: 0.1, decision: 11 },
-  plate: { W: 1440, H: 420, N: 32, samples: 24, sinkX: 0.85, sinkY: 0.4, leftY: 0.7, spreadIn: 0.8, spreadPinch: 0.3, spreadOut: 0.7, amp: 0.08, decision: -1 },
-  service: { W: 1440, H: 520, N: 28, samples: 20, sinkX: 0.88, sinkY: 0.45, leftY: 0.75, spreadIn: 0.6, spreadPinch: 0.18, spreadOut: 0.4, amp: 0.07, decision: -1 },
+  "hero-desktop": { W: 1440, H: 900, N: 40, tol: 0.75, sinkX: 0.8, sinkY: 0.46, leftY: 0.86, spreadIn: 0.3, spreadPinch: 0.1, spreadOut: 0.34, amp: 0.09, decision: 19 },
+  "hero-mobile": { W: 390, H: 300, N: 24, tol: 0.6, sinkX: 0.5, sinkY: 0.5, leftY: 0.6, spreadIn: 0.7, spreadPinch: 0.2, spreadOut: 0.6, amp: 0.1, decision: 11 },
+  plate: { W: 1440, H: 420, N: 22, tol: 1, sinkX: 0.85, sinkY: 0.4, leftY: 0.7, spreadIn: 0.8, spreadPinch: 0.3, spreadOut: 0.7, amp: 0.08, decision: -1 },
+  service: { W: 1440, H: 520, N: 28, tol: 0.9, sinkX: 0.88, sinkY: 0.45, leftY: 0.75, spreadIn: 0.6, spreadPinch: 0.18, spreadOut: 0.4, amp: 0.07, decision: -1 },
 } satisfies Record<string, SilkPreset>;
 
 export type SilkPresetName = keyof typeof PRESETS;
@@ -86,28 +89,52 @@ export const sheenBucket = (b: number) =>
   Math.min(SHEEN_BUCKETS - 1, Math.floor(b * SHEEN_BUCKETS)) / (SHEEN_BUCKETS - 1);
 
 /**
- * Catmull-Rom through the sampled points, emitted as cubic Béziers with
- * integer coordinates — smooth curves at a fraction of the bytes a polyline
- * would need for the same fidelity.
+ * One filament as SVG path data: cubic Béziers with integer coordinates,
+ * fitted to the function rather than sampled at fixed steps.
+ *
+ * Each segment is the cubic Hermite through its two ends with the function's
+ * own slope there (control points a third of the way along, so x runs
+ * linearly and the curve is a true y = f(x)). A segment is halved wherever it
+ * strays more than `tol` px from the function — the pinch at the hand and the
+ * decision filament's landing get short segments, the calm straight run after
+ * the hand gets long ones. Truer than uniform sampling at a third fewer bytes.
  */
-export function filamentPath(p: SilkPreset, i: number, t = 0, k = 0, samples = p.samples): string {
-  const pts: [number, number][] = [];
-  for (let s = 0; s <= samples; s++) {
-    const x = s / samples;
-    pts.push([x * p.W, silkY(p, i, x, t, k)]);
-  }
+export function filamentPath(p: SilkPreset, i: number, t = 0, k = 0, tol = p.tol): string {
+  const f = (x: number) => silkY(p, i, x, t, k);
+  const slope = (x: number) => {
+    const a = Math.max(0, x - 1e-4);
+    const b = Math.min(1, x + 1e-4);
+    return (f(b) - f(a)) / ((b - a) * p.W); // dy/dX in px per px
+  };
   const r = Math.round;
-  let d = `M${r(pts[0][0])} ${r(pts[0][1])}`;
-  for (let s = 0; s < pts.length - 1; s++) {
-    const p0 = pts[Math.max(0, s - 1)];
-    const p1 = pts[s];
-    const p2 = pts[s + 1];
-    const p3 = pts[Math.min(pts.length - 1, s + 2)];
-    const c1x = p1[0] + (p2[0] - p0[0]) / 6;
-    const c1y = p1[1] + (p2[1] - p0[1]) / 6;
-    const c2x = p2[0] - (p3[0] - p1[0]) / 6;
-    const c2y = p2[1] - (p3[1] - p1[1]) / 6;
-    d += `C${r(c1x)} ${r(c1y)} ${r(c2x)} ${r(c2y)} ${r(p2[0])} ${r(p2[1])}`;
+  let d = `M0 ${r(f(0))}`;
+  const seg = (xa: number, ya: number, ma: number, xb: number, yb: number, mb: number, depth: number) => {
+    const w = (xb - xa) * p.W;
+    const c1 = ya + (ma * w) / 3;
+    const c2 = yb - (mb * w) / 3;
+    let err = 0;
+    for (const u of [0.2, 0.4, 0.5, 0.6, 0.8]) {
+      const v = 1 - u;
+      const y = v * v * v * ya + 3 * v * v * u * c1 + 3 * v * u * u * c2 + u * u * u * yb;
+      err = Math.max(err, Math.abs(y - f(xa + u * (xb - xa))));
+    }
+    if (err > tol && depth < 8) {
+      const xm = (xa + xb) / 2;
+      const ym = f(xm);
+      const mm = slope(xm);
+      seg(xa, ya, ma, xm, ym, mm, depth + 1);
+      seg(xm, ym, mm, xb, yb, mb, depth + 1);
+      return;
+    }
+    const X = (x: number) => r(x * p.W);
+    d += `C${X(xa + (xb - xa) / 3)} ${r(c1)} ${X(xb - (xb - xa) / 3)} ${r(c2)} ${X(xb)} ${r(yb)}`;
+  };
+  // Start from eight even spans so no feature hides between two probes.
+  const BASE = 8;
+  for (let s = 0; s < BASE; s++) {
+    const xa = s / BASE;
+    const xb = (s + 1) / BASE;
+    seg(xa, f(xa), slope(xa), xb, f(xb), slope(xb), 0);
   }
   return d;
 }

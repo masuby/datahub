@@ -17,7 +17,7 @@ import { Faq } from "@/components/site/Faq";
 import { Contact } from "@/components/site/Contact";
 import { Footer } from "@/components/site/Footer";
 import { ActionRail } from "@/components/site/ActionRail";
-import { organizationSchema, websiteSchema, faqSchema, absoluteUrl } from "@/lib/seo";
+import { organizationSchema, websiteSchema, faqSchema, absoluteUrl, shareCard } from "@/lib/seo";
 
 // Render dynamically so the per-request CSP nonce (set in proxy.ts) is stamped
 // onto the framework scripts. A statically prerendered page could not carry it,
@@ -27,7 +27,8 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: PageProps<"/[lang]">): Promise<Metadata> {
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
-  const t = (await getDictionary(lang)).meta.home;
+  const dict = await getDictionary(lang);
+  const t = dict.meta.home;
   return {
     // `absolute` so the home title is exactly the brand line, untemplated.
     title: { absolute: t.title },
@@ -36,7 +37,13 @@ export async function generateMetadata({ params }: PageProps<"/[lang]">): Promis
       canonical: localePath(lang, "/"),
       languages: { [LANG_TAG.en]: "/", [LANG_TAG.sw]: "/sw", "x-default": "/" },
     },
-    openGraph: { url: absoluteUrl(lang), title: t.ogTitle, description: t.ogDescription },
+    ...shareCard({
+      lang,
+      title: t.ogTitle,
+      description: t.ogDescription,
+      siteName: dict.meta.siteName,
+      imageAlt: dict.alt.og,
+    }),
   };
 }
 

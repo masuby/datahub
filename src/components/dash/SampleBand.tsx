@@ -1,18 +1,57 @@
 import type { Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/get-dictionary";
+import { Container } from "@/components/ui/Container";
+import { Reveal } from "@/components/ui/Reveal";
+import { Section } from "@/components/ui/Section";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { BandEdges } from "./Plate";
+import { SamplePlate, type SampleService } from "./SamplePlate";
+import { makeDashCtx } from "./make-ctx";
+import styles from "./dash.module.css";
+
+/** The band's section number on a service page. */
+const SECTION = "03";
 
 /**
- * STUB — replaced by the dashboards build slice. Contract: the ink band used on
- * service pages ("See it in a sample", spec §7.4): server component, no tabs,
- * read-mode notes as static numbered lists. `service` picks the figures.
+ * The ink band on service pages ("03 — See it in a sample", spec §7.4):
+ * no tabs. The same figures as the home page, with read-mode notes always
+ * shown as numbered lists; `service` picks the figures (see SamplePlate).
+ *
+ * Same SAMPLE stamp, honesty notice and credit lines as the home page. The
+ * plate sits in <Reveal> so its charts draw when scrolled to.
  */
 export async function SampleBand({
   lang,
   service,
+  total = 6,
 }: {
   lang: Locale;
-  service: "dashboards" | "automation" | "ai-agents";
+  service: SampleService;
+  /** Number of numbered sections on the hosting page (the band is "03"). */
+  total?: number;
 }) {
-  void lang;
-  void service;
-  return null;
+  const dict = await getDictionary(lang);
+  const ctx = await makeDashCtx(lang, `sb-${service}`, false);
+  const s = dict.servicePage.sample;
+
+  return (
+    <Section id="sample" labelledBy="sample-title" ink>
+      <BandEdges />
+      <Container>
+        <SectionHeader index={SECTION} total={total} eyebrow={s.eyebrow} title={s.title} titleId="sample-title" lead={s.lead}>
+          <p className="t-eyebrow mt-5 text-accent">{ctx.t.notice}</p>
+        </SectionHeader>
+        <div
+          className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12"
+          style={{ columnGap: "var(--col-gap)" }}
+        >
+          <div className={`${styles.root} col-span-4 sm:col-span-8 lg:col-span-9 lg:col-start-4`} data-read="on">
+            <Reveal>
+              <SamplePlate ctx={ctx} service={service} section={SECTION} />
+            </Reveal>
+          </div>
+        </div>
+      </Container>
+    </Section>
+  );
 }

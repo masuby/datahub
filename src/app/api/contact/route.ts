@@ -8,11 +8,20 @@ import { sendLeadNotification } from "@/lib/mailer";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/** Best-effort client IP from common proxy headers (Nginx sets X-Forwarded-For). */
+/**
+ * The client IP as the nearest trusted proxy saw it — never a value the
+ * client chose. Our nginx sets X-Real-IP to $remote_addr and Vercel sets it
+ * to the connecting address, overwriting anything the client sent. Without
+ * it, the right-most X-Forwarded-For entry is the one the nearest proxy
+ * appended; the left-most is whatever the client claimed (keying on it let
+ * anyone dodge the rate limit by sending a new value with each request).
+ */
 function getClientIp(req: NextRequest): string {
+  const real = req.headers.get("x-real-ip")?.trim();
+  if (real) return real;
   const xff = req.headers.get("x-forwarded-for");
-  if (xff) return xff.split(",")[0]!.trim();
-  return req.headers.get("x-real-ip") ?? "unknown";
+  if (xff) return xff.split(",").at(-1)!.trim() || "unknown";
+  return "unknown";
 }
 
 /** Salted SHA-256 of the IP — we store a hash, never the raw address. */
@@ -22,19 +31,27 @@ function hashIp(ip: string): string {
 }
 
 export async function POST(req: NextRequest) {
-  // 1) Content-type guard — only accept JSON.
-  const contentType = req.headers.get("content-type") ?? "";
-  if (!contentType.includes("application/json")) {
+  // 1) Same-site JSON only. The media type is compared exactly: a substring
+  // test also passed "text/plain;a=application/json", which any other site
+  // can send from a visitor's browser without a CORS preflight. Browsers
+  // also say outright when a request comes from another site.
+  const mediaType = (req.headers.get("content-type") ?? "").split(";")[0]!.trim().toLowerCase();
+  if (mediaType !== "application/json") {
     return NextResponse.json(
       { ok: false, error: "Unsupported content type." },
       { status: 415 },
     );
   }
+  if (req.headers.get("sec-fetch-site") === "cross-site") {
+    return NextResponse.json({ ok: false, error: "Forbidden." }, { status: 403 });
+  }
 
-  const ip = getClientIp(req);
+  // The limiter and the database only ever see the salted hash, as the
+  // privacy notice says; the raw address is not kept anywhere.
+  const ipHash = hashIp(getClientIp(req));
 
   // 2) Rate limit per IP before doing any real work.
-  const limit = await rateLimit(ip);
+  const limit = await rateLimit(ipHash);
   if (!limit.success) {
     return NextResponse.json(
       { ok: false, error: "Too many requests. Please try again later." },
@@ -98,8 +115,9 @@ export async function POST(req: NextRequest) {
         service: data.service || null,
         source: data.source || null,
         message: data.message,
-        ipHash: hashIp(ip),
-        userAgent: (req.headers.get("user-agent") ?? "").slice(0, 400) || null,
+        // No user-agent: the privacy notice promises only what the visitor
+        // typed (plus the campaign tag and this hash).
+        ipHash,
       },
     });
   } catch (err) {

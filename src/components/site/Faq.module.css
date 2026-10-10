@@ -1,0 +1,34 @@
+/*
+  FAQ rows open with a height transition where the browser can animate to
+  `auto` (::details-content + interpolate-size). Everywhere else the native
+  <details> simply opens instantly.
+
+  Reduced motion is NOT covered by the global reset here: `*` does not match
+  the ::details-content pseudo-element and transitions are not inherited, so
+  the whole enhancement is gated on `prefers-reduced-motion: no-preference`.
+  Under reduced motion the rows open instantly (native <details>).
+*/
+@media (prefers-reduced-motion: no-preference) {
+  @supports (interpolate-size: allow-keywords) {
+    .item {
+      interpolate-size: allow-keywords;
+    }
+    .item::details-content {
+      block-size: 0;
+      overflow-y: clip;
+      transition:
+        block-size var(--dur-ui) var(--ease-thread),
+        content-visibility var(--dur-ui) allow-discrete;
+    }
+    .item[open]::details-content {
+      block-size: auto;
+    }
+  }
+}
+
+.summary {
+  list-style: none;
+}
+.summary::-webkit-details-marker {
+  display: none;
+}

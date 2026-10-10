@@ -1,0 +1,9 @@
+/* The hero's floor rule is an R2 (spec §3.2): .rule-section draws it, with
+   the scroll-lit sheen and the forced-colors fallback. Only the thread moves:
+   it starts at 96% of the width, where the decision filament lands (the end
+   of the landing in src/lib/silk.ts), instead of the first 48px. */
+.landing::before {
+  left: 96%;
+  right: 0;
+  width: auto;
+}

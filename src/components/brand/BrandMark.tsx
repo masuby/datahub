@@ -1,4 +1,4 @@
-import { MARK_D, MARK_HAND, MARK_VIEWBOX } from "./mark-paths";
+import { MARK_D_REF, MARK_HAND_REF, MARK_VIEWBOX } from "./mark-paths";
 
 /**
  * The DataHub mark: an open "D" with a hand forming its stem.
@@ -6,7 +6,8 @@ import { MARK_D, MARK_HAND, MARK_VIEWBOX } from "./mark-paths";
  * Colours come from CSS custom properties so the theme decides them — on a
  * dark background the navy hand would disappear, so `.dark` swaps it for the
  * foreground colour. Defaults (defined in globals.css) follow the brand board:
- * royal-blue D, navy hand.
+ * royal-blue D, navy hand. The shapes themselves are drawn from
+ * <MarkSprite> (rendered once by the layout).
  */
 export function BrandMark({
   className,
@@ -25,8 +26,8 @@ export function BrandMark({
       aria-label={title}
       focusable="false"
     >
-      <path d={MARK_D} style={{ fill: "var(--mark-d)" }} />
-      <path d={MARK_HAND} style={{ fill: "var(--mark-hand)" }} />
+      <use href={MARK_D_REF} style={{ fill: "var(--mark-d)" }} />
+      <use href={MARK_HAND_REF} style={{ fill: "var(--mark-hand)" }} />
     </svg>
   );
 }

@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils";
 /**
  * Pause control for the only continuous motion on the site (the hero silk).
  *
- *   variant "hero"   — a text button: "Pause motion" / "Resume motion"
+ *   variant "hero"   — a text button: "Pause motion" / "Resume motion" (the
+ *                      label says the state, so no aria-pressed: "Resume
+ *                      motion, pressed" would contradict itself)
  *   variant "footer" — "Motion: On · Off" as two pressed-state buttons
  *
  * Hidden entirely when the OS already asks for reduced motion: there is
@@ -29,7 +31,6 @@ export function MotionToggle({
     return (
       <button
         type="button"
-        aria-pressed={paused}
         onClick={() => setMotionPaused(!paused)}
         className={cn("t-eyebrow min-h-11 px-1 transition-colors duration-[160ms] hover:text-fg", className)}
       >

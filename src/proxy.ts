@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { buildCsp } from "@/lib/csp";
+import { isServiceSlug } from "@/lib/service-slugs";
 
 /**
  * Two jobs, in this order:
@@ -12,7 +13,16 @@ import { buildCsp } from "@/lib/csp";
  *    and a literal `/en/...` is redirected to the root so English has exactly
  *    one URL per page. Kept in sync with src/i18n/config.ts — Proxy is bundled
  *    separately from the app, so it deliberately imports nothing from it except
- *    src/lib/csp.ts, which itself imports nothing.
+ *    src/lib/csp.ts and src/lib/service-slugs.ts, which themselves import
+ *    nothing.
+ *
+ *    Every URL that is not a page gets the server-rendered global 404
+ *    (app/global-not-found.tsx) only if it matches no route at all. Two kinds
+ *    of URL would otherwise match one and 404 from inside the [lang] layout,
+ *    which Next 16 draws only in the browser: an unknown service slug
+ *    (/services/<x> matches services/[slug]) and a one-segment path with a dot
+ *    (/index.html matches [lang] with lang "index.html"). Both are sent to a
+ *    path no route matches instead.
  *
  * 2. Per-request Content-Security-Policy. Production uses a strict nonce-based
  *    policy with 'strict-dynamic' — only scripts carrying the request nonce (and
@@ -26,6 +36,16 @@ import { buildCsp } from "@/lib/csp";
 const PREFIXED_LOCALES = ["sw"];
 const DEFAULT_LOCALE = "en";
 
+/**
+ * Top-level entries of public/. Only these are served as files; any other
+ * path is a page (or a 404). scripts/check-claims.mjs fails if public/ gains
+ * an entry that is missing here.
+ */
+const PUBLIC_ENTRIES = new Set(["brand", "team", "daniel-masubi.png"]);
+
+/** A path that matches no route, so the global 404 answers it on the server. */
+const UNMATCHED = "/_not-found-page";
+
 /** Requests that are not pages: they get the CSP, never a locale. */
 function isNonPage(pathname: string): boolean {
   return (
@@ -36,9 +56,18 @@ function isNonPage(pathname: string): boolean {
     pathname === "/sitemap.xml" ||
     pathname === "/robots.txt" ||
     pathname === "/manifest.webmanifest" ||
-    // Anything with a file extension is a static asset from public/.
-    /\.[a-z0-9]{2,5}$/i.test(pathname)
+    PUBLIC_ENTRIES.has(pathname.split("/")[1] ?? "")
   );
+}
+
+/**
+ * A locale-less page path that would match a route only to 404 inside it:
+ * an unknown service slug, or a single segment with a dot in it.
+ */
+function isDeadEnd(rest: string): boolean {
+  const service = /^\/services\/([^/]+)\/?$/.exec(rest);
+  if (service) return !isServiceSlug(service[1]);
+  return /^\/[^/]*\.[^/]*$/.test(rest);
 }
 
 export function proxy(request: NextRequest) {
@@ -67,7 +96,17 @@ export function proxy(request: NextRequest) {
     const prefixed = PREFIXED_LOCALES.find(
       (l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`),
     );
-    if (prefixed) {
+    // The global 404 (app/global-not-found.tsx) receives no params; this tells
+    // it which language to speak.
+    // Always `set`: the headers were copied from the client, and a visitor
+    // must not be able to choose this value themselves.
+    requestHeaders.set("x-locale", prefixed ?? DEFAULT_LOCALE);
+    const rest = prefixed ? pathname.slice(prefixed.length + 1) : pathname;
+    if (isDeadEnd(rest)) {
+      const url = request.nextUrl.clone();
+      url.pathname = `/${prefixed ?? DEFAULT_LOCALE}${UNMATCHED}`;
+      response = NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+    } else if (prefixed) {
       response = NextResponse.next({ request: { headers: requestHeaders } });
     } else {
       const url = request.nextUrl.clone();

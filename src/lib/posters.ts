@@ -119,7 +119,7 @@ const POSTS: Poster[] = [
     variant: "portrait",
     eyebrow: "WHO BUILDS IT",
     headline: "Daniel Clement Masubi",
-    sub: "Data Engineer. You deal with the engineer directly, not an account manager.",
+    sub: "Chief Technology Officer. You deal with the engineer directly, not an account manager.",
   },
 ];
 

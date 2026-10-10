@@ -14,10 +14,11 @@
  */
 
 import type { Locale } from "@/i18n/config";
+import type { ServiceSlug } from "./service-slugs";
 import { SERVICES_SW } from "./services.sw";
 
 export type Service = {
-  slug: string;
+  slug: ServiceSlug;
   /** <h1> on the page. */
   title: string;
   /** <title> tag — kept under ~60 chars including the " · DataHub" suffix. */

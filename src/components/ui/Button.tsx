@@ -53,15 +53,19 @@ export function ButtonPrimary(
 
 /**
  * Secondary action on a <button>: LinkArrow styling, 48px minimum hit area.
+ * `active` draws the thread under the label (for a button whose label
+ * already says its state, so it must not also carry aria-pressed).
  */
 export function ButtonText({
   children,
   arrow,
+  active,
   className,
   ...rest
 }: {
   children: ReactNode;
   arrow?: "→" | "↓" | "";
+  active?: boolean;
   className?: string;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className" | "children">) {
   return (
@@ -73,7 +77,7 @@ export function ButtonText({
       )}
       {...rest}
     >
-      <span className="link-thread pb-0.5" data-active={rest["aria-pressed"] === true ? "true" : undefined}>
+      <span className="link-thread pb-0.5" data-active={(active ?? rest["aria-pressed"] === true) ? "true" : undefined}>
         {children}
       </span>
       {arrow && (

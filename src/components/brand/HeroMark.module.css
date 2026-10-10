@@ -1,0 +1,33 @@
+/* The D draws itself once: a conic mask whose angle (--sweep, a registered
+   <angle> in globals.css, initial 360deg) sweeps from the D's top-left
+   terminal round the bowl. Without @property support, or with animations
+   off, --sweep stays 360deg and the whole D shows. The mask colour is an
+   alpha source, not a design colour.
+
+   Animation shorthands live in the component's style attribute, not here:
+   CSS Modules would rename the global dh-* keyframe names. */
+.sweep {
+  -webkit-mask-image: conic-gradient(from 302deg at 50% 50%, #000 var(--sweep), transparent 0);
+  mask-image: conic-gradient(from 302deg at 50% 50%, #000 var(--sweep), transparent 0);
+}
+
+.hand {
+  transform-box: fill-box;
+}
+
+.ring {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.probe {
+  opacity: 0;
+}
+
+@media (forced-colors: active) {
+  .ring,
+  .probe {
+    display: none;
+  }
+}

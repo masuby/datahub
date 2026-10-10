@@ -121,7 +121,7 @@ const en = {
     "eyebrow": "DataHub · Data consultancy · Dar es Salaam",
     "title": {
       "line1": "From data",
-      "line2Before": "to␠ (the word \"to\" followed by one space)",
+      "line2Before": "to ",
       "accent": "decisions.",
       "sub": "Dashboards, reporting automation and AI agents for organisations in Tanzania."
     },
@@ -627,19 +627,27 @@ const en = {
     "title": "Where do the hours go?",
     "lead": "Put in your own numbers for one report. This is what it costs your team today.",
     "sentence": [
-      "We prepare␠",
+      "We prepare ",
       "{count}",
-      "␠reports every␠",
+      " {reportWord} every ",
       "{period}",
-      ". Each one takes␠",
+      ". Each one takes ",
       "{people}",
-      "␠{personWord} about␠",
+      " {personWord} about ",
       "{hours}",
-      "␠hours."
+      " {hourWord}."
     ],
     "personWord": {
       "one": "person",
       "other": "people"
+    },
+    "reportWord": {
+      "one": "report",
+      "other": "reports"
+    },
+    "hourWord": {
+      "one": "hour",
+      "other": "hours"
     },
     "periods": {
       "day": "working day",
@@ -674,14 +682,14 @@ const en = {
       "cost": "≈ TZS {amount} a year in staff time"
     },
     "formula": {
-      "hours": "{count} reports × {periods} {periodUnit} × {people} {personWord} × {hours} h = {total} h a year · 8 h = 1 working day",
+      "hours": "{count} {reportWord} × {periods} {periodUnit} × {people} {personWord} × {hours} h = {total} h a year · 8 h = 1 working day",
       "cost": "TZS {salary} ÷ 176 h a month = TZS {hourly} per hour",
       "assumptions": "Assumes 240 working days, 48 working weeks or 12 months a year."
     },
     "note": "Your numbers, your estimate. This is not a quote, and nothing is sent unless you choose to send a message.",
     "addToMessage": "Add this to my message",
     "added": "Added to your message. Fill in your name to send it.",
-    "messageTemplate": "We prepare {count} reports every {period}. Each one takes {people} {personWord} about {hours} hours, roughly {hoursPerYear} hours a year.",
+    "messageTemplate": "We prepare {count} {reportWord} every {period}. Each one takes {people} {personWord} about {hours} {hourWord}, roughly {hoursPerYear} hours a year.",
     "error": {
       "range": "Use a number between {min} and {max}."
     }
@@ -786,8 +794,8 @@ const en = {
         "Scripts: only our own. Every page is sent with a security policy that includes a new code for each visit, so a script injected by someone else does not run.",
         "Trackers and analytics from other companies: none.",
         "Fonts and images: served from datahub.co.tz, not from other companies’ servers.",
-        "Cookies: none. Your theme and language choices stay in your own browser.",
-        "Contact form: checked on our server, limited to a few messages per connection, and filtered for automated spam."
+        "Cookies: none. Your theme and language preferences are saved only in your own browser.",
+        "Contact form: checked on our server, limited to a few messages per network address, and filtered for automated spam."
       ],
       "showPolicy": "Show the exact policy",
       "policyNote": "The Content-Security-Policy header sent with this page. The code that changes on each visit is hidden.",
@@ -959,7 +967,7 @@ const en = {
     "submit": "Send message",
     "sending": "Sending…",
     "status": {
-      "checkFields": "Please check the fields marked below.",
+      "checkFields": "Please check the marked fields.",
       "rateLimited": "Too many messages from this connection. Please wait a few minutes and try again, or message us on WhatsApp.",
       "invalid": "Your message could not be read. Please try again.",
       "server": "Your message did not go through. Please try again, or message us on WhatsApp.",
@@ -980,7 +988,7 @@ const en = {
   },
   "footer": {
     "tagline": {
-      "line1Before": "From␠",
+      "line1Before": "From ",
       "line1Accent": "Data",
       "line2": "to Decisions"
     },

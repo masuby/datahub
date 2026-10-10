@@ -1,0 +1,14 @@
+/* 404 (spec §6 route list). Tokens only; black in the mask is an alpha channel. */
+
+.hero {
+  background: radial-gradient(
+    46% 70% at 84% 48%,
+    color-mix(in srgb, var(--silk-wash) 50%, transparent),
+    transparent 72%
+  );
+}
+
+.silk {
+  -webkit-mask-image: linear-gradient(to right, rgb(0 0 0 / var(--silk-safe-alpha)) 0 58%, #000 74%);
+  mask-image: linear-gradient(to right, rgb(0 0 0 / var(--silk-safe-alpha)) 0 58%, #000 74%);
+}
