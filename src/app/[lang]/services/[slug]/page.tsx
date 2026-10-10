@@ -180,7 +180,7 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
         </section>
 
         {/* ── 01 Signs you need this ───────────────────────────── */}
-        <Section id="signals" labelledBy="signals-title" deferPaint>
+        <Section id="signals" labelledBy="signals-title">
           <Container>
             <SectionHeader index="01" total={TOTAL} eyebrow={p.signals.eyebrow} title={p.signals.title} titleId="signals-title" />
             <Reveal>
@@ -203,7 +203,7 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
         </Section>
 
         {/* ── 02 What you get ──────────────────────────────────── */}
-        <Section id="deliverables" labelledBy="deliverables-title" deferPaint>
+        <Section id="deliverables" labelledBy="deliverables-title">
           <Container>
             <SectionHeader
               index="02"
@@ -235,7 +235,7 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
         <SampleBand lang={lang} service={service.slug} total={TOTAL} />
 
         {/* ── 04 Questions ─────────────────────────────────────── */}
-        <Section id="faq" labelledBy="faq-title" deferPaint>
+        <Section id="faq" labelledBy="faq-title">
           <Container>
             <SectionHeader
               index="04"
@@ -273,7 +273,7 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
         </Section>
 
         {/* ── 05 Also from DataHub ─────────────────────────────── */}
-        <Section id="more-services" labelledBy="others-title" deferPaint>
+        <Section id="more-services" labelledBy="others-title">
           <Container>
             <SectionHeader index="05" total={TOTAL} eyebrow={p.others.eyebrow} title={p.others.title} titleId="others-title" />
             <Reveal>

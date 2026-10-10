@@ -82,7 +82,7 @@ export async function Contact({
   );
 
   return (
-    <Section id="contact" labelledBy="contact-title" deferPaint>
+    <Section id="contact" labelledBy="contact-title">
       <Container>
         <SectionHeader
           index={index}

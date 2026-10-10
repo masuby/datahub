@@ -6,7 +6,6 @@ import { fill } from "@/i18n/fill";
 import { formatNumber } from "@/lib/format";
 import { ButtonText } from "@/components/ui/Button";
 import { Grid } from "@/components/ui/Grid";
-import { scrollToSection } from "@/lib/scroll-to-section";
 
 /**
  * "Where do the hours go?" — the fill-in-the-sentence estimator (spec §10.2).
@@ -132,7 +131,8 @@ export function HoursEstimatorClient({ s }: { s: EstimatorStrings }) {
     if (!contact) return;
     // Focus first (no scroll) so the form's own later focus() is a no-op.
     contact.querySelector<HTMLElement>('[name="name"]')?.focus({ preventScroll: true });
-    scrollToSection(contact);
+    // Smooth or instant follows the html scroll-behavior (reduced motion = instant).
+    contact.scrollIntoView({ block: "start" });
   };
 
   const field = (f: Field) => {

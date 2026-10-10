@@ -26,7 +26,7 @@ export async function Team({ lang }: { lang: Locale }) {
   const t = (await getDictionary(lang)).team;
 
   return (
-    <Section id="team" labelledBy="team-title" deferPaint>
+    <Section id="team" labelledBy="team-title">
       <Container>
         <SectionHeader index="06" eyebrow={t.eyebrow} title={t.title} titleId="team-title" lead={t.lead} />
 

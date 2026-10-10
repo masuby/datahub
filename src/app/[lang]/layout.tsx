@@ -6,7 +6,6 @@ import { fontVariables } from "../fonts";
 import { LOCALES, LANG_TAG, hasLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { SITE_URL, shareCard } from "@/lib/seo";
-import { InputWatch } from "@/components/system/InputWatch";
 import { ThemeScript } from "@/components/system/ThemeScript";
 import { MarkSprite } from "@/components/brand/MarkSprite";
 import { RefKeeper } from "@/components/system/RefKeeper";
@@ -67,7 +66,6 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
     >
       <head>
         <ThemeScript nonce={nonce} />
-        <InputWatch nonce={nonce} />
       </head>
       <body className="flex min-h-svh flex-col">
         <RefKeeper />

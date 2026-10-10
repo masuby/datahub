@@ -25,7 +25,7 @@ export async function Process({ lang }: { lang: Locale }) {
   const titleId = "process-title";
 
   return (
-    <Section id="process" labelledBy={titleId} deferPaint>
+    <Section id="process" labelledBy={titleId}>
       <Container>
         <SectionHeader index="04" eyebrow={t.eyebrow} title={t.title} titleId={titleId} lead={t.lead} />
 

@@ -2,13 +2,11 @@
 
 import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { usePathname } from "next/navigation";
 import { BrandLockup } from "@/components/brand/BrandMark";
 import { ButtonPrimary } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { cn } from "@/lib/utils";
-import { landOnSection, scrollToSection } from "@/lib/scroll-to-section";
 
 /*
  * Client islands of the site chrome: the header shell (scroll state, progress
@@ -21,9 +19,6 @@ const MENU_EVENT = "dh-menu-change";
 const SECTION_IDS = ["services", "dashboards", "estimator", "process", "security", "team", "faq", "contact"] as const;
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
-/** True until the first page of this document has handled its URL fragment. */
-let documentArrival = true;
 
 /**
  * The element a URL fragment names, or null. Never throws: a mangled link
@@ -144,26 +139,6 @@ export function HeaderShell({ children, progressLabel }: { children: ReactNode; 
     return () => io.disconnect();
   }, []);
 
-  // Arriving with a section in the URL — /#contact from a service page or a
-  // shared link — the browser's or the router's own fragment scroll aims at
-  // placeholder heights (see scroll-to-section.ts), so land on it once the
-  // page is up. On the document's first page, not when the browser restores
-  // the visitor's own position (back/forward, reload), nor once the visitor
-  // has scrolled or pressed anything while the page loaded (InputWatch).
-  const pathname = usePathname();
-  useEffect(() => {
-    const first = documentArrival;
-    documentArrival = false;
-    const target = fragmentTarget(window.location.hash);
-    if (!target) return;
-    if (first) {
-      const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
-      if (nav?.type === "back_forward" || nav?.type === "reload") return;
-      if ((window as Window & { __dhInput?: number }).__dhInput) return;
-    }
-    landOnSection(target);
-  }, [pathname]);
-
   // Same-page section links keep the query string. Capture phase, so it runs
   // before next/link's handler (which then sees defaultPrevented and stands down).
   useEffect(() => {
@@ -180,11 +155,11 @@ export function HeaderShell({ children, progressLabel }: { children: ReactNode; 
         history.pushState(history.state, "", url);
       }
       // After this click's other handlers (e.g. the menu closing and
-      // unlocking the page) have run. scrollToSection lands exactly even
-      // past deferred sections. Then focus follows the jump, as a native
-      // fragment link would move it.
+      // unlocking the page) have run. Smoothness follows html's
+      // scroll-behavior, which is off under reduced motion. Then focus
+      // follows the jump, as a native fragment link would move it.
       setTimeout(() => {
-        scrollToSection(target);
+        target.scrollIntoView();
         focusSection(target);
       }, 0);
     };

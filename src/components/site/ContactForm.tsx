@@ -434,18 +434,22 @@ export function ContactForm({
       <span className="sr-only"> {newTabLabel}</span>
     </a>
   ) : null;
+  const emailLink = (
+    <a
+      href={`mailto:${CONTACT_EMAIL}`}
+      className="link-thread font-semibold text-fg transition-colors duration-[160ms] hover:text-accent"
+    >
+      {CONTACT_EMAIL}
+    </a>
+  );
   const altLine = numberLink
     ? fillNode(strings.whatsappAlt, { number: numberLink })
-    : fillNode(strings.whatsappAltNoNumber, {
-        email: (
-          <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            className="link-thread font-semibold text-fg transition-colors duration-[160ms] hover:text-accent"
-          >
-            {CONTACT_EMAIL}
-          </a>
-        ),
-      });
+    : fillNode(strings.whatsappAltNoNumber, { email: emailLink });
+  // Shorter than the line it stands in for, in both languages, so the
+  // shared cell below is never taller than the visible line.
+  const loadingLine = numberLink
+    ? fillNode(strings.status.loading, { number: numberLink })
+    : fillNode(strings.status.loadingNoNumber, { email: emailLink });
 
   if (phase === "success") {
     // Same outer <div> + live region as the form branch, so the polite
@@ -792,12 +796,8 @@ export function ContactForm({
           always as tall as the longer one and nothing below moves (CLS). The
           hidden one is out of the tab order and the accessibility tree. */}
         <p className="t-small mt-6 grid text-muted">
-          <span className={cn("[grid-area:1/1]", !ready && numberLink && "invisible")}>{altLine}</span>
-          {numberLink && (
-            <span className={cn("[grid-area:1/1]", ready && "invisible")}>
-              {fillNode(strings.status.loading, { number: numberLink })}
-            </span>
-          )}
+          <span className={cn("[grid-area:1/1]", !ready && "invisible")}>{altLine}</span>
+          <span className={cn("[grid-area:1/1]", ready && "invisible")}>{loadingLine}</span>
         </p>
         <p className="t-small mt-2 text-muted">
           {privacy.text}{" "}

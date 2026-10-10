@@ -17,7 +17,7 @@ export async function HoursEstimator({ lang }: { lang: Locale }) {
   const { eyebrow, title, lead, ...strings } = (await getDictionary(lang)).estimator;
 
   return (
-    <Section id="estimator" labelledBy="estimator-title" deferPaint>
+    <Section id="estimator" labelledBy="estimator-title">
       <Container>
         <SectionHeader index="03" eyebrow={eyebrow} title={title} titleId="estimator-title" lead={lead} />
         <Reveal>

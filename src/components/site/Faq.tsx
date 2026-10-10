@@ -31,7 +31,7 @@ export async function Faq({ lang }: { lang: Locale }) {
   const f = t.faq;
 
   return (
-    <Section id="faq" labelledBy="faq-title" deferPaint>
+    <Section id="faq" labelledBy="faq-title">
       <Container>
         <Grid>
           {/* Sticky header column. Sticky sits on the grid item (not inside

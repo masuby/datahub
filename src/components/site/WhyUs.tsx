@@ -59,7 +59,7 @@ export async function WhyUs({ lang }: { lang: Locale }) {
   const policy = describeCsp().join(";\n");
 
   return (
-    <Section id="security" labelledBy={titleId} deferPaint>
+    <Section id="security" labelledBy={titleId}>
       <Container>
         <SectionHeader index="05" eyebrow={t.eyebrow} title={t.title} titleId={titleId} lead={t.lead} />
 

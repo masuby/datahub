@@ -6,21 +6,20 @@ import { cn } from "@/lib/utils";
  * vertical rhythm (--section-y), and optionally the full-bleed ink surface
  * (dark tokens in either theme — the dashboards band and the footer).
  *
- * `deferPaint` adds content-visibility so off-screen sections cost nothing
- * until scrolled near; not for the hero, header or the dashboards band.
+ * No content-visibility: every section is a link target (#contact, #team…),
+ * and sections standing in at a placeholder height until painted made every
+ * jump to them — smooth, instant, from another page, on reload — land off.
  */
 export function Section({
   id,
   labelledBy,
   ink = false,
-  deferPaint = false,
   className,
   children,
 }: {
   id: string;
   labelledBy: string;
   ink?: boolean;
-  deferPaint?: boolean;
   className?: string;
   children: ReactNode;
 }) {
@@ -29,10 +28,7 @@ export function Section({
       id={id}
       aria-labelledby={labelledBy}
       className={cn("relative", ink && "surface-ink", className)}
-      style={{
-        paddingBlock: "var(--section-y)",
-        ...(deferPaint ? { contentVisibility: "auto", containIntrinsicSize: "auto 900px" } : null),
-      }}
+      style={{ paddingBlock: "var(--section-y)" }}
     >
       {children}
     </section>

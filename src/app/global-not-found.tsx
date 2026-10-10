@@ -9,7 +9,6 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SilkField } from "@/components/silk/SilkField";
 import { HardLinks } from "@/components/system/HardLinks";
-import { InputWatch } from "@/components/system/InputWatch";
 import { RefKeeper } from "@/components/system/RefKeeper";
 import { ThemeScript } from "@/components/system/ThemeScript";
 import { Container } from "@/components/ui/Container";
@@ -73,7 +72,6 @@ export default async function GlobalNotFound() {
     <html lang={LANG_TAG[lang]} suppressHydrationWarning className={fontVariables}>
       <head>
         <ThemeScript nonce={nonce} />
-        <InputWatch nonce={nonce} />
         <HardLinks nonce={nonce} />
       </head>
       <body className="flex min-h-svh flex-col">
