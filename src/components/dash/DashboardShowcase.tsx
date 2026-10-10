@@ -28,7 +28,7 @@ import styles from "./dash.module.css";
  *
  * Only the first view is in the server HTML (that is what every visitor sees
  * first, and what a visitor without JavaScript keeps). The other three are
- * separate chunks, mounted when the browser is idle after hydration — into
+ * separate chunks, mounted one at a time as the browser goes idle — into
  * panels that stay hidden="until-found", so find-in-page reaches them from
  * then on — or at once if a tab is chosen before that.
  *
@@ -93,9 +93,14 @@ export function DashboardShowcase({
   const [active, setActive] = useState(0);
   const [plays, setPlays] = useState<number[]>(() => tabs.map(() => 0));
   const [read, setRead] = useState(false);
-  // false on the server and during hydration: only the active view renders.
-  const [allMounted, setAllMounted] = useState(false);
-  useEffect(() => whenIdle(() => startTransition(() => setAllMounted(true))), []);
+  // How many views (in tab order) are mounted. On the server and during
+  // hydration only the first; then one more each time the browser is idle,
+  // so three views' worth of SVG is never committed in one long task.
+  const [mounted, setMounted] = useState(1);
+  useEffect(() => {
+    if (mounted >= tabs.length) return;
+    return whenIdle(() => startTransition(() => setMounted((m) => m + 1)));
+  }, [mounted, tabs.length]);
   // Bumped whenever a lazy view commits; re-runs the chart wiring below.
   const [commits, setCommits] = useState(0);
   const onViewCommit = useCallback(() => setCommits((c) => c + 1), []);
@@ -237,7 +242,7 @@ export function DashboardShowcase({
                 className={i === active && plays[i] > 0 ? styles.panel : undefined}
                 {...(i === active ? null : untilFound)}
               >
-                {(i === active || allMounted) &&
+                {(i === active || i < mounted) &&
                   (View === Overview ? (
                     // No Suspense around the eager view: React outlines a
                     // large completed boundary into a hidden <div> after the
