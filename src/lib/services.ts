@@ -44,45 +44,44 @@ export const SERVICES: Service[] = [
       "Custom dashboards and business intelligence for Tanzanian organisations. Live KPIs, branch and department views, built around how your team actually decides. Dar es Salaam.",
     tagline: "One place your team decides from",
     intro: [
-      "Most organisations in Tanzania are not short of data. They are short of one trustworthy place to look at it. The numbers exist — in a core system, in branch spreadsheets, in a report somebody exports every Monday — but nobody can answer a simple question without three people checking three files.",
-      "We build the dashboard that ends that. Live figures, colour-coded against target, broken down by branch, department or officer, and readable on a phone in a corridor before a meeting starts.",
+      "Most organisations in Tanzania have the data, but no single view of it that everyone trusts.",
+      "Today a simple question means three people checking three files. A dashboard answers it on a phone, before the meeting starts.",
     ],
     signals: [
-      "Two people answer the same question with two different numbers",
-      "Your management report is assembled by hand and is already stale when it lands",
-      "Nobody can see branch or departmental performance without asking someone to export it",
-      "Decisions wait on a spreadsheet that only one person knows how to update",
+      "The same question gets two different numbers",
+      "The management report is stale by the time it lands",
+      "Decisions wait on a spreadsheet only one person can update",
     ],
     deliverables: [
       {
         title: "Executive and departmental views",
-        desc: "A one-glance overview for leadership, and deeper views for the people who have to act on the detail.",
+        desc: "An overview for leadership, and the detail for the people who act on it.",
       },
       {
         title: "KPIs graded automatically",
-        desc: "Targets, actuals and the gap between them, colour-coded so problems surface without anyone hunting for them.",
+        desc: "Targets, actuals and the gap, colour-coded so problems stand out.",
       },
       {
         title: "Drill-down to the record",
-        desc: "Start at the total, click through to the branch, the officer, the transaction. No dead ends.",
+        desc: "From the total down to the branch, the officer and the transaction.",
       },
       {
         title: "One engine, one answer",
-        desc: "Every view calculates from the same logic, so finance and operations stop disagreeing about which file is right.",
+        desc: "Every view uses the same logic, so finance and operations see the same figure.",
       },
     ],
     faq: [
       {
         q: "Do you build custom dashboards or use Power BI?",
-        a: "Both, chosen to fit the problem. Power BI and similar tools are a good fit when the data is already clean and the questions are standard. When your reporting logic, approval chain or branch structure is specific to your organisation, a custom dashboard fits better and is cheaper to live with over time.",
+        a: "Both. Power BI suits clean data and standard questions; when your reporting logic or branch structure is your own, a custom dashboard is cheaper to live with.",
       },
       {
         q: "Where does the data come from?",
-        a: "Wherever it already lives — your core banking or ERP system, a SQL database, exported spreadsheets, or a mix of all three. Part of the work is building the pipeline that pulls it together reliably, so nobody has to assemble it by hand again.",
+        a: "Wherever it lives now: your core banking or ERP system, a database or spreadsheets. We build the pipeline that brings it together.",
       },
       {
         q: "Can our team use it without training?",
-        a: "The dashboard is designed to be readable without a manual, and we train your team on it as part of delivery. If someone needs a guide to understand a chart, the chart is wrong.",
+        a: "Yes, and we train them anyway. If a chart needs explaining, we fix the chart.",
       },
     ],
   },
@@ -95,45 +94,44 @@ export const SERVICES: Service[] = [
       "Automate the Excel and PowerPoint reports your team rebuilds every week. Scheduled, formatted and delivered automatically. Built in Dar es Salaam for organisations across Tanzania.",
     tagline: "Hours of manual work, done in seconds",
     intro: [
-      "Somebody in your office opens the same file every week, filters the same columns, copies the same numbers into the same slide, formats it, and emails it to the same people. It takes hours. It goes wrong occasionally. And it happens again next week.",
-      "That entire process can be a system. The report generates itself, formatted correctly every time, and arrives in the right inboxes on schedule — whether anyone is in the office or not.",
+      "Every week someone copies the same numbers into the same slides and emails them out. It takes hours, and mistakes creep in.",
+      "We turn that into a system that builds the report and sends it on schedule, even when nobody is in the office.",
     ],
     signals: [
-      "A weekly or monthly report takes someone hours of copy-and-paste",
-      "Reports go out late because the person who prepares them was away",
-      "The same figure is typed into several files and they drift apart",
+      "Reports are late when one person is away",
+      "One figure is typed into several files, and they disagree",
       "Month-end means late nights rebuilding the same workbook",
     ],
     deliverables: [
       {
         title: "Scheduled and on-demand generation",
-        desc: "Reports run on a timetable, or the moment someone asks for one — no waiting on a person.",
+        desc: "On a timetable, or the moment someone asks.",
       },
       {
         title: "Excel and PowerPoint exports",
-        desc: "Properly formatted output in the formats your organisation already circulates, one click away.",
+        desc: "Formatted output in the files your organisation already circulates.",
       },
       {
         title: "Automatic delivery",
-        desc: "Personalised reports emailed to the right recipients, with each person seeing what their role should see.",
+        desc: "Each recipient gets the version their role should see.",
       },
       {
-        title: "Consistent every single time",
-        desc: "The same logic runs every run, so the numbers are reproducible and mistakes stop being a monthly event.",
+        title: "Consistent every time",
+        desc: "The same logic on every run, so the numbers can be reproduced.",
       },
     ],
     faq: [
       {
         q: "Can you automate reports we already build in Excel?",
-        a: "Yes, and it is the most common place we start. We take the workbook your team currently maintains, work out the logic inside it, and rebuild that as a system that produces the same output automatically. Your report keeps the format people already recognise.",
+        a: "Yes. We work out the logic inside your workbook and rebuild it as a system, keeping the format people already know.",
       },
       {
         q: "Will our team lose control of the report?",
-        a: "The opposite. Automation removes the typing, not the judgement. Your team still decides what the report says and can change targets, thresholds and recipients themselves — they just stop rebuilding it by hand.",
+        a: "No. Automation removes the typing, not the judgement: your team still sets the targets, thresholds and recipients.",
       },
       {
         q: "What happens when we need a new report?",
-        a: "Once the pipeline exists, adding a report is a small piece of work rather than a new project, because the data is already flowing and validated.",
+        a: "Once the pipeline exists, a new report is a small job, not a new project.",
       },
     ],
   },
@@ -144,47 +142,46 @@ export const SERVICES: Service[] = [
     metaTitle: "AI Agents for Business in Tanzania",
     metaDescription:
       "Practical AI agents for Tanzanian organisations — reading operational data, summarising what changed, drafting reports and chasing follow-ups. Built in Dar es Salaam.",
-    tagline: "Software that reads, decides and acts",
+    tagline: "Software that reads, then drafts the next step",
     intro: [
-      "Most AI conversations in business go nowhere because they start with the technology instead of the task. An agent is only worth building when there is a specific job a person currently does by reading something and then doing something about it.",
-      "That is the kind we build: agents that watch your operational data, notice what changed, summarise it in plain language, and take the next step — flagging exceptions, drafting the follow-up, or writing the report somebody currently types out.",
+      "Most AI projects start with the technology and stall. An agent is worth building when someone’s job is to read data and act on it.",
+      "Ours watch your operational data, notice what changed and take the next step, such as flagging an exception or drafting a follow-up.",
     ],
     signals: [
-      "Someone reads through the same data every morning looking for exceptions",
-      "Follow-ups get missed because chasing them is nobody's actual job",
-      "A person writes the same summary every week from the same numbers",
-      "You want to use AI but every proposal you have seen is vague about what it would actually do",
+      "Someone scans the same data every morning for exceptions",
+      "Follow-ups slip because chasing them is nobody’s job",
+      "Someone writes the same weekly summary from the same numbers",
     ],
     deliverables: [
       {
         title: "Agents scoped to a real task",
-        desc: "We start from a job somebody does today, not from a demo. If a task does not justify an agent, we say so.",
+        desc: "We start from work someone does today, not a demo. If it does not justify an agent, we say so.",
       },
       {
         title: "Grounded in your own data",
-        desc: "Agents work from your systems and figures, not general knowledge, so their output is checkable against the source.",
+        desc: "They work from your own systems, so every output can be checked at the source.",
       },
       {
         title: "A human in the loop where it matters",
-        desc: "Anything consequential is drafted for approval rather than sent blind. You decide where that line sits.",
+        desc: "Anything consequential is drafted for approval. You decide where that line sits.",
       },
       {
         title: "Built on the same secure foundation",
-        desc: "Role-based access, validated inputs and encrypted credentials — an agent gets no more reach than the person it works for.",
+        desc: "Agents follow the same access rules as your staff.",
       },
     ],
     faq: [
       {
         q: "Is this useful for a Tanzanian business, or only large companies?",
-        a: "It depends on the task, not the size of the company. If someone spends an hour a day reading data and reacting to it, that is worth automating whether the organisation has fifteen staff or five hundred.",
+        a: "It depends on the task, not the size of the company. An hour a day spent reading data and reacting to it is worth automating.",
       },
       {
         q: "Will an AI agent make decisions without us?",
-        a: "Only where you decide it should. Most agents we build draft and recommend, and a person approves. Fully automatic actions are reserved for low-risk, well-defined steps.",
+        a: "Only where you decide it should. Most of our agents draft and a person approves; full automation is kept for low-risk steps.",
       },
       {
         q: "What does an agent actually cost to run?",
-        a: "There is the build, and then a running cost that depends on how much data it processes. We size that honestly before you commit, because an agent that costs more than the work it replaces is not worth having.",
+        a: "There is the build, then a running cost that depends on the data it processes. We size both before you commit.",
       },
     ],
   },

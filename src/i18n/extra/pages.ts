@@ -11,7 +11,7 @@ import { defineDict } from "../dict";
  *   them and the three reasons, each pointing at the page that proves it
  *   (keyed by that page; HomeReasons sets their order and chapter numbers).
  * - `security` — the eyebrow of /security, which opens on "Your data stays
- *   yours" (the dictionary's security.eyebrow names the old "Why DataHub").
+ *   yours" (the dictionary's old "Why DataHub" eyebrow was removed).
  * - `cta` — the one line of the closing band that ends the home page, the
  *   service pages and the other standalone pages.
  *
@@ -23,7 +23,7 @@ export const pagesExtra = defineDict({
       services: {
         title: "Dashboards, reporting automation and AI agents",
         description:
-          "Three services for organisations in Tanzania: dashboards your team decides from, reports that build themselves, and AI agents a person approves. Estimate the hours you could save.",
+          "Dashboards your team decides from, reports that build themselves and AI agents a person approves, for organisations in Tanzania. Estimate the hours you could save.",
       },
       dashboards: {
         title: "Sample dashboards",
@@ -46,7 +46,7 @@ export const pagesExtra = defineDict({
       faq: {
         title: "Questions",
         description:
-          "What organisations ask before working with DataHub: cost, timelines, tools, data security and AI agents.",
+          "What organisations ask before working with DataHub: cost, timelines, where we work and data security.",
       },
       contact: {
         title: "Contact",
@@ -60,9 +60,9 @@ export const pagesExtra = defineDict({
       reasons: {
         title: "Why DataHub",
         items: {
-          process: { title: "A clear process", body: "Four steps, delivered in stages, so something useful arrives early." },
-          security: { title: "Security first", body: "Access by role and encrypted credentials, in every system we build." },
-          team: { title: "A team in Dar es Salaam", body: "The people you meet are the people who build your system." },
+          process: { title: "A clear process", body: "Four steps, from the first conversation to support." },
+          security: { title: "Security first", body: "Access by role and encrypted credentials, as standard." },
+          team: { title: "A team in Dar es Salaam", body: "The people you meet build your system." },
         },
       },
     },
@@ -78,7 +78,7 @@ export const pagesExtra = defineDict({
       services: {
         title: "Dashibodi, otomatiki ya ripoti na mawakala wa AI",
         description:
-          "Huduma tatu kwa taasisi za Tanzania: dashibodi za kufanyia maamuzi, ripoti zinazojitengeneza zenyewe, na mawakala wa AI ambao kazi yao huidhinishwa na mtu. Kadiria saa ambazo timu yako inaweza kuokoa.",
+          "Dashibodi za kufanyia maamuzi, ripoti zinazojitengeneza zenyewe na mawakala wa AI ambao kazi yao huidhinishwa na mtu, kwa taasisi za Tanzania. Kadiria saa ambazo timu yako inaweza kuokoa.",
       },
       dashboards: {
         title: "Dashibodi za mfano",
@@ -103,7 +103,7 @@ export const pagesExtra = defineDict({
       faq: {
         title: "Maswali",
         description:
-          "Maswali ambayo taasisi huuliza kabla ya kufanya kazi na DataHub: gharama, muda, zana, usalama wa data na mawakala wa AI.",
+          "Maswali ambayo taasisi huuliza kabla ya kufanya kazi na DataHub: gharama, muda, mahali tunapofanya kazi na usalama wa data.",
       },
       contact: {
         title: "Mawasiliano",
@@ -119,11 +119,11 @@ export const pagesExtra = defineDict({
         items: {
           process: {
             title: "Mchakato ulio wazi",
-            body: "Hatua nne, kazi ikiwasilishwa kwa awamu, ili kitu chenye manufaa kikufikie mapema.",
+            body: "Hatua nne, kuanzia mazungumzo ya kwanza hadi msaada.",
           },
           security: {
             title: "Usalama kwanza",
-            body: "Ufikiaji kwa nafasi ya kazi na taarifa za kuingia zilizosimbwa, katika kila mfumo tunaojenga.",
+            body: "Ufikiaji kwa nafasi ya kazi na taarifa za kuingia zilizosimbwa, kila mara.",
           },
           team: { title: "Timu iliyopo Dar es Salaam", body: "Watu unaokutana nao ndio wanaojenga mfumo wako." },
         },

@@ -13,8 +13,7 @@ const en = {
       "title": "DataHub — Data Analytics & Dashboards in Tanzania",
       "description": "Custom dashboards, reporting automation and AI agents for organisations in Tanzania. Built in Dar es Salaam by the DataHub team.",
       "ogTitle": "DataHub — Data Analytics & Dashboards in Tanzania",
-      "ogDescription": "Dashboards, reporting automation and AI agents for organisations in Tanzania. From Data to Decisions.",
-      "ogImageAlt": "DataHub — From Data to Decisions. Dashboards, reporting automation and AI agents in Tanzania."
+      "ogDescription": "Dashboards, reporting automation and AI agents for organisations in Tanzania. From Data to Decisions."
     },
     "privacy": {
       "title": "Privacy notice",
@@ -43,8 +42,6 @@ const en = {
     "withDataHub": "With DataHub:"
   },
   "brand": {
-    "name": "DataHub",
-    "logoAlt": "DataHub",
     "homeLink": "DataHub, home",
     "tagline": "From Data to Decisions"
   },
@@ -118,17 +115,8 @@ const en = {
     "off": "Off"
   },
   "hero": {
-    "eyebrow": "DataHub · Data consultancy · Dar es Salaam",
-    "title": {
-      "line1": "From data",
-      "line2Before": "to ",
-      "accent": "decisions.",
-      "sub": "Dashboards, reporting automation and AI agents for organisations in Tanzania."
-    },
-    "lead": "We take the numbers scattered across your systems, spreadsheets and branches, and build the one place your team decides from. For banks, microfinance lenders, media houses and growing businesses.",
     "ctaPrimary": "Start a conversation",
-    "ctaSecondary": "See sample dashboards",
-    "markLabel": "The DataHub mark: an open D with a hand inside it."
+    "ctaSecondary": "See sample dashboards"
   },
   "serviceIndex": {
     "label": "Our services",
@@ -150,27 +138,27 @@ const en = {
   "services": {
     "eyebrow": "01 — What we do",
     "title": "Three ways we turn data into decisions.",
-    "lead": "Each one starts from a job your team already does by hand.",
+    "lead": "Each starts from work your team already does by hand.",
     "readMore": "Read more",
     "items": {
       "dashboards": {
         "index": "01.1",
         "title": "Dashboards & business intelligence",
         "tagline": "One place your team decides from",
-        "description": "Current figures from your systems, graded against target and broken down by branch, department or officer. Readable on a phone before a meeting.",
+        "description": "Current figures against target, by branch, department or officer.",
         "glyphLabel": "A line rising towards a target mark"
       },
       "automation": {
         "index": "01.2",
         "title": "Reporting automation",
         "tagline": "Hours of manual work, done in seconds",
-        "description": "The weekly Excel and PowerPoint reports your team rebuilds by hand, generated in the same format and delivered on schedule.",
+        "description": "The Excel and PowerPoint reports your team rebuilds every week, generated for you.",
         "glyphLabel": "Three lines merging into one"
       },
       "aiAgents": {
         "index": "01.3",
         "title": "AI agents",
-        "tagline": "Software that reads, decides and acts",
+        "tagline": "Software that reads, then drafts the next step",
         "description": "Agents that watch your data, summarise what changed and draft the next step for a person to approve.",
         "glyphLabel": "Three connected points, one marked for approval"
       }
@@ -179,10 +167,10 @@ const en = {
   "dash": {
     "eyebrow": "02 — Sample dashboards",
     "title": "See what Monday morning could look like.",
-    "lead": "Four sample views, built the way we build for clients. Every name and number in them is invented.",
+    "lead": "Four views, built the way we build for clients.",
     "notice": "Sample data — we never publish client dashboards",
     "stamp": "SAMPLE DATA",
-    "footnote": "Sample data — we never publish client dashboards. Real dashboards hold people’s data, so they stay with the organisations that own them.",
+    "footnote": "Every name and number here is invented.",
     "credit": "Source: DataHub sample data · TZS · {period}",
     "figPrefix": "Fig.",
     "tablistLabel": "Sample dashboard views",
@@ -268,14 +256,14 @@ const en = {
             "seriesActual": "Revenue",
             "seriesTarget": "Target",
             "readout": "{month} · TZS {value} bn · {pct}% of target",
-            "summary": "Monthly revenue stayed below the TZS 2.18 bn target from January to August and passed it in September at TZS 2.30 bn. Sample data."
+            "summary": "Revenue stayed below the TZS 2.18 bn monthly target until September, when it reached TZS 2.30 bn."
           },
           "branches": {
             "number": "02.2",
             "title": "Branches, % of revenue target",
             "axis": "% of target",
             "readout": "{branch} · {pct}% of target",
-            "summary": "Kariakoo is the only branch above target at 104%. Dodoma (88%) and Mbeya (84%) are below 90%. Sample data."
+            "summary": "Only Kariakoo is above target (104%); Dodoma (88%) and Mbeya (84%) are below 90%."
           },
           "exceptions": {
             "number": "02.3",
@@ -286,14 +274,14 @@ const en = {
               "Dodoma disbursements 18% below plan",
               "Board pack generated 05:58, sent to 9 recipients"
             ],
-            "summary": "Two branches are above the PAR30 limit, one branch is behind its disbursement plan, and the board pack went out on time. Sample data."
+            "summary": "Two PAR30 breaches, one branch behind on disbursements, and the board pack on time."
           }
         },
         "changed": {
           "label": "What changed this week",
           "byline": "Written by the reporting agent · sample",
           "items": [
-            "Mbeya PAR30 rose 0.8 points to 7.2%. Two loan officers account for most of the increase.",
+            "Mbeya PAR30 rose 0.8 points to 7.2%, mostly from two loan officers.",
             "Dodoma disbursements are 18% below plan for September, mostly in group loans.",
             "September revenue of TZS 2.30 bn is the first month above target this year."
           ]
@@ -302,20 +290,20 @@ const en = {
           {
             "figure": "revenue",
             "anchor": "Sep",
-            "shows": "September is the only month this year above the monthly target.",
-            "decision": "Leadership can see the year-to-date gap closing and decide whether the fourth-quarter plan needs to change, without waiting for the month-end pack."
+            "shows": "September is the first month above target.",
+            "decision": "Leadership can adjust the fourth-quarter plan now."
           },
           {
             "figure": "branches",
             "anchor": "Mbeya",
-            "shows": "Mbeya is at 84% of target, the lowest of eight branches.",
+            "shows": "Mbeya is the lowest branch, at 84% of target.",
             "decision": "Regional managers know which branch to visit first."
           },
           {
             "figure": "exceptions",
             "anchor": "0",
             "shows": "Two branches are above the 5% PAR30 limit.",
-            "decision": "The Head of Credit sees a breach the morning it happens, not at month-end."
+            "decision": "The Head of Credit sees a breach the morning it happens."
           }
         ]
       },
@@ -351,7 +339,7 @@ const en = {
             "axis": "% of portfolio",
             "limit": "Limit 5.0%",
             "readout": "{month} · PAR30 {value}%",
-            "summary": "PAR30 rose from 3.8% in October to a peak of 5.4% in July, above the 5% limit from May to July, and fell back to 4.6% in September. Sample data."
+            "summary": "PAR30 was above the 5% limit from May to July, peaking at 5.4%, and was 4.6% in September."
           },
           "ageing": {
             "number": "02.5",
@@ -363,7 +351,7 @@ const en = {
               "61–90 days",
               "90+ days"
             ],
-            "summary": "91.2% of the portfolio is current. Loans more than 30 days overdue make up 4.6%, and 1.5% is more than 90 days overdue. Sample data."
+            "summary": "91.2% of the portfolio is current; 4.6% is over 30 days overdue and 1.5% over 90."
           },
           "mix": {
             "number": "02.6",
@@ -374,7 +362,7 @@ const en = {
               "Salary",
               "Agriculture"
             ],
-            "summary": "Group loans are the largest product at TZS 21.8 bn of TZS 64.2 bn, followed by SME, salary and agriculture loans. Sample data."
+            "summary": "Group loans are the largest product: TZS 21.8 bn of TZS 64.2 bn."
           },
           "flows": {
             "number": "02.7",
@@ -383,12 +371,12 @@ const en = {
             "seriesDisbursed": "Disbursed",
             "seriesRepaid": "Repaid",
             "readout": "{month} · disbursed TZS {a} bn · repaid TZS {b} bn",
-            "summary": "Disbursements ran between TZS 5.2 bn and 5.9 bn a month. Repayments were higher than disbursements in July and August. Sample data."
+            "summary": "Disbursements ran at TZS 5.2–5.9 bn a month; repayments were higher in July and August."
           }
         },
         "officers": {
           "title": "Loan officers",
-          "caption": "Officers are shown by code only. Sample data.",
+          "caption": "Officers are shown by code only.",
           "columns": {
             "code": "Officer",
             "branch": "Branch",
@@ -401,8 +389,8 @@ const en = {
           {
             "figure": "par",
             "anchor": "Jul",
-            "shows": "PAR30 crossed the 5% limit in May and peaked at 5.4% in July.",
-            "decision": "Crossing the limit is flagged the day it happens, so collections work starts before the month closes."
+            "shows": "PAR30 peaked at 5.4% in July.",
+            "decision": "Crossing the limit is flagged the same day, so collections start before month-end."
           },
           {
             "figure": "ageing",
@@ -413,21 +401,21 @@ const en = {
           {
             "figure": "officers",
             "anchor": "LO-047",
-            "shows": "Two officers are above the limit, in the same branches flagged on the overview.",
-            "decision": "Follow-up goes to specific portfolios instead of the whole branch."
+            "shows": "Two officers are above the limit.",
+            "decision": "Follow-up goes to two portfolios, not the whole branch."
           },
           {
             "figure": "flows",
             "anchor": "Jul",
-            "shows": "In July repayments overtook disbursements for the first time in the period shown.",
-            "decision": "Treasury plans cash from the trend instead of from last month’s estimate."
+            "shows": "In July, repayments overtook disbursements for the first time.",
+            "decision": "Treasury plans cash from the trend, not last month’s estimate."
           }
         ]
       },
       "sales": {
         "index": "02.3",
         "tab": "Sales by region",
-        "tabDescription": "Where sales come from and where they are growing.",
+        "tabDescription": "Where sales come from and where they grow.",
         "entity": "Sample distributor (consumer goods)",
         "period": "Q3 2026 (Jul–Sep)",
         "creditPeriod": "Q3 2026",
@@ -463,7 +451,7 @@ const en = {
               "18% or more"
             ],
             "ringNote": "Circle size shows sales.",
-            "summary": "Dar es Salaam has the largest sales. Dodoma, Mwanza and Arusha grew fastest. Map shows land only, with no borders drawn. Sample data."
+            "summary": "Dar es Salaam has the largest sales; Dodoma, Mwanza and Arusha grew fastest. No borders are drawn."
           },
           "ranked": {
             "number": "02.9",
@@ -476,7 +464,7 @@ const en = {
             },
             "other": "Other regions",
             "readout": "{region} · TZS {value} bn · {share}% of sales · {growth}% growth",
-            "summary": "Dar es Salaam is 30.6% of sales and grew 8%. Dodoma grew fastest at 21%; Tanga slowest at 4%. Sample data."
+            "summary": "Dar es Salaam is 30.6% of sales; Dodoma grew fastest (21%), Tanga slowest (4%)."
           }
         },
         "read": [
@@ -484,19 +472,19 @@ const en = {
             "figure": "map",
             "anchor": "Dodoma",
             "shows": "Dodoma grew fastest, 21% on the same quarter last year.",
-            "decision": "Sales leadership can test moving stock and field staff towards the central corridor."
+            "decision": "Test moving stock and field staff towards the central corridor."
           },
           {
             "figure": "ranked",
             "anchor": "Dar es Salaam",
-            "shows": "Dar es Salaam is almost a third of sales but grew 8%, below the overall 11.3%.",
-            "decision": "The largest region is the one to watch for market share, not volume."
+            "shows": "Dar es Salaam grew 8%, below the overall 11.3%.",
+            "decision": "Watch the largest region for market share, not volume."
           },
           {
             "figure": "ranked",
             "anchor": "Tanga",
             "shows": "Tanga grew 4%, the slowest region.",
-            "decision": "Check outlet coverage there before next quarter’s targets are set."
+            "decision": "Check outlet coverage before next quarter’s targets are set."
           }
         ]
       },
@@ -518,7 +506,7 @@ const en = {
           },
           {
             "label": "Staff hours returned",
-            "context": "Estimate, compared with building by hand"
+            "context": "Estimate, against doing it by hand"
           },
           {
             "label": "Failed runs",
@@ -542,7 +530,7 @@ const en = {
               "18:30 Daily close"
             ],
             "timeAxis": "East Africa Time",
-            "summary": "Five scheduled jobs run between 05:30 and 18:30, starting with the daily PAR report before branches open. Sample data."
+            "summary": "Five jobs run between 05:30 and 18:30, starting with the daily PAR report."
           },
           "runs": {
             "number": "02.11",
@@ -550,7 +538,7 @@ const en = {
             "axis": "seconds",
             "readout": "Run {n} · {value} s",
             "slowLabel": "Slow run",
-            "summary": "Runs took 35 to 41 seconds, except run 7 at 61 seconds. The median is 38 seconds. Sample data."
+            "summary": "Runs took 35–41 seconds (median 38), except run 7 at 61."
           },
           "pack": {
             "number": "02.12",
@@ -559,12 +547,12 @@ const en = {
             "after": "Automated",
             "beforeValue": "14 h",
             "afterValue": "4 min",
-            "summary": "The monthly management pack took 14 hours to build by hand and now takes 4 minutes. Sample data."
+            "summary": "The monthly pack: 14 hours by hand, 4 minutes automated."
           }
         },
         "log": {
           "title": "Agent log",
-          "caption": "The agent drafts. A person approves anything that leaves the building. Sample data.",
+          "caption": "The agent drafts. A person approves anything that leaves the building.",
           "items": [
             {
               "time": "05:30",
@@ -588,7 +576,7 @@ const en = {
             },
             {
               "time": "07:15",
-              "text": "41 reminder messages drafted for borrowers in arrears, waiting for loan officers to review.",
+              "text": "41 reminders drafted for borrowers in arrears, waiting for loan officers to review.",
               "status": "queued"
             }
           ]
@@ -597,8 +585,8 @@ const en = {
           {
             "figure": "schedule",
             "anchor": "05:30",
-            "shows": "The daily PAR report reaches 14 branch managers at 05:30, before branches open.",
-            "decision": "Managers start the day with yesterday’s numbers instead of asking for them."
+            "shows": "The PAR report reaches 14 managers at 05:30, before branches open.",
+            "decision": "Managers start the day with yesterday’s numbers."
           },
           {
             "figure": "runs",
@@ -609,13 +597,13 @@ const en = {
           {
             "figure": "log",
             "anchor": "07:02",
-            "shows": "The agent noticed the breach and drafted the note. A person approved it seven minutes later.",
+            "shows": "The agent drafted the note. A person approved it seven minutes later.",
             "decision": "You choose which steps stay with a person."
           },
           {
             "figure": "pack",
             "anchor": "after",
-            "shows": "The monthly pack went from 14 hours by hand to 4 minutes.",
+            "shows": "From 14 hours to 4 minutes.",
             "decision": "The analyst’s time goes to explaining the numbers, not copying them."
           }
         ]
@@ -625,7 +613,7 @@ const en = {
   "estimator": {
     "eyebrow": "03 — Your numbers",
     "title": "Where do the hours go?",
-    "lead": "Put in your own numbers for one report. This is what it costs your team today.",
+    "lead": "Enter your numbers for one report to see what it costs your team.",
     "sentence": [
       "We prepare ",
       "{count}",
@@ -670,7 +658,7 @@ const en = {
       "increase": "Increase {label}"
     },
     "salary": {
-      "label": "Average monthly salary of the people involved (optional)",
+      "label": "Average monthly salary of those involved (optional)",
       "placeholder": "e.g. 1,500,000",
       "unit": "TZS",
       "help": "Adds a cost in shillings. It stays on your device."
@@ -686,7 +674,7 @@ const en = {
       "cost": "TZS {salary} ÷ 176 h a month = TZS {hourly} per hour",
       "assumptions": "Assumes 240 working days, 48 working weeks or 12 months a year."
     },
-    "note": "Your numbers, your estimate. This is not a quote, and nothing is sent unless you choose to send a message.",
+    "note": "An estimate, not a quote. Nothing is sent unless you send a message.",
     "addToMessage": "Add this to my message",
     "added": "Added to your message. Fill in your name to send it.",
     "messageTemplate": "We prepare {count} {reportWord} every {period}. Each one takes {people} {personWord} about {hours} {hourWord}, roughly {hoursPerYear} hours a year.",
@@ -697,40 +685,38 @@ const en = {
   "process": {
     "eyebrow": "04 — How we work",
     "title": "How a project runs.",
-    "lead": "The system we build depends on your organisation. The way we get there stays the same.",
+    "lead": "Every system is different. The way we get there is not.",
     "receivePrefix": "You receive:",
     "steps": [
       {
         "index": "04.1",
         "title": "Discover",
-        "description": "We sit with your team to understand the real workflow: the reports you depend on, the figures that matter, and where the manual work is.",
-        "receive": "a list of the reports and figures that matter, and an honest view of whether a system is worth building."
+        "description": "We learn your workflow and find the manual work.",
+        "receive": "a list of the figures that matter, and an honest view on whether to build."
       },
       {
         "index": "04.2",
         "title": "Design",
-        "description": "We plan the dashboards, the automations and the data flow around how your organisation already works.",
-        "receive": "a plan agreed with you before anything is built."
+        "description": "We plan the dashboards, automations and data flow around how you work.",
+        "receive": "a plan you approve before we build."
       },
       {
         "index": "04.3",
         "title": "Build",
-        "description": "We write secure code and deliver a working system: dashboards, exports and scheduled delivery that fit your existing formats.",
-        "receive": "a working system, delivered in stages."
+        "description": "We build it securely, in the formats your team already uses.",
+        "receive": "a working system, ready to use."
       },
       {
         "index": "04.4",
         "title": "Support",
-        "description": "We train your team and keep improving the system as you add reports, data sources and targets.",
-        "receive": "training, and changes as your needs grow."
+        "description": "We train your team and adapt the system as your needs change.",
+        "receive": "training, and changes when you need them."
       }
     ],
-    "closing": "Something useful reaches your team early. We deliver in stages, not all at the end."
+    "closing": "Something useful reaches your team early, not all at the end."
   },
   "security": {
-    "eyebrow": "05 — Why DataHub",
     "title": "From manual and scattered to automated and clear.",
-    "lead": "We replace slow, error-prone manual work with one system, so your team spends its time on decisions, not spreadsheets.",
     "ledger": {
       "todayHeading": "Today",
       "withHeading": "With DataHub",
@@ -741,25 +727,25 @@ const en = {
         },
         {
           "today": "Different people get different numbers",
-          "with": "One calculation, one answer for everyone"
+          "with": "One answer for everyone"
         },
         {
           "today": "Files scattered across emails and folders",
-          "with": "Everything in one place, in any browser"
+          "with": "One place, in any browser"
         },
         {
           "today": "Reports formatted and emailed by hand",
-          "with": "Formatted reports delivered on schedule"
+          "with": "Delivered on schedule"
         },
         {
           "today": "No current view of performance",
-          "with": "Current figures for leadership at a glance"
+          "with": "Current figures at a glance"
         }
       ]
     },
     "data": {
       "title": "Your data stays yours.",
-      "body": "Security is designed in from the first line of code, not added at the end. Every system we build follows these practices.",
+      "body": "In every system we build, security starts with the first line of code.",
       "items": [
         {
           "term": "Access by role",
@@ -767,11 +753,11 @@ const en = {
         },
         {
           "term": "Encrypted credentials",
-          "definition": "Passwords and connection secrets are stored encrypted, never in plain text."
+          "definition": "Passwords and connection secrets are stored encrypted."
         },
         {
           "term": "Validated inputs",
-          "definition": "Everything entering the system is checked on the server before it is used."
+          "definition": "The server checks every input before it is used."
         },
         {
           "term": "Hardened endpoints",
@@ -779,53 +765,53 @@ const en = {
         },
         {
           "term": "Agents with limits",
-          "definition": "An AI agent gets no more access than the person it works for. Anything consequential is drafted for a person to approve."
+          "definition": "An AI agent gets no more access than the person it works for."
         },
         {
           "term": "Never shared",
-          "definition": "Your data is never shared or resold, and client dashboards are never published. That is why every dashboard on this site uses sample data."
+          "definition": "Your data is never shared or resold."
         }
       ]
     },
     "proof": {
       "title": "Proof on this page",
-      "lead": "You can check these claims about this website yourself.",
+      "lead": "Claims about this website you can check yourself.",
       "lines": [
-        "Scripts: only our own. Every page is sent with a security policy that includes a new code for each visit, so a script injected by someone else does not run.",
+        "Scripts: only our own. A new security code on each visit stops injected scripts from running.",
         "Trackers and analytics from other companies: none.",
-        "Fonts and images: served from datahub.co.tz, not from other companies’ servers.",
-        "Cookies: none. Your theme and language preferences are saved only in your own browser.",
+        "Fonts and images: served from datahub.co.tz.",
+        "Cookies: none. Your preferences stay in your own browser.",
         "Contact form: checked on our server, limited to a few messages per network address, and filtered for automated spam."
       ],
       "showPolicy": "Show the exact policy",
-      "policyNote": "The Content-Security-Policy header sent with this page. The code that changes on each visit is hidden.",
+      "policyNote": "The Content-Security-Policy header for this page, with the per-visit code hidden.",
       "check": "Check our security headers yourself"
     }
   },
   "team": {
     "eyebrow": "06 — Team",
     "title": "The people you will work with.",
-    "lead": "A small team, so the people you meet are the people who build and run your project.",
+    "lead": "Here is who does what on your project.",
     "members": {
       "cto": {
         "index": "06.1",
         "name": "Daniel C. Masubi",
         "role": "Chief Technology Officer",
-        "bio": "Designs and builds the systems: data pipelines, dashboards, report automation and agents. Responsible for how your data is secured, so your technical questions go to the person who builds the system.",
+        "bio": "Designs and builds the systems: pipelines, dashboards, report automation and agents. Owns how your data is secured.",
         "alt": "Daniel C. Masubi, Chief Technology Officer, DataHub"
       },
       "operations": {
         "index": "06.2",
         "name": "Kanuda L. Sasi",
         "role": "Head of Operations",
-        "bio": "Runs delivery: scoping, timelines, training your team and support after launch. Makes sure what was agreed is what arrives.",
+        "bio": "Runs delivery: scoping, timelines, training and support. Makes sure what was agreed is what arrives.",
         "alt": "Kanuda L. Sasi, Head of Operations, DataHub"
       },
       "marketing": {
         "index": "06.3",
         "name": "Yohana K. Mussa",
         "role": "Head of Marketing",
-        "bio": "Usually your first conversation with DataHub. Makes sure the problem you describe is the problem we scope, walks you through the samples, and keeps you informed as the work moves.",
+        "bio": "Usually your first conversation with DataHub. Makes sure we scope the problem you actually have, and keeps you informed.",
         "alt": "Yohana K. Mussa, Head of Marketing, DataHub"
       }
     }
@@ -840,42 +826,30 @@ const en = {
     "items": [
       {
         "q": "What does DataHub do?",
-        "a": "DataHub builds custom dashboards, automated reporting systems and AI agents for organisations in Tanzania. We take the numbers already scattered across your spreadsheets, systems and branches, and turn them into one place your team can make decisions from."
+        "a": "We build dashboards, automated reports and AI agents for organisations in Tanzania."
       },
       {
         "q": "Where are you based, and do you work outside Dar es Salaam?",
-        "a": "We are based in Dar es Salaam, Tanzania, and work with organisations across the country and beyond. Most of the work is done remotely, with on-site sessions where scoping or training needs them."
+        "a": "Dar es Salaam. We work across Tanzania and beyond, mostly remotely, and on site when needed."
       },
       {
-        "q": "Can you automate the reports we currently build in Excel?",
-        "a": "Yes. That is the most common place we start. If your team spends hours each week copying between spreadsheets, formatting and emailing the same report, that whole process can usually be replaced by a system that generates it in seconds and delivers it automatically."
-      },
-      {
-        "q": "How much does a dashboard or reporting system cost?",
-        "a": "It depends on what you need, and anyone quoting before understanding your workflow is guessing. Tell us which report or process costs your team the most time and we will scope it with you. The first conversation costs nothing, and if it is not worth building we will say so."
-      },
-      {
-        "q": "Do you use tools like Power BI, or do you build custom platforms?",
-        "a": "Both, chosen to fit the problem. Off-the-shelf business intelligence tools are a good fit when your data is already clean and the questions are standard. When your workflow, approval chain or report formats are specific to how your organisation runs, a custom platform fits better and costs less to live with."
+        "q": "How much does a dashboard cost?",
+        "a": "It depends on the work, so we scope it with you before quoting. The first conversation costs nothing."
       },
       {
         "q": "Is our data safe?",
-        "a": "Security is designed in, not bolted on. Systems are built with encrypted credentials, role-based access so people only see what their role allows, validated inputs and hardened endpoints. Your data stays yours. It is never shared or resold."
+        "a": "Yes. Each person sees only what their role allows, and your data is never shared or resold."
       },
       {
         "q": "How long does a project take?",
-        "a": "A focused dashboard or a single automated report is typically a matter of weeks. A full reporting platform covering several departments takes longer. We scope in stages so something useful reaches your team early rather than at the very end."
-      },
-      {
-        "q": "Do you also build AI agents?",
-        "a": "Yes. Beyond dashboards, we design agents that read your operational data, summarise what changed, and act on it: chasing follow-ups, flagging exceptions, or drafting the reports somebody currently writes by hand. Anything consequential is drafted for a person to approve."
+        "a": "Usually weeks for one dashboard or report, longer for a platform across several departments."
       }
     ]
   },
   "contact": {
     "eyebrow": "08 — Contact",
-    "title": "Tell us which report costs you the most time.",
-    "lead": "Describe what you work with today and what you would like to see. We will scope it with you. The first conversation costs nothing, and if it is not worth building we will say so.",
+    "title": "Start with one report.",
+    "lead": "Tell us what you work with today and what you would like to see instead.",
     "lines": {
       "whatsapp": {
         "label": "WhatsApp",
@@ -893,12 +867,12 @@ const en = {
     "next": {
       "title": "What happens next",
       "steps": [
-        "We read your message and reply to arrange a short conversation.",
-        "We look at the report or process with you and agree what is worth building.",
-        "You receive a written scope before any work starts."
+        "We reply to set up a short conversation.",
+        "We look at the work with you and agree what is worth building.",
+        "You get a written scope before any work starts."
       ]
     },
-    "privacy": "We use your details only to reply to your enquiry.",
+    "privacy": "We use your details only to reply to you.",
     "privacyLink": "Read our privacy notice"
   },
   "form": {
@@ -932,7 +906,7 @@ const en = {
       },
       "message": {
         "label": "Message",
-        "placeholder": "Which report or process takes your team the most time? What would you like to see instead?",
+        "placeholder": "For example: our weekly branch report takes two days to build.",
         "counter": "{count} of 4,000 characters"
       }
     },
@@ -960,7 +934,7 @@ const en = {
       },
       "message": {
         "required": "Please tell us what you need.",
-        "tooShort": "Please write at least 10 characters so we can understand what you need.",
+        "tooShort": "Please write at least 10 characters.",
         "tooLong": "Please keep your message under 4,000 characters."
       }
     },
@@ -968,7 +942,7 @@ const en = {
     "sending": "Sending…",
     "status": {
       "checkFields": "Please check the marked fields.",
-      "rateLimited": "Too many messages from this connection. Please wait a few minutes and try again, or message us on WhatsApp.",
+      "rateLimited": "Too many messages from this connection. Please wait a few minutes, or message us on WhatsApp.",
       "invalid": "Your message could not be read. Please try again.",
       "server": "Your message did not go through. Please try again, or message us on WhatsApp.",
       "network": "No connection. Check your internet and try again.",
@@ -977,7 +951,7 @@ const en = {
     },
     "success": {
       "title": "Thank you.",
-      "body": "Your message has reached us. We will reply to talk through what you need.",
+      "body": "Your message reached us, and we will reply.",
       "again": "Send another message"
     },
     "whatsappAlt": "Prefer WhatsApp? Message us on {number}.",
@@ -994,7 +968,7 @@ const en = {
       "line1Accent": "Data",
       "line2": "to Decisions"
     },
-    "about": "Dashboards, reporting automation and AI agents for organisations in Tanzania. Based in Dar es Salaam.",
+    "about": "Dashboards, reporting automation and AI agents for organisations in Tanzania.",
     "columns": {
       "services": "Services",
       "company": "Company",
@@ -1018,7 +992,7 @@ const en = {
       "email": "{email}",
       "location": "Dar es Salaam, Tanzania"
     },
-    "legal": "© {year} DataHub · Dar es Salaam, Tanzania · Dashboards on this site use sample data.",
+    "legal": "© {year} DataHub · Dashboards on this site use sample data.",
     "backToTop": "Back to top"
   },
   "servicePage": {
@@ -1027,40 +1001,39 @@ const en = {
     "cta": "Start a conversation",
     "allServices": "See all services",
     "signals": {
-      "eyebrow": "01 — Signs you need this",
+      "eyebrow": "01 — The problem",
       "title": "Signs you need this"
     },
     "deliverables": {
-      "eyebrow": "02 — What you get",
+      "eyebrow": "02 — Deliverables",
       "title": "What you get"
     },
     "sample": {
-      "eyebrow": "03 — See it in a sample",
+      "eyebrow": "03 — Sample",
       "title": "See it in a sample",
-      "lead": "Sample figures, built the way we build for clients. Every name and number is invented."
+      "lead": "Charts from our sample dashboards, with the decision each one supports."
     },
     "faq": {
       "eyebrow": "04 — Questions",
       "title": "Questions about {service}"
     },
     "others": {
-      "eyebrow": "05 — Also from DataHub",
+      "eyebrow": "05 — More services",
       "title": "Also from DataHub"
-    },
-    "englishOnly": "This page is in English while the Kiswahili version is being prepared."
+    }
   },
   "privacy": {
     "title": "Privacy notice",
     "updated": "Last updated {date}",
-    "intro": "This notice explains what DataHub collects through this website and what we do with it. It is written with Tanzania’s Personal Data Protection Act, 2022 in mind.",
+    "intro": "What DataHub collects through this website, and why. Written with Tanzania’s Personal Data Protection Act, 2022 in mind.",
     "sections": [
       {
         "title": "What we collect",
-        "body": "Only what you type into the contact form: your name, email address, phone number, organisation, the service you are interested in and your message. If you arrived through one of our posts, we also record the short campaign tag in the link (for example “whatsapp”) so we know which channel reached you."
+        "body": "Only what you type into the contact form: your name, email, phone, organisation, the service you are interested in and your message. If you came from one of our posts, we also record the link’s campaign tag (for example “whatsapp”)."
       },
       {
         "title": "What we do not collect",
-        "body": "This website sets no cookies and runs no analytics or advertising trackers. Your theme and language choices are kept in your own browser, not sent to us."
+        "body": "No cookies, analytics or advertising trackers. Your theme and language choices stay in your browser."
       },
       {
         "title": "Your connection",
@@ -1068,11 +1041,11 @@ const en = {
       },
       {
         "title": "Why we use it",
-        "body": "To reply to your enquiry and continue the conversation you started. We do not sell, rent or share your details with anyone else."
+        "body": "To reply to you. We do not sell, rent or share your details."
       },
       {
         "title": "Your choices",
-        "body": "You can ask us what we hold about you, ask us to correct it, or ask us to delete it, by writing to {email}."
+        "body": "To see, correct or delete what we hold about you, write to {email}."
       },
       {
         "title": "Contact",
@@ -1089,16 +1062,7 @@ const en = {
   },
   "alt": {
     "og": "DataHub — From Data to Decisions. Dashboards, reporting automation and AI agents in Tanzania.",
-    "heroSilk": "(decorative, `aria-hidden`, no alt)",
-    "heroMark": "(decorative inside the hero; the H1 carries the meaning)",
-    "footerPlate": "(decorative, `aria-hidden`)",
-    "teamCto": "Daniel C. Masubi, Chief Technology Officer, DataHub",
-    "teamOperations": "Kanuda L. Sasi, Head of Operations, DataHub",
-    "teamMarketing": "Yohana K. Mussa, Head of Marketing, DataHub",
-    "serviceGlyphs": "(decorative; the row title names the service)",
-    "figurePrefix": "Sample chart:",
-    "whatsappIcon": "(decorative; the visible word \"WhatsApp\" names the link)",
-    "themeIcon": "(decorative; the button’s aria-label names the action)"
+    "figurePrefix": "Sample chart:"
   }
 } as const;
 
