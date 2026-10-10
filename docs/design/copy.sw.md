@@ -698,7 +698,7 @@ Word order differs from English: Kiswahili puts the noun before the number ("rip
 - `form.status.invalid` → Hatukuweza kusoma ujumbe wako. Tafadhali jaribu tena.
 - `form.status.server` → Ujumbe wako haukufika. Tafadhali jaribu tena, au tutumie ujumbe WhatsApp.
 - `form.status.network` → Hakuna muunganisho. Kagua intaneti yako kisha ujaribu tena.
-- `form.status.loading` → Fomu bado inapakia. Unaweza pia kutufikia kwa WhatsApp au barua pepe.
+- `form.status.loading` → Bado inapakia. Kwa sasa, tutumie WhatsApp kwa {number}.
 - `form.success.title` → Asante.
 - `form.success.body` → Ujumbe wako umetufikia. Tutakujibu ili tuzungumze kuhusu unachohitaji.
 - `form.success.again` → Tuma ujumbe mwingine

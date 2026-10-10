@@ -973,7 +973,7 @@ const sw = {
       "invalid": "Hatukuweza kusoma ujumbe wako. Tafadhali jaribu tena.",
       "server": "Ujumbe wako haukufika. Tafadhali jaribu tena, au tutumie ujumbe WhatsApp.",
       "network": "Hakuna muunganisho. Kagua intaneti yako kisha ujaribu tena.",
-      "loading": "Fomu bado inapakia. Unaweza pia kutufikia kwa WhatsApp au barua pepe."
+      "loading": "Bado inapakia. Kwa sasa, tutumie WhatsApp kwa {number}."
     },
     "success": {
       "title": "Asante.",

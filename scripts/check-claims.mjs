@@ -135,6 +135,8 @@ for (const [path, lang] of [
   ["/sw/index.html", "sw-TZ"],
   ["/team", "en-TZ"],
   ["/brand", "en-TZ"],
+  ["/team/privacy", "en-TZ"],
+  ["/brand/services/dashboards", "en-TZ"],
   ["/icon.png", "en-TZ"],
   ["/apple-icon", "en-TZ"],
   ["/opengraph-image.png", "en-TZ"],

@@ -9,9 +9,10 @@
  * hydrates, or a click in that window is replayed to next/link's handler.
  * Capture phase on document, registered first, so it runs before next/link,
  * which sees defaultPrevented and stands down. Same-page fragments (the skip
- * link) are left alone. Carries the request's CSP nonce, like ThemeScript.
+ * link) and the language already showing (aria-current, which LangSwitch
+ * turns into a no-op) are left alone. Carries the request's CSP nonce.
  */
-const SCRIPT = `document.addEventListener("click",function(e){if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(!a||a.hasAttribute("download")||(a.target&&a.target!=="_self")||a.origin!==location.origin)return;if(a.pathname===location.pathname&&a.search===location.search&&a.hash)return;e.preventDefault();location.assign(a.href)},true)`;
+const SCRIPT = `document.addEventListener("click",function(e){if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(!a||a.hasAttribute("download")||a.hasAttribute("aria-current")||(a.target&&a.target!=="_self")||a.origin!==location.origin)return;if(a.pathname===location.pathname&&a.search===location.search&&a.hash)return;e.preventDefault();location.assign(a.href)},true)`;
 
 export function HardLinks({ nonce }: { nonce?: string }) {
   return (

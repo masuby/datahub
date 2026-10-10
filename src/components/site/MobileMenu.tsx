@@ -25,6 +25,22 @@ const FOCUSABLE =
 /** True until the first page of this document has handled its URL fragment. */
 let documentArrival = true;
 
+/**
+ * The element a URL fragment names, or null. Never throws: a mangled link
+ * (/#100%, a fragment cut off by a messenger) is not valid percent-encoding,
+ * and decodeURIComponent would throw — in an effect, that took the page down.
+ */
+function fragmentTarget(fragment: string): HTMLElement | null {
+  let id = fragment.replace(/^#/, "");
+  if (!id) return null;
+  try {
+    id = decodeURIComponent(id);
+  } catch {
+    // Look it up as written.
+  }
+  return document.getElementById(id);
+}
+
 function menuIsOpen(): boolean {
   return document.documentElement.dataset.menu === "open";
 }
@@ -128,21 +144,24 @@ export function HeaderShell({ children, progressLabel }: { children: ReactNode; 
     return () => io.disconnect();
   }, []);
 
-  // Arriving with a section in the URL — /#contact from a service page, a
-  // shared link, a reload — the browser's or the router's own fragment
-  // scroll aims at placeholder heights (see scroll-to-section.ts), so land
-  // on it once the page is up. Not on a back/forward load, where the
-  // browser restores the visitor's own position.
+  // Arriving with a section in the URL — /#contact from a service page or a
+  // shared link — the browser's or the router's own fragment scroll aims at
+  // placeholder heights (see scroll-to-section.ts), so land on it once the
+  // page is up. On the document's first page, not when the browser restores
+  // the visitor's own position (back/forward, reload), nor once the visitor
+  // has scrolled or pressed anything while the page loaded (InputWatch).
   const pathname = usePathname();
   useEffect(() => {
     const first = documentArrival;
     documentArrival = false;
-    const hash = window.location.hash.slice(1);
-    if (!hash) return;
-    const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
-    if (first && nav?.type === "back_forward") return;
-    const target = document.getElementById(decodeURIComponent(hash));
-    if (target) landOnSection(target);
+    const target = fragmentTarget(window.location.hash);
+    if (!target) return;
+    if (first) {
+      const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+      if (nav?.type === "back_forward" || nav?.type === "reload") return;
+      if ((window as Window & { __dhInput?: number }).__dhInput) return;
+    }
+    landOnSection(target);
   }, [pathname]);
 
   // Same-page section links keep the query string. Capture phase, so it runs
@@ -153,7 +172,7 @@ export function HeaderShell({ children, progressLabel }: { children: ReactNode; 
       const a = (e.target as Element | null)?.closest?.("a[data-hash-link]");
       if (!(a instanceof HTMLAnchorElement) || !a.hash) return;
       if (a.origin !== window.location.origin || a.pathname !== window.location.pathname) return;
-      const target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+      const target = fragmentTarget(a.hash);
       if (!target) return;
       e.preventDefault();
       const url = `${window.location.pathname}${window.location.search}${a.hash}`;

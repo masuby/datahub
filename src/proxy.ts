@@ -69,8 +69,9 @@ function isNonPage(pathname: string): boolean {
     pathname.startsWith("/_next/") ||
     APP_FILES.has(pathname) ||
     PUBLIC_FILES.has(pathname) ||
-    // A file inside a public/ folder. The bare folder (/team) is not a file.
-    (PUBLIC_DIRS.has(pathname.split("/")[1] ?? "") && /^\/[^/]+\/[^/]+/.test(pathname))
+    // A file inside a public/ folder: a name with an extension, right inside
+    // it. /team, /team/privacy or /brand/services/x are not files.
+    (PUBLIC_DIRS.has(pathname.split("/")[1] ?? "") && /^\/[^/]+\/[^/]+\.[A-Za-z0-9]+$/.test(pathname))
   );
 }
 

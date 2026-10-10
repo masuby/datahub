@@ -253,6 +253,31 @@ export function ContactForm({
     if (phase === "success") successRef.current?.focus();
   }, [phase]);
 
+  // A visitor on a slow connection can start typing before the page has
+  // hydrated. React hydrates inputs without reading them, so whatever is
+  // already in the fields is adopted into state here — before the first
+  // controlled render would write the empty state over it.
+  useLayoutEffect(() => {
+    const form = formRef.current;
+    if (!form) return;
+    const read = (name: FieldName) => {
+      const el = form.elements.namedItem(name);
+      return el instanceof RadioNodeList || el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement
+        ? el.value
+        : "";
+    };
+    const typed: Partial<Values> = {};
+    for (const key of ["name", "phone", "email", "company", "message"] as const) {
+      const v = read(key);
+      if (v) typed[key] = v;
+    }
+    const service = read("service");
+    if (service in SERVICE_LABEL_KEY) typed.service = service as ServiceValue;
+    // Syncing state from the DOM once, on mount: the external-system case.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (Object.keys(typed).length) setValues((prev) => ({ ...prev, ...typed }));
+  }, []);
+
   // Auto-grow 5 → 12 lines where field-sizing: content is not supported.
   useLayoutEffect(() => {
     const el = messageRef.current;
@@ -398,20 +423,19 @@ export function ContactForm({
     </p>
   );
 
-  const altLine = WHATSAPP_NUMBER
-    ? fillNode(strings.whatsappAlt, {
-        number: (
-          <a
-            href={WHATSAPP_HREF}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="link-thread font-semibold text-fg transition-colors duration-[160ms] hover:text-accent"
-          >
-            <span className="tnum whitespace-nowrap">{WHATSAPP_DISPLAY}</span>
-            <span className="sr-only"> {newTabLabel}</span>
-          </a>
-        ),
-      })
+  const numberLink = WHATSAPP_NUMBER ? (
+    <a
+      href={WHATSAPP_HREF}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="link-thread font-semibold text-fg transition-colors duration-[160ms] hover:text-accent"
+    >
+      <span className="tnum whitespace-nowrap">{WHATSAPP_DISPLAY}</span>
+      <span className="sr-only"> {newTabLabel}</span>
+    </a>
+  ) : null;
+  const altLine = numberLink
+    ? fillNode(strings.whatsappAlt, { number: numberLink })
     : fillNode(strings.whatsappAltNoNumber, {
         email: (
           <a
@@ -735,7 +759,7 @@ export function ContactForm({
 
         {/* Before hydration a submit would post the page to itself and the
           message would be lost, so the button waits; the line under it says
-          why and points to the other ways in. */}
+          why and offers WhatsApp meanwhile. */}
         <ButtonPrimary
           type="submit"
           disabled={!ready}
@@ -763,8 +787,18 @@ export function ContactForm({
           {sending ? strings.sending : strings.submit}
         </ButtonPrimary>
 
-        {!ready && <p className="t-small mt-3 text-muted">{strings.status.loading}</p>}
-        <p className="t-small mt-6 text-muted">{altLine}</p>
+        {/* Until the form can send, the line under the button says so. Both
+          lines share one grid cell and only visibility swaps, so the slot is
+          always as tall as the longer one and nothing below moves (CLS). The
+          hidden one is out of the tab order and the accessibility tree. */}
+        <p className="t-small mt-6 grid text-muted">
+          <span className={cn("[grid-area:1/1]", !ready && numberLink && "invisible")}>{altLine}</span>
+          {numberLink && (
+            <span className={cn("[grid-area:1/1]", ready && "invisible")}>
+              {fillNode(strings.status.loading, { number: numberLink })}
+            </span>
+          )}
+        </p>
         <p className="t-small mt-2 text-muted">
           {privacy.text}{" "}
           <LinkArrow href={privacy.href} className="min-h-0 text-[0.875rem]">
