@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Fragment, type ReactNode } from "react";
 import { notFound } from "next/navigation";
-import { hasLocale, localePath, LANG_TAG, type Locale } from "@/i18n/config";
+import { hasLocale, LANG_TAG, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { CONTACT_EMAIL } from "@/lib/contact-info";
-import { shareCard } from "@/lib/seo";
+import { alternatesFor, shareCard } from "@/lib/seo";
 import { Container } from "@/components/ui/Container";
 import { Grid } from "@/components/ui/Grid";
 import { Reveal } from "@/components/ui/Reveal";
@@ -41,14 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t.title,
     description: t.description,
-    alternates: {
-      canonical: localePath(lang, "/privacy"),
-      languages: {
-        [LANG_TAG.en]: "/privacy",
-        [LANG_TAG.sw]: "/sw/privacy",
-        "x-default": "/privacy",
-      },
-    },
+    alternates: alternatesFor(lang, "/privacy"),
     ...shareCard({
       lang,
       path: "/privacy",

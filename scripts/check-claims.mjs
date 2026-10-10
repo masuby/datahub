@@ -14,6 +14,7 @@
  *   - Every inline <script> carries that request's nonce.
  *   - No <script src> or stylesheet from another origin.
  *   - Campaign links (?ref=) and the poster images still respond.
+ *   - Every page, in both languages, has exactly one <h1>.
  *   - Every 404 (unknown page, unknown service, stray file name) is the
  *     server-rendered page in the visitor's language, not an empty shell.
  *   - Every top-level entry of public/ is still served as a file (src/proxy.ts
@@ -33,10 +34,25 @@ const PAGES = [
   "/?ref=wa_status",
   "/sw",
   "/sw?ref=qr",
+  "/services",
+  "/sw/services",
   "/services/dashboards",
   "/services/automation",
   "/services/ai-agents",
   "/sw/services/dashboards",
+  "/dashboards",
+  "/sw/dashboards",
+  "/process",
+  "/sw/process",
+  "/security",
+  "/sw/security",
+  "/team",
+  "/sw/team",
+  "/faq",
+  "/sw/faq",
+  "/contact",
+  "/contact?ref=qr",
+  "/sw/contact",
   "/privacy",
   "/sw/privacy",
 ];
@@ -96,10 +112,12 @@ for (const path of PAGES) {
     if (!SITE_HOSTS.has(u.host)) fail(where, `external ${m[1]} ${m[2]}`);
   }
   if (/<iframe\b/i.test(html)) fail(where, "contains an <iframe>");
+  const h1s = html.match(/<h1\b/gi)?.length ?? 0;
+  if (h1s !== 1) fail(where, `${h1s} <h1> elements, expected exactly 1`);
   if (/\b(google-analytics|googletagmanager|facebook\.net|hotjar|clarity\.ms)\b/i.test(html)) {
     fail(where, "references a tracking script host");
   }
-  pass(where, `200, ${scripts.length} scripts, all nonced or first-party, no cookies`);
+  pass(where, `200, one h1, ${scripts.length} scripts, all nonced or first-party, no cookies`);
 }
 
 // The contact API must not set cookies either, on any path a visitor can hit.
@@ -133,9 +151,10 @@ for (const [path, lang] of [
   ["/sw/services/nope", "sw-TZ"],
   ["/index.html", "en-TZ"],
   ["/sw/index.html", "sw-TZ"],
-  ["/team", "en-TZ"],
   ["/brand", "en-TZ"],
   ["/team/privacy", "en-TZ"],
+  ["/team/nope", "en-TZ"],
+  ["/sw/faq/nope", "sw-TZ"],
   ["/brand/services/dashboards", "en-TZ"],
   ["/icon.png", "en-TZ"],
   ["/apple-icon", "en-TZ"],

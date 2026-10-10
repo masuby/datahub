@@ -3,6 +3,7 @@
 import { MARK_D_SPINE } from "@/components/brand/mark-paths";
 import {
   Fragment,
+  useCallback,
   useEffect,
   useId,
   useLayoutEffect,
@@ -39,14 +40,31 @@ import styles from "./ContactForm.module.css";
  * checks below mirror its limits only to choose a localised message and to
  * spare a round trip (and a rate-limit slot) for an obviously empty field.
  *
- * Also listens for `dh:prefill` ({ detail: { message } }) from the hours
- * estimator: appends the sentence to the message, focuses Name and announces
- * it politely.
+ * Takes the hours estimator's sentence two ways: from
+ * sessionStorage["dh-prefill"] on mount, where the estimator left it before
+ * opening this page, and through a `dh:prefill` window event
+ * ({ detail: { message } }) when both sit on one page. Either way it is
+ * appended to the message, Name takes focus, and a line above the fields
+ * (also announced politely) says so.
  */
 
 export type FormStrings = Dictionary["form"];
 
 const subscribeNothing = () => () => {};
+
+/** Where the estimator leaves its sentence for this form. Same key in HoursEstimatorClient.tsx. */
+const PREFILL_STORAGE_KEY = "dh-prefill";
+
+/** The sentence the estimator left for this page, once: it is removed as it is read. */
+function takePendingPrefill(): string {
+  try {
+    const text = sessionStorage.getItem(PREFILL_STORAGE_KEY) ?? "";
+    sessionStorage.removeItem(PREFILL_STORAGE_KEY);
+    return text.trim();
+  } catch {
+    return ""; // storage blocked: the estimator could not have left anything either
+  }
+}
 
 const SERVICE_VALUES = [
   "dashboards",
@@ -197,12 +215,15 @@ export function ContactForm({
   prefillAnnouncement,
   privacy,
   newTabLabel,
+  successHeading: SuccessHeading = "h3",
 }: {
   strings: FormStrings;
-  /** Polite announcement after the estimator adds a sentence (estimator.added). */
+  /** Shown and announced after the estimator adds a sentence (estimator.added). */
   prefillAnnouncement: string;
   privacy: { text: string; linkLabel: string; href: string };
   newTabLabel: string;
+  /** One level below the heading of the section the form sits in. */
+  successHeading?: "h2" | "h3";
 }) {
   const uid = useId();
   const id = (name: string) => `${uid}-${name}`;
@@ -220,6 +241,7 @@ export function ContactForm({
   const [phase, setPhase] = useState<"idle" | "sending" | "success">("idle");
   const [statusMsg, setStatusMsg] = useState("");
   const [polite, setPolite] = useState({ text: "", n: 0 });
+  const [prefilled, setPrefilled] = useState(false);
   const [focusTarget, setFocusTarget] = useState<{
     field: FieldName;
     n: number;
@@ -288,15 +310,9 @@ export function ContactForm({
     el.style.height = `${el.scrollHeight + (el.offsetHeight - el.clientHeight)}px`;
   }, [values.message, phase]);
 
-  // The hours estimator hands its sentence over through a window event.
-  useEffect(() => {
-    const onPrefill = (ev: Event) => {
-      const detail: unknown = (ev as CustomEvent<unknown>).detail;
-      const text =
-        isRecord(detail) && typeof detail.message === "string"
-          ? detail.message.trim()
-          : "";
-      if (!text) return;
+  // The hours estimator's sentence: appended to the message, then Name.
+  const adopt = useCallback(
+    (text: string) => {
       setValues((v) => {
         const current = v.message.replace(/\s+$/, "");
         return { ...v, message: current ? `${current}\n\n${text}` : text };
@@ -306,12 +322,34 @@ export function ContactForm({
       );
       setPhase((p) => (p === "success" ? "idle" : p));
       setPolite((p) => ({ text: prefillAnnouncement, n: p.n + 1 }));
+      setPrefilled(true);
       tick.current += 1;
       setFocusTarget({ field: "name", n: tick.current });
+    },
+    [prefillAnnouncement],
+  );
+
+  // Arriving from the estimator on another page: its sentence waits in
+  // sessionStorage, read once on mount (the external-system case).
+  useEffect(() => {
+    const text = takePendingPrefill();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (text) adopt(text);
+  }, [adopt]);
+
+  // The estimator on the same page hands its sentence over through an event.
+  useEffect(() => {
+    const onPrefill = (ev: Event) => {
+      const detail: unknown = (ev as CustomEvent<unknown>).detail;
+      const text =
+        isRecord(detail) && typeof detail.message === "string"
+          ? detail.message.trim()
+          : "";
+      if (text) adopt(text);
     };
     window.addEventListener("dh:prefill", onPrefill);
     return () => window.removeEventListener("dh:prefill", onPrefill);
-  }, [prefillAnnouncement]);
+  }, [adopt]);
 
   const update =
     (field: Exclude<FieldName, "service">) =>
@@ -382,6 +420,7 @@ export function ContactForm({
     if (res.status === 200 && isRecord(data) && data.ok === true) {
       setValues(EMPTY);
       setAttempted(false);
+      setPrefilled(false);
       setPhase("success");
       return;
     }
@@ -459,7 +498,7 @@ export function ContactForm({
         {politeRegion}
         <div>
           <Rule variant="section" animate />
-          <h3
+          <SuccessHeading
             ref={successRef}
             tabIndex={-1}
             className="t-h2 mt-8 a-rise focus:outline-none"
@@ -468,7 +507,7 @@ export function ContactForm({
               ✓
             </span>
             {strings.success.title}
-          </h3>
+          </SuccessHeading>
           <p
             className="t-body mt-6 text-muted a-rise"
             style={{ animationDelay: "60ms" }}
@@ -571,6 +610,14 @@ export function ContactForm({
             data-form-type="other"
           />
         </div>
+
+        {/* The estimator's sentence is now in the message below. */}
+        {prefilled && (
+          <p className="t-small mb-8 flex gap-2 text-ok">
+            <span aria-hidden="true">✓</span>
+            <span>{prefillAnnouncement}</span>
+          </p>
+        )}
 
         <div
           className="grid gap-y-8 sm:grid-cols-2"

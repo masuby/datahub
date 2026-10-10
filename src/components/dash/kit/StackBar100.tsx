@@ -29,7 +29,7 @@ export function StackBar100({
   readoutId: string;
   /** name, display value, share (sums to 100) */
   segments: readonly { name: string; value: string; share: number }[];
-  /** CSS colour per segment, e.g. "var(--ramp-1)". */
+  /** CSS colour per segment, e.g. "var(--dash-ramp-1)". */
   ramp: readonly string[];
   reads: string[];
   marks: Mark[];

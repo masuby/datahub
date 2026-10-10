@@ -4,7 +4,8 @@ import { setMotionPaused, useMotionPaused, useReducedMotion } from "./motion-sto
 import { cn } from "@/lib/utils";
 
 /**
- * Pause control for the only continuous motion on the site (the hero silk).
+ * Pause control for the site's continuous motion (the hero: silk, the word
+ * that writes itself, the waving hand and the light along the D).
  *
  *   variant "hero"   — a text button: "Pause motion" / "Resume motion" (the
  *                      label says the state, so no aria-pressed: "Resume

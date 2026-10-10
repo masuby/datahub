@@ -14,7 +14,14 @@ type Page = { path: string; priority: number; changeFrequency: "monthly" | "year
 
 const PAGES: Page[] = [
   { path: "/", priority: 1, changeFrequency: "monthly" },
+  { path: "/services", priority: 0.9, changeFrequency: "monthly" },
   ...SERVICES.map((s) => ({ path: `/services/${s.slug}`, priority: 0.8, changeFrequency: "monthly" as const })),
+  { path: "/dashboards", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/contact", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/process", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/security", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/team", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/faq", priority: 0.6, changeFrequency: "monthly" },
   { path: "/privacy", priority: 0.3, changeFrequency: "yearly" },
 ];
 

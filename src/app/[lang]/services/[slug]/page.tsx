@@ -4,16 +4,17 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { SERVICES, getService, servicesFor } from "@/lib/services";
 import type { ServiceSlug } from "@/lib/service-slugs";
-import { hasLocale, localePath, LANG_TAG, type Locale } from "@/i18n/config";
+import { hasLocale, localePath, type Locale } from "@/i18n/config";
 import { getDictionary, fill, type Dictionary } from "@/i18n/get-dictionary";
 import { JsonLd } from "@/components/system/JsonLd";
 import { LangHint } from "@/components/system/LangHint";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { Contact } from "@/components/site/Contact";
 import { ActionRail } from "@/components/site/ActionRail";
+import { SERVICE_ITEM_KEY } from "@/components/site/Services";
+import { CtaBand } from "@/components/site/home/CtaBand";
+import { LegacyHash } from "@/components/site/home/LegacyHash";
 import { SampleBand } from "@/components/dash/SampleBand";
-import { pagesExtra } from "@/i18n/extra/pages";
 import { SilkField } from "@/components/silk/SilkField";
 import { PRESETS } from "@/lib/silk";
 import { BrandMark } from "@/components/brand/BrandMark";
@@ -25,7 +26,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { ButtonPrimary } from "@/components/ui/Button";
 import { LinkArrow } from "@/components/ui/LinkArrow";
-import { serviceSchema, breadcrumbSchema, faqSchema, absoluteUrl, shareCard } from "@/lib/seo";
+import { serviceSchema, breadcrumbSchema, faqSchema, absoluteUrl, alternatesFor, shareCard } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import styles from "./service.module.css";
 
@@ -33,7 +34,12 @@ import styles from "./service.module.css";
  * Service page (spec §7): the home page's language, shorter.
  *
  *   hero (static silk, no canvas) · 01 signs · 02 what you get ·
- *   03 sample band (ink) · 04 questions · 05 also from DataHub · contact
+ *   03 sample band · 04 questions · 05 also from DataHub · closing band
+ *
+ * The page ends with the short call-to-action band to /contact, not the
+ * full form: every "Start a conversation" on the site opens the contact
+ * page, and a `#contact` link from before (LegacyHash) is sent there too.
+ * The breadcrumb runs Home / Services / this service.
  *
  * Body copy comes from services.ts / services.sw.ts (both reviewed), chrome
  * from the dictionary. Both locales are indexable with a full hreflang pair.
@@ -47,15 +53,12 @@ export const dynamic = "force-dynamic";
 // (a notFound() thrown in this route would be drawn only in the browser).
 export const dynamicParams = false;
 
-/** 01 signs · 02 what you get · 03 sample · 04 questions · 05 also · 06 contact. */
-const TOTAL = 6;
+/** 01 signs · 02 what you get · 03 sample · 04 questions · 05 also (the closing band is not numbered). */
+const TOTAL = 5;
 const SILK = PRESETS.service;
 
-const ITEM_KEY: Record<ServiceSlug, keyof Dictionary["services"]["items"]> = {
-  dashboards: "dashboards",
-  automation: "automation",
-  "ai-agents": "aiAgents",
-};
+/** These pages used to end with the contact form: `#contact` links shared then open /contact. */
+const MOVED = { contact: "/contact" };
 
 export function generateStaticParams() {
   return SERVICES.map((s) => ({ slug: s.slug }));
@@ -71,14 +74,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/services/[
   return {
     title: service.metaTitle,
     description: service.metaDescription,
-    alternates: {
-      canonical: localePath(lang, path),
-      languages: {
-        [LANG_TAG.en]: localePath("en", path),
-        [LANG_TAG.sw]: localePath("sw", path),
-        "x-default": localePath("en", path),
-      },
-    },
+    alternates: alternatesFor(lang, path),
     ...shareCard({
       lang,
       path,
@@ -110,6 +106,7 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
           serviceSchema(service, lang),
           breadcrumbSchema([
             { name: p.home, url: absoluteUrl(lang) },
+            { name: t.nav.services, url: absoluteUrl(lang, "/services") },
             { name: service.navLabel, url: pageUrl },
           ]),
           // Built from the same array the Questions section renders.
@@ -143,6 +140,12 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
                     </li>
                     <li aria-hidden="true">/</li>
                     <li>
+                      <Link href={localePath(lang, "/services")} className="link-thread transition-colors duration-[160ms] hover:text-fg">
+                        {t.nav.services}
+                      </Link>
+                    </li>
+                    <li aria-hidden="true">/</li>
+                    <li>
                       <span aria-current="page" className="text-muted">
                         {service.navLabel}
                       </span>
@@ -164,10 +167,8 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
                 </div>
 
                 <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-                  <ButtonPrimary href="#contact" data-hash-link>
-                    {p.cta}
-                  </ButtonPrimary>
-                  <LinkArrow href={`${localePath(lang, "/")}#services`}>{p.allServices}</LinkArrow>
+                  <ButtonPrimary href={localePath(lang, "/contact")}>{p.cta}</ButtonPrimary>
+                  <LinkArrow href={localePath(lang, "/services")}>{p.allServices}</LinkArrow>
                 </div>
               </div>
             </Grid>
@@ -231,7 +232,7 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
           </Container>
         </Section>
 
-        {/* ── 03 See it in a sample (ink band, owned by the dashboards kit) ── */}
+        {/* ── 03 See it in a sample (owned by the dashboards kit) ── */}
         <SampleBand lang={lang} service={service.slug} total={TOTAL} />
 
         {/* ── 04 Questions ─────────────────────────────────────── */}
@@ -287,10 +288,11 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
           </Container>
         </Section>
 
-        <Contact lang={lang} index="06" total={TOTAL} eyebrow={pagesExtra[lang].servicePage.contactEyebrow} />
+        <CtaBand lang={lang} />
       </main>
       <Footer lang={lang} />
       <ActionRail lang={lang} />
+      <LegacyHash lang={lang} moved={MOVED} />
     </>
   );
 }
@@ -312,7 +314,7 @@ function OtherServiceRow({
   first: boolean;
   delay: number;
 }) {
-  const item = t.services.items[ITEM_KEY[slug]];
+  const item = t.services.items[SERVICE_ITEM_KEY[slug]];
   return (
     <li className="a-rise" style={{ animationDelay: `${delay}ms` }}>
       <Link

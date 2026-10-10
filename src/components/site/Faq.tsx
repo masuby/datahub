@@ -14,7 +14,11 @@ import { Section } from "@/components/ui/Section";
 import styles from "./Faq.module.css";
 
 /**
- * 07 — Questions.
+ * 07 — Questions: the /faq page (`headingLevel` 1 there, where its title is
+ * the page's h1). A page of its own, so the eyebrow keeps its chapter number
+ * and no "07 / 08" counter. The title keeps the h2 size either way: it
+ * stands in a four-column sticky column, where the page-title size would
+ * break it into a tower of short lines.
  *
  * Desktop: the section header (eyebrow, H2 and the "not answered here?" aside)
  * stays in view in columns 1–4 while the questions scroll past in columns
@@ -26,9 +30,10 @@ import styles from "./Faq.module.css";
  * The FAQPage JSON-LD is emitted by the page from this same dictionary array
  * (`t.faq.items`), so the markup can never describe questions not shown here.
  */
-export async function Faq({ lang }: { lang: Locale }) {
+export async function Faq({ lang, headingLevel = 2 }: { lang: Locale; headingLevel?: 1 | 2 }) {
   const t = await getDictionary(lang);
   const f = t.faq;
+  const Heading = headingLevel === 1 ? "h1" : "h2";
 
   return (
     <Section id="faq" labelledBy="faq-title">
@@ -42,28 +47,21 @@ export async function Faq({ lang }: { lang: Locale }) {
           >
             <Reveal>
               <Rule variant="section" animate />
-              <div className="mt-5 flex items-baseline justify-between gap-4 lg:mt-6">
-                <p
-                  className="t-eyebrow a-rise"
-                  style={{ animationDelay: "120ms" }}
-                >
-                  {f.eyebrow}
-                </p>
-                <p
-                  aria-hidden="true"
-                  className="t-eyebrow a-fade"
-                  style={{ animationDelay: "120ms" }}
-                >
-                  07 / 08
-                </p>
-              </div>
-              <h2
+              <p
+                className="t-eyebrow mt-5 a-rise lg:mt-6"
+                style={{ animationDelay: "120ms" }}
+              >
+                {f.eyebrow}
+              </p>
+              <Heading
                 id="faq-title"
+                // The rail (ActionRail) appears once a page's title has scrolled away.
+                data-rail-anchor={headingLevel === 1 ? "" : undefined}
                 className="t-h2 mt-4 a-rise lg:mt-8"
                 style={{ animationDelay: "180ms" }}
               >
                 {f.title}
-              </h2>
+              </Heading>
               <div
                 className="mt-6 a-rise lg:mt-10"
                 style={{ animationDelay: "240ms" }}

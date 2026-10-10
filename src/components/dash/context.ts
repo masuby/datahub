@@ -10,7 +10,7 @@ export type ViewKey = keyof DashT["views"];
 
 /**
  * Everything a dashboard figure needs to render, built once per page on the
- * server. `live` is true on the home page, where the DashboardShowcase island
+ * server. `live` is true on /dashboards, where the DashboardShowcase island
  * wires up tabs, crosshairs and read mode; on service pages the same figures
  * render as static server HTML with read-mode notes always shown.
  */
@@ -24,12 +24,18 @@ export type DashCtx = {
   idp: string;
   live: boolean;
   /**
-   * Set when a few figures are shown outside the home page's section 02 (a
+   * Set when a few figures are shown outside the dashboards section 02 (a
    * service page's sample band): the figure numbers they show instead
    * ("02.10" -> "03.1"), and which read-mode figures are on the plate, so
    * the notes count 1, 2… on the plate rather than across the whole view.
    */
   plate?: { numbers: Record<string, string>; figures: readonly string[] };
+  /**
+   * Heading level of the figure titles: one below the section heading they
+   * sit under — h3 under a section's h2 (default), h2 where the dashboards
+   * section heading is the page's h1 (/dashboards).
+   */
+  figureLevel?: 2 | 3;
 };
 
 export type Note = { n: number; anchor: string; shows: string; decision: string; noteId: string };

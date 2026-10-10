@@ -4,9 +4,13 @@ import { band, linear, ticks } from "./scales";
 
 /**
  * Two series side by side per period (Fig. 02.7 disbursed vs repaid), --s1
- * and --s3 from a zero baseline. The two series are named in a typographic
+ * and --s2 from a zero baseline. The two series are named in a typographic
  * key at the top-left, one entry per line: a 12px stroke of the series
  * colour, then the word (paired bars are too narrow to carry their names).
+ *
+ * Series 2, not 3: --s3 has the same luminance as --s1 in both themes
+ * (1.07:1 light, 1.00:1 dark), so the key could not tell them apart; --s2
+ * differs by 2.90:1 (royal / navy) and 1.96:1 plus hue (sky / azure).
  */
 export function PairedBars({
   ctx,
@@ -54,7 +58,7 @@ export function PairedBars({
   const w = (g.width - gap) / 2;
   const xs = a.map((_, i) => g.centre(i));
   const last = a.length - 1;
-  const colours = ["var(--s1)", "var(--s3)"];
+  const colours = ["var(--s1)", "var(--s2)"];
 
   return (
     <ChartArea ctx={ctx} label={label} readoutId={readoutId} cross={{ axis: "x", pos: xs, reads, idle: last }}>

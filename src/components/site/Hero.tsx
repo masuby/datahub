@@ -1,49 +1,107 @@
-import type { Locale } from "@/i18n/config";
+import type { CSSProperties } from "react";
+import { localePath, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { heroExtra } from "@/i18n/extra/hero";
 import { Container } from "@/components/ui/Container";
 import { Grid } from "@/components/ui/Grid";
 import { ButtonPrimary } from "@/components/ui/Button";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { HeroMark } from "@/components/brand/HeroMark";
 import { SilkField } from "@/components/silk/SilkField";
+import { HeroLive } from "@/components/hero/HeroLive";
+import { HeroWords } from "@/components/hero/HeroWords";
+import { OUTFIT_ADVANCE, OUTFIT_UPM } from "@/components/hero/outfit-metrics";
 import { PRESETS } from "@/lib/silk";
 import { cn } from "@/lib/utils";
-import { ServiceIndex } from "./ServiceIndex";
 import { HeroPause, HeroSilk } from "./HeroMotion";
 import styles from "./Hero.module.css";
 
 const DESKTOP = PRESETS["hero-desktop"];
 
+/** .t-display tracking (-0.04em), applied after every character. */
+const TRACKING = -0.04;
+
 /**
- * 00 Hero (spec §6.1): say what DataHub is in five seconds and draw the
- * brand sentence — data arrives as silk, flows into the open hand of the
- * mark, and leaves as the straight hairline the service index stands on.
+ * Width of a line of the headline in em, from Outfit 700's advances, plus a
+ * little for ink beyond the last advance. The headline sizes itself so its
+ * widest line (the first line or the longest word) fits its column, down to
+ * a 320px phone: the word line never wraps.
+ */
+function lineEm(text: string): number {
+  let em = 0.08;
+  for (const ch of text) em += (OUTFIT_ADVANCE[ch] ?? 0.6 * OUTFIT_UPM) / OUTFIT_UPM + TRACKING;
+  return em;
+}
+
+/**
+ * A few dots of the field that twinkle, around the mark and the silk:
+ * [x, y] as fractions of the stage (snapped to the dot grid in CSS), delay
+ * and period in seconds. Desktop only; phones keep the field still.
+ */
+const TWINKLES: [number, number, number, number][] = [
+  [0.58, 0.16, 0, 4.2],
+  [0.66, 0.8, 1.3, 5.1],
+  [0.71, 0.09, 2.2, 3.8],
+  [0.88, 0.2, 0.6, 4.6],
+  [0.94, 0.62, 3.1, 5.4],
+  [0.61, 0.44, 1.9, 4.9],
+  [0.97, 0.36, 2.7, 3.9],
+  [0.84, 0.86, 0.3, 4.4],
+  [0.53, 0.66, 3.6, 5.6],
+  [0.76, 0.28, 4.2, 4.1],
+  [0.45, 0.07, 2.5, 5.2],
+  [0.9, 0.08, 1.1, 4.7],
+];
+
+/**
+ * 00 Hero (spec §6.1, iteration-2 §B): what DataHub is, in five seconds,
+ * with the brand board alive — data arrives as silk and points of light,
+ * flows into the waving hand of the mark, and leaves as the straight
+ * hairline the hero stands on.
  *
- * Back to front on desktop: the wash (CSS), the silk layer (static SVG, then
- * the Canvas2D drift crossfading in when the device can afford it), the mark
- * at the silk's sink, the text block, the pause control, the service index.
- * Mobile stacks the text on plain background, then a 300px silk band with
- * the mark, then the index as rows.
+ * Back to front on desktop: the wash (CSS), the dot field with a few
+ * twinkling dots, the silk layer (static SVG, then the Canvas2D drift with
+ * its travelling lights when the device can afford it), a soft glow behind
+ * the mark, the mark at the silk's sink, the text, the pause control, the
+ * floor rule the decision filament lands on. Phones stack the text on plain
+ * background, then a 300px band with the field, the silk and the mark.
  *
- * The H1 is the LCP element: server-rendered text, never animated.
+ * The services are not listed here: the home page's next section does that
+ * (iteration-2 §D, no claim twice).
+ *
+ * The LCP element is server-rendered text: the H1's first line on desktop,
+ * the one-sentence lead on phones. The H1's first line is static; its
+ * second is one word that writes itself (HeroWords) — the first word as
+ * plain text until the browser is idle. The H1's accessible name is
+ * constant: every word, in one sentence.
  */
 export async function Hero({ lang }: { lang: Locale }) {
   const t = await getDictionary(lang);
   const h = t.hero;
-  // "to " / "hadi " — the dictionary carries the trailing space.
-  const line2Before = h.title.line2Before;
+  const x = heroExtra[lang];
   const motionLabels = { pause: t.motion.pause, resume: t.motion.resume };
+  const fitEm = Math.max(lineEm(x.title.line1), ...x.title.words.map(lineEm)).toFixed(3);
 
   return (
     <section id="top" aria-labelledby="hero-title" className={cn("relative isolate flex flex-col", styles.hero)}>
-      {/* Stage: everything above the service index. Its bottom is the index rule. */}
+      <HeroLive sectionId="top" />
+      {/* Stage: everything above the floor rule. Its bottom is the rule. */}
       <div className={cn("relative flex flex-1 flex-col", styles.stage, styles.scope)}>
+        <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0 hidden lg:block", styles.field)}>
+          {TWINKLES.map(([left, top, delay, period]) => (
+            <span
+              key={`${left}-${top}`}
+              className={styles.twinkle}
+              style={{ "--x": left, "--y": top, "--delay": `${delay}s`, "--period": `${period}s` } as CSSProperties}
+            />
+          ))}
+        </div>
         <div
           aria-hidden="true"
           className={cn("silk-layer pointer-events-none absolute inset-0 hidden lg:block", styles.safe, styles.still)}
         >
           {/* Stretched (not sliced) onto the layer, so the sink lands on the
-              mark and the decision filament lands on the index rule at every
+              mark and the decision filament lands on the floor rule at every
               aspect ratio; strokes stay 1px (non-scaling-stroke). */}
           <svg
             viewBox={`0 0 ${DESKTOP.W} ${DESKTOP.H}`}
@@ -58,34 +116,35 @@ export async function Hero({ lang }: { lang: Locale }) {
           preset="hero-desktop"
           fit="fill"
           media="(min-width: 1024px)"
+          lights
           className={cn("silk-layer pointer-events-none absolute inset-0 hidden lg:block", styles.safe, styles.live)}
         />
+        <div aria-hidden="true" className={cn("pointer-events-none absolute hidden lg:block", styles.glow, styles.markLg)} />
         <div aria-hidden="true" className={cn("pointer-events-none absolute hidden lg:block", styles.markLg)}>
           <HeroMark id="hero-mark-lg" className="size-full" />
         </div>
 
         <Container className="relative z-10 flex-1">
           <Grid className={styles.text}>
-            {/* Six words: §2.2 caps uppercase eyebrows at three, so this one is
-                sentence case in .t-small (the dictionary string already is). */}
-            <p className="t-small col-span-4 text-accent sm:col-span-8 lg:col-span-8">{h.eyebrow}</p>
-            <h1 id="hero-title" className="col-span-4 mt-6 text-fg sm:col-span-8 lg:col-span-8">
-              <span className="t-display block">
-                {h.title.line1}
-                <br />
-                {line2Before}
-                <em className="text-accent-display not-italic">{h.title.accent}</em>
+            <h1
+              id="hero-title"
+              className={cn("col-span-4 text-fg sm:col-span-8 lg:col-span-8", styles.title)}
+              style={{ "--fit-em": fitEm } as CSSProperties}
+            >
+              <span className="sr-only">{x.title.name}</span>
+              <span aria-hidden="true" className={cn("t-display block", styles.display)}>
+                <span className="block whitespace-nowrap">{x.title.line1}</span>
+                <span className="block whitespace-nowrap">
+                  <HeroWords words={x.title.words} />
+                </span>
               </span>
-              <span className="t-sub mt-6 block">{h.title.sub}</span>
             </h1>
-            <p className="t-lead col-span-4 mt-6 sm:col-span-7 lg:col-span-6">{h.lead}</p>
+            <p className="t-lead col-span-4 mt-6 sm:col-span-7 lg:col-span-6">{x.lead}</p>
             <div className="col-span-4 mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 sm:col-span-8">
-              <ButtonPrimary href="#contact" id="hero-cta" data-hash-link>
+              <ButtonPrimary href={localePath(lang, "/contact")} id="hero-cta">
                 {h.ctaPrimary}
               </ButtonPrimary>
-              <LinkArrow href="#dashboards" arrow="↓" data-hash-link>
-                {h.ctaSecondary}
-              </LinkArrow>
+              <LinkArrow href={localePath(lang, "/dashboards")}>{h.ctaSecondary}</LinkArrow>
             </div>
           </Grid>
         </Container>
@@ -97,9 +156,10 @@ export async function Hero({ lang }: { lang: Locale }) {
         </div>
       </div>
 
-      {/* Mobile and tablet: the silk band, no text over it. */}
+      {/* Mobile and tablet: the band — field, silk and mark — with no text over it. */}
       <div className="lg:hidden">
         <div className={cn("relative h-[300px] overflow-hidden", styles.band, styles.scope)}>
+          <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0", styles.field, styles.fieldBand)} />
           <div aria-hidden="true" className={cn("silk-layer pointer-events-none absolute inset-0", styles.still)}>
             <SilkField preset="hero-mobile" className="block size-full" />
           </div>
@@ -109,10 +169,8 @@ export async function Hero({ lang }: { lang: Locale }) {
             media="(max-width: 1023.98px)"
             className={cn("silk-layer pointer-events-none absolute inset-0", styles.live)}
           />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-1/2 size-[168px] -translate-x-1/2 -translate-y-1/2"
-          >
+          <div aria-hidden="true" className={cn("pointer-events-none absolute", styles.glow, styles.markSm)} />
+          <div aria-hidden="true" className={cn("pointer-events-none absolute", styles.markSm)}>
             <HeroMark id="hero-mark-sm" className="size-full" />
           </div>
         </div>
@@ -121,7 +179,8 @@ export async function Hero({ lang }: { lang: Locale }) {
         </Container>
       </div>
 
-      <ServiceIndex lang={lang} />
+      {/* Desktop floor: the full-bleed R2 the decision filament lands on. */}
+      <span aria-hidden="true" className={cn("rule-section hidden shrink-0 lg:block", styles.landing)} />
     </section>
   );
 }

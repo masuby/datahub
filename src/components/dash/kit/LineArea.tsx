@@ -64,8 +64,13 @@ export function LineArea({
   // Inner viewBox coordinates (0..100 both ways) for the stretched path SVG.
   const inner = values.map((v, i) => [xs[i], ((y(v) - PT) / (PB - PT)) * 100] as const);
   const line = linePath(inner);
-  const areaPath = `${line}L${xs[last].toFixed(2)} 100L${xs[0].toFixed(2)} 100Z`;
+  // The area stops at the top edge of the 1px zero baseline, so the axis sits
+  // on --bg (3.48:1 light) instead of half under the fill (2.87:1).
+  const floor = (100 - 50 / (PB - PT)).toFixed(2);
+  const areaPath = `${line}L${xs[last].toFixed(2)} ${floor}L${xs[0].toFixed(2)} ${floor}Z`;
   const hatchId = `${id}-hatch`;
+  const tickValues = ticks(min, max, step);
+  const tickText = (v: number) => v.toFixed(tickDecimals);
   const refAbove = yLast > yRef;
   const refLabelY = refAbove ? yRef - 6 : yRef + 14;
   const seriesLabelY = Math.abs(yLast + 4 - refLabelY) < 14 ? (refAbove ? yLast + 16 : yLast - 8) : yLast + 4;
@@ -94,7 +99,7 @@ export function LineArea({
             <rect x="0%" width="100%" y={PT} height={Math.max(0, yRef - PT)} fill={`url(#${hatchId})`} />
           </>
         )}
-        <YGrid values={ticks(min, max, step)} y={y} label={(v) => v.toFixed(tickDecimals)} unit={unit} avoid={yRef} />
+        <YGrid layer="lines" values={tickValues} y={y} label={tickText} />
         <line
           x1="0%"
           x2="100%"
@@ -127,6 +132,8 @@ export function LineArea({
           />
         </svg>
         <circle cx={`${xs[last]}%`} cy={yLast} r={3.5} className={styles.fadeLate} style={{ fill: "var(--s1)" }} />
+        {/* Tick labels over the fill and the hatch, on a --bg halo. */}
+        <YGrid layer="labels" values={tickValues} y={y} label={tickText} unit={unit} avoid={yRef} />
         <g aria-hidden="true" className="max-sm:hidden">
           <text x={`${R + 2.5}%`} y={seriesLabelY} style={{ fill: "var(--fg)" }}>
             {seriesLabel}

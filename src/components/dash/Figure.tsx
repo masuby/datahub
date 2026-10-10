@@ -17,7 +17,7 @@ export type TableSpec = {
 /**
  * Figure anatomy (spec §8.1):
  *
- *   <figcaption>  Fig. 02.n · title (h3) · one-sentence summary
+ *   <figcaption>  Fig. 02.n · title (h3; h2 on /dashboards) · one-sentence summary
  *   readout       crosshair value, aria-live polite; at rest the latest point
  *   chart         server SVG (stamp + <title> inside)   | read-mode notes
  *   credit        "Source: DataHub sample data · TZS · {period}"
@@ -52,9 +52,9 @@ export function Figure({
     <figure className={cn(styles.fig, "min-w-0", className)} aria-labelledby={`${id}-h`}>
       <figcaption>
         <p className="t-eyebrow">{figLabel(ctx, number)}</p>
-        <h3 id={`${id}-h`} className="t-title mt-2 text-fg">
+        <FigureTitle ctx={ctx} id={`${id}-h`} className="mt-2">
           {title}
-        </h3>
+        </FigureTitle>
         <p className="t-small mt-2 max-w-[60ch] font-normal text-muted">{summary}</p>
       </figcaption>
       {readout !== undefined && (
@@ -75,6 +75,26 @@ export function Figure({
       <p className="t-data mt-4">{fill(ctx.t.credit, { period: creditPeriod })}</p>
       {table && <DataTable ctx={ctx} caption={title} spec={table} />}
     </figure>
+  );
+}
+
+/** A figure's title: h3 under a section's h2, h2 under the page's h1 (DashCtx.figureLevel). */
+export function FigureTitle({
+  ctx,
+  id,
+  className,
+  children,
+}: {
+  ctx: DashCtx;
+  id: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  const H = ctx.figureLevel === 2 ? "h2" : "h3";
+  return (
+    <H id={id} className={cn("t-title text-fg", className)}>
+      {children}
+    </H>
   );
 }
 

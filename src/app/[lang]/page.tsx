@@ -1,30 +1,40 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
-import { hasLocale, localePath, LANG_TAG } from "@/i18n/config";
+import { hasLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { JsonLd } from "@/components/system/JsonLd";
 import { LangHint } from "@/components/system/LangHint";
 import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
-import { Services } from "@/components/site/Services";
-import { Dashboards } from "@/components/site/Dashboards";
-import { HoursEstimator } from "@/components/site/HoursEstimator";
-import { Process } from "@/components/site/Process";
-import { WhyUs } from "@/components/site/WhyUs";
-import { Team } from "@/components/site/Team";
-import { Faq } from "@/components/site/Faq";
-import { Contact } from "@/components/site/Contact";
 import { Footer } from "@/components/site/Footer";
 import { ActionRail } from "@/components/site/ActionRail";
-import { organizationSchema, websiteSchema, faqSchema, absoluteUrl, shareCard } from "@/lib/seo";
+import { HomeServices } from "@/components/site/home/HomeServices";
+import { HomeDashboards } from "@/components/site/home/HomeDashboards";
+import { HomeReasons } from "@/components/site/home/HomeReasons";
+import { CtaBand } from "@/components/site/home/CtaBand";
+import { LegacyHash } from "@/components/site/home/LegacyHash";
+import { organizationSchema, websiteSchema, alternatesFor, shareCard } from "@/lib/seo";
+
+/**
+ * The home page, short (about three screens on a phone): the hero, then one
+ * teaser per idea, each pointing at the page that holds the rest —
+ *
+ *   hero · 01 what we do → /services · 02 a sample dashboard → /dashboards ·
+ *   three reasons → /process, /security, /team · start a conversation → /contact
+ *
+ * Organization and WebSite JSON-LD live here; the FAQPage markup moved to
+ * /faq with the questions it describes.
+ */
 
 // Render dynamically so the per-request CSP nonce (set in proxy.ts) is stamped
 // onto the framework scripts. A statically prerendered page could not carry it,
 // and 'strict-dynamic' would then block every script in production.
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: PageProps<"/[lang]">): Promise<Metadata> {
+type Props = { params: Promise<{ lang: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
   const dict = await getDictionary(lang);
@@ -33,10 +43,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]">): Promis
     // `absolute` so the home title is exactly the brand line, untemplated.
     title: { absolute: t.title },
     description: t.description,
-    alternates: {
-      canonical: localePath(lang, "/"),
-      languages: { [LANG_TAG.en]: "/", [LANG_TAG.sw]: "/sw", "x-default": "/" },
-    },
+    alternates: alternatesFor(lang, "/"),
     ...shareCard({
       lang,
       title: t.ogTitle,
@@ -47,7 +54,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]">): Promis
   };
 }
 
-export default async function Home({ params }: PageProps<"/[lang]">) {
+export default async function Home({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
   const t = await getDictionary(lang);
@@ -56,31 +63,19 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
   return (
     <>
-      <JsonLd
-        nonce={nonce}
-        data={[
-          organizationSchema(lang, t.meta.home.description),
-          websiteSchema(lang),
-          // Built from the same dictionary array the FAQ section renders, so
-          // the markup can never describe questions the page does not show.
-          faqSchema(t.faq.items, `${absoluteUrl(lang)}#faq`),
-        ]}
-      />
+      <JsonLd nonce={nonce} data={[organizationSchema(lang, t.meta.home.description), websiteSchema(lang)]} />
       <Header lang={lang} />
       <LangHint lang={lang} />
       <main id="main" className="flex-1">
         <Hero lang={lang} />
-        <Services lang={lang} />
-        <Dashboards lang={lang} />
-        <HoursEstimator lang={lang} />
-        <Process lang={lang} />
-        <WhyUs lang={lang} />
-        <Team lang={lang} />
-        <Faq lang={lang} />
-        <Contact lang={lang} />
+        <HomeServices lang={lang} />
+        <HomeDashboards lang={lang} />
+        <HomeReasons lang={lang} />
+        <CtaBand lang={lang} />
       </main>
       <Footer lang={lang} />
       <ActionRail lang={lang} />
+      <LegacyHash lang={lang} />
     </>
   );
 }

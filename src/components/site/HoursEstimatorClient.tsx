@@ -1,20 +1,30 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, useTransition, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { fill } from "@/i18n/fill";
 import { formatNumber } from "@/lib/format";
 import { ButtonText } from "@/components/ui/Button";
 import { Grid } from "@/components/ui/Grid";
+import { withCampaign } from "./MobileMenu";
 
 /**
  * "Where do the hours go?" — the fill-in-the-sentence estimator (spec §10.2).
  *
  * Nothing leaves the device: the only output is the optional "Add this to my
- * message", which hands a sentence to the contact form through the
- * `dh:prefill` window event ({ detail: { message } }).
+ * message", which hands a sentence to the contact form. The form lives on
+ * the contact page, so the sentence is left in sessionStorage["dh-prefill"]
+ * and that page opens (keeping the campaign tag); the form adopts it on
+ * mount. Until it shows, which on a slow network takes a moment, the button
+ * is aria-busy with its thread drawn. Should a contact form ever share the
+ * page, it gets the sentence through the `dh:prefill` window event
+ * ({ detail: { message } }) instead.
  */
 export type EstimatorStrings = Omit<Dictionary["estimator"], "eyebrow" | "title" | "lead">;
+
+/** Where the sentence waits for the contact form. Same key in ContactForm.tsx. */
+const PREFILL_STORAGE_KEY = "dh-prefill";
 
 type Field = "count" | "people" | "hours";
 type Period = "day" | "week" | "month";
@@ -62,7 +72,9 @@ const inputCls =
   "peer bg-transparent text-center text-accent tabular-nums focus:outline-hidden [appearance:textfield] " +
   "[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none";
 
-export function HoursEstimatorClient({ s }: { s: EstimatorStrings }) {
+export function HoursEstimatorClient({ s, contactHref }: { s: EstimatorStrings; contactHref: string }) {
+  const router = useRouter();
+  const [opening, startOpening] = useTransition();
   const [vals, setVals] = useState<Record<Field, string>>({ count: "3", people: "1", hours: "2" });
   const [period, setPeriod] = useState<Period>("week");
   const [salary, setSalary] = useState("");
@@ -125,10 +137,20 @@ export function HoursEstimatorClient({ s }: { s: EstimatorStrings }) {
   }, [summary, touched]);
 
   const addToMessage = () => {
-    window.dispatchEvent(new CustomEvent("dh:prefill", { detail: { message: fill(s.messageTemplate, values) } }));
-    setAdded(true);
+    const message = fill(s.messageTemplate, values);
     const contact = document.getElementById("contact");
-    if (!contact) return;
+    if (!contact) {
+      // The contact page's form picks the sentence up on mount.
+      try {
+        sessionStorage.setItem(PREFILL_STORAGE_KEY, message);
+      } catch {
+        /* storage blocked: the contact page opens with an empty message */
+      }
+      startOpening(() => router.push(withCampaign(contactHref)));
+      return;
+    }
+    window.dispatchEvent(new CustomEvent("dh:prefill", { detail: { message } }));
+    setAdded(true);
     // Focus first (no scroll) so the form's own later focus() is a no-op.
     contact.querySelector<HTMLElement>('[name="name"]')?.focus({ preventScroll: true });
     // Smooth or instant follows the html scroll-behavior (reduced motion = instant).
@@ -295,7 +317,13 @@ export function HoursEstimatorClient({ s }: { s: EstimatorStrings }) {
         <p className="t-data mt-1">{s.formula.assumptions}</p>
         <p className="t-small mt-6 text-muted">{s.note}</p>
 
-        <ButtonText arrow="→" className="mt-4" onClick={addToMessage}>
+        <ButtonText
+          arrow="→"
+          className="mt-4 aria-busy:cursor-progress"
+          active={opening}
+          aria-busy={opening || undefined}
+          onClick={addToMessage}
+        >
           {s.addToMessage}
         </ButtonText>
         {/* Visible confirmation only: the contact form's live region announces it. */}

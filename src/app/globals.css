@@ -90,6 +90,28 @@
   --silk-blend: source-over;
   --silk-safe-alpha: 0.2; /* mask alpha inside the hero text zone */
 
+  /* Hero (iteration 2): the dot field, the glow behind the mark, the light
+     that runs along the D and the silk, and the word that writes itself
+     (src/components/hero/word-writer.ts reads the --word-* tokens). */
+  --field-dot: rgb(2 41 112 / 0.17); /* navy at low alpha */
+  --field-twinkle: #036bfb;
+  --hero-glow-a: rgb(104 212 251 / 0.34);
+  --hero-glow-b: rgb(3 107 251 / 0.1);
+  --comet-core: #ffffff;
+  --comet-glow: #68d4fb;
+  --silk-light: #036bfb;
+  --silk-light-glow: #68d4fb;
+  --word-from: #036bfb;
+  --word-to: #0b8ad8; /* the gradient's sky end, deep enough for 3.5:1 on --bg */
+  --word-ink: #68d4fb; /* the outline's glow while it is drawn */
+  --word-line: #036bfb; /* the outline itself */
+  --word-pen: #ffffff;
+  --word-halo: #68d4fb;
+  --word-spark: #036bfb;
+  --word-sheen: #ffffff;
+  --word-glow: 1;
+  --word-blend: source-over;
+
   --selection: rgb(3 107 251 / 0.18);
 
   /* Motion */
@@ -176,6 +198,16 @@
   --silk-max-alpha: 0.55;
   --silk-blend: lighter;
 
+  --field-dot: rgb(104 212 251 / 0.15);
+  --field-twinkle: #68d4fb;
+  --hero-glow-a: rgb(104 212 251 / 0.2);
+  --hero-glow-b: rgb(3 107 251 / 0.18);
+  --silk-light: #ffffff;
+  --word-to: #68d4fb;
+  --word-line: #e6f8ff;
+  --word-spark: #ffffff;
+  --word-blend: lighter;
+
   --selection: rgb(104 212 251 / 0.3);
 }
 
@@ -227,6 +259,15 @@
     --silk-decision: #68d4fb;
     --silk-max-alpha: 0.55;
     --silk-blend: lighter;
+    --field-dot: rgb(104 212 251 / 0.15);
+    --field-twinkle: #68d4fb;
+    --hero-glow-a: rgb(104 212 251 / 0.2);
+    --hero-glow-b: rgb(3 107 251 / 0.18);
+    --silk-light: #ffffff;
+    --word-to: #68d4fb;
+    --word-line: #e6f8ff;
+    --word-spark: #ffffff;
+    --word-blend: lighter;
     --selection: rgb(104 212 251 / 0.3);
   }
 }
@@ -555,16 +596,6 @@ body {
   from {
     opacity: 0;
     transform: translateY(8%);
-  }
-}
-@keyframes dh-ring {
-  from {
-    transform: scale(0.2);
-    opacity: 0.9;
-  }
-  to {
-    transform: scale(1);
-    opacity: 0;
   }
 }
 @keyframes dh-sending {

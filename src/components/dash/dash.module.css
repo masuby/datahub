@@ -4,8 +4,52 @@
   No boxes: the plate has no frame. Structure is R1 hairlines between rows,
   vertical R1 between two figures in a row (T-junctions only), the KPI strip's
   inset dividers, and booktabs rules in the data tables. Nothing closes into a
-  rectangle. Colours are tokens only; the ink band supplies dark tokens.
+  rectangle. Colours are tokens only, from the page's own theme: the plates
+  sit on --bg in light and dark alike (no ink surface since iteration 2), so
+  every pair here is checked against both themes' --bg and --bg-sunk.
 */
+
+/* ── Figure tokens ────────────────────────────────────────────────────── */
+/* The five-step ramp of the ageing and product bars and the map. In light,
+   the site's --ramp-2 and --ramp-3 sit almost level (4.18:1 and 4.42:1 on
+   --bg), so two growth bands merged on the map; here the steps run royal →
+   navy in OKLab, ~1.43× apart: 3.09, 4.42, 6.33, 9.01, 12.81:1 on --bg.
+   All five are literals, so a later change to the site ramp cannot make
+   them uneven unnoticed. Dark keeps the site ramp, already even (4.12 →
+   17.00:1 on --bg). */
+.fig {
+  --dash-ramp-1: #5b8fe0;
+  --dash-ramp-2: #036bfb;
+  --dash-ramp-3: #0354cc;
+  --dash-ramp-4: #033f9e;
+  --dash-ramp-5: #022970;
+}
+/* .surface-ink: no figure sits on ink today; kept as a guard because
+   Section still offers `ink`, where the light navy steps would vanish. */
+:global(.dark) .fig,
+:global(.surface-ink) .fig {
+  --dash-ramp-1: var(--ramp-1);
+  --dash-ramp-2: var(--ramp-2);
+  --dash-ramp-3: var(--ramp-3);
+  --dash-ramp-4: var(--ramp-4);
+  --dash-ramp-5: var(--ramp-5);
+}
+/* No-JS fallback, as in globals.css: no theme class, system dark. */
+@media (prefers-color-scheme: dark) {
+  :global(:root:not(.light):not(.dark)) .fig {
+    --dash-ramp-1: var(--ramp-1);
+    --dash-ramp-2: var(--ramp-2);
+    --dash-ramp-3: var(--ramp-3);
+    --dash-ramp-4: var(--ramp-4);
+    --dash-ramp-5: var(--ramp-5);
+  }
+}
+
+/* The state bars (selected tab, hovered or linked note, awaiting row) run
+   royal → --accent rather than the site thread's royal → sky: in light the
+   sky end is 1.60:1 on --bg, and the bar is the tab's main sign of state.
+   --accent is the deep royal in light (5.96:1 on --bg, 5.54:1 on --bg-sunk)
+   and sky in dark, so every pixel clears 3:1 in both themes. */
 
 /* ── Chart text and marks ─────────────────────────────────────────────── */
 .svg {
@@ -26,6 +70,13 @@
   font-weight: 500;
   letter-spacing: 0.14em;
 }
+/* A glyph-shaped --bg halo under labels painted over a fill (YGrid labels). */
+.halo {
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
 
 /* Interactive chart area: highlight, crosshair. */
 .chart {
@@ -33,12 +84,26 @@
   outline-offset: 6px;
   touch-action: pan-y;
 }
-.chart [data-k] {
-  transition: opacity var(--dur-micro) var(--ease-silk);
+.chart [data-k],
+.chart [data-k] :is(rect, path, circle, text) {
+  transition:
+    opacity var(--dur-micro) var(--ease-silk),
+    fill var(--dur-micro) var(--ease-silk),
+    stroke-width var(--dur-micro) var(--ease-silk);
 }
-.chart[data-hl] [data-k]:not([data-on]),
-.link[data-hl] [data-k]:not([data-on]) {
+/* While one mark is highlighted the other marks fade to 45%. Their words do
+   not fade: they step down to --fg-subtle instead (>= 5.06:1 on --bg and
+   --bg-sunk in both themes), so no label drops below 4.5:1. The text fills
+   are inline styles, hence !important. */
+.chart[data-hl] :is(rect, path, circle)[data-k]:not([data-on]),
+.chart[data-hl] [data-k]:not([data-on]) :is(rect, path, circle),
+.link[data-hl] :is(rect, path, circle)[data-k]:not([data-on]),
+.link[data-hl] [data-k]:not([data-on]) :is(rect, path, circle) {
   opacity: 0.45;
+}
+.chart[data-hl] [data-k]:not([data-on]) text,
+.link[data-hl] [data-k]:not([data-on]) text {
+  fill: var(--fg-subtle) !important;
 }
 .xh {
   opacity: 0;
@@ -47,11 +112,6 @@
 }
 .chart[data-hl] .xh {
   opacity: 1;
-}
-.ring {
-  transition:
-    stroke-width var(--dur-micro) var(--ease-silk),
-    opacity var(--dur-micro) var(--ease-silk);
 }
 .link[data-hl] .ring[data-on] {
   stroke-width: 2.5;
@@ -319,7 +379,7 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background: linear-gradient(180deg, var(--royal), var(--sky));
+  background: linear-gradient(180deg, var(--royal), var(--accent));
   transform: scaleY(0);
   transform-origin: top;
   transition: transform var(--dur-ui) var(--ease-thread);
@@ -457,7 +517,7 @@
   top: 0.5rem;
   bottom: 0.5rem;
   width: 2px;
-  background: linear-gradient(180deg, var(--royal), var(--sky));
+  background: linear-gradient(180deg, var(--royal), var(--accent));
 }
 
 /* ── Swimlane labels (HTML over the SVG so they can wrap) ─────────────── */
@@ -508,7 +568,7 @@
   right: 0;
   bottom: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--royal), var(--sky));
+  background: linear-gradient(90deg, var(--royal), var(--accent));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--dur-ui) var(--ease-thread);
@@ -546,7 +606,7 @@
     bottom: 0;
     width: 2px;
     height: auto;
-    background: linear-gradient(180deg, var(--royal), var(--sky));
+    background: linear-gradient(180deg, var(--royal), var(--accent));
     transform: scaleY(0);
     transform-origin: top;
   }
@@ -567,6 +627,9 @@
   .note::before,
   .awaitRow::before {
     background: CanvasText;
+  }
+  .halo {
+    stroke: Canvas;
   }
 }
 @media (prefers-reduced-motion: reduce) {

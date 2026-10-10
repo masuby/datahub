@@ -1,0 +1,85 @@
+/* The word slot: every word in one grid cell, so the cell is as wide as the
+   longest and the line never moves while the words change. The writer
+   (word-writer.ts) sets data-shown (which word the text shows) and
+   data-live (its canvas has taken over). */
+
+.slot {
+  position: relative;
+  display: inline-grid;
+  white-space: nowrap;
+}
+
+.word {
+  grid-area: 1 / 1;
+  justify-self: start;
+  visibility: hidden;
+  /* Room for the ink outside the advance box (descenders, the last letter's
+     overhang under negative tracking), so the gradient paints all of it;
+     the negative margin keeps the layout exactly as plain text. */
+  padding: 0.12em 0.14em 0.24em 0.12em;
+  margin: -0.12em -0.14em -0.24em -0.12em;
+  color: var(--accent-display);
+  transition: opacity 250ms var(--ease-silk);
+}
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .word {
+    background-image: linear-gradient(90deg, var(--word-from), var(--word-to));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+.slot:not([data-shown]) > .word:first-child,
+.slot[data-shown="0"] > [data-i="0"],
+.slot[data-shown="1"] > [data-i="1"],
+.slot[data-shown="2"] > [data-i="2"],
+.slot[data-shown="3"] > [data-i="3"],
+.slot[data-shown="4"] > [data-i="4"],
+.slot[data-shown="5"] > [data-i="5"] {
+  visibility: visible;
+}
+
+/* Hand-over: the canvas word sits on the text word to the pixel, so taking
+   over is instant; handing back crossfades. */
+.slot[data-live="true"] > .word {
+  opacity: 0;
+  transition: none;
+}
+
+/* Larger than the slot on every side: sparks rise above the line, the glow
+   and the pen reach past the letters. */
+.canvas {
+  position: absolute;
+  top: -0.7em;
+  left: -0.35em;
+  width: calc(100% + 0.95em);
+  height: calc(100% + 1.1em);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 250ms var(--ease-silk);
+}
+.slot[data-live="true"] > .canvas {
+  opacity: 1;
+  transition: none;
+}
+
+@media (forced-colors: active) {
+  .word,
+  .slot[data-live="true"] > .word {
+    background: none;
+    color: CanvasText;
+    opacity: 1;
+  }
+  .canvas {
+    display: none;
+  }
+}
+@media print {
+  .slot > .word {
+    opacity: 1;
+  }
+  .canvas {
+    display: none;
+  }
+}

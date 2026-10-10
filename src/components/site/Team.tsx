@@ -21,14 +21,26 @@ const PORTRAITS = [
   { key: "marketing", src: "/team/yohana-mussa.png" },
 ] as const;
 
-/** Section 06, id=team. Line-up on one shared floor rule (spec §6.7). */
-export async function Team({ lang }: { lang: Locale }) {
+/**
+ * Section 06, id=team: the /team page (`headingLevel` 1 there, where its
+ * title is the page's h1 and the names step up to h2). Line-up on one shared
+ * floor rule (spec §6.7).
+ */
+export async function Team({ lang, headingLevel = 2 }: { lang: Locale; headingLevel?: 1 | 2 }) {
   const t = (await getDictionary(lang)).team;
+  const NameHeading = headingLevel === 1 ? "h2" : "h3";
 
   return (
     <Section id="team" labelledBy="team-title">
       <Container>
-        <SectionHeader index="06" eyebrow={t.eyebrow} title={t.title} titleId="team-title" lead={t.lead} />
+        <SectionHeader
+          index="06"
+          eyebrow={t.eyebrow}
+          title={t.title}
+          titleId="team-title"
+          lead={t.lead}
+          headingLevel={headingLevel}
+        />
 
         <Reveal>
           <div className={styles.lineup}>
@@ -74,9 +86,9 @@ export async function Team({ lang }: { lang: Locale }) {
 
                     <div className={styles.head}>
                       <p className="t-eyebrow">{m.index}</p>
-                      <h3 id={nameId} className="t-title mt-3 text-fg">
+                      <NameHeading id={nameId} className="t-title mt-3 text-fg">
                         {m.name}
-                      </h3>
+                      </NameHeading>
                       {/* Sentence case .t-small: roles run past three words in
                           Kiswahili (spec §2.2), and all three stay identical. */}
                       <p className="t-small mt-2 text-accent">{m.role}</p>

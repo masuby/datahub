@@ -56,7 +56,7 @@ function MapFigure({ ctx }: { ctx: DashCtx }) {
     lat: r.hub!.lat,
     lon: r.hub!.lon,
     r: MAX_RING * Math.sqrt(r.sales / maxSales),
-    tone: `var(--ramp-${growthStep(r.yoy)})`,
+    tone: `var(--dash-ramp-${growthStep(r.yoy)})`,
   }));
   const notes = notesFor(ctx, "sales", "map");
   return (
@@ -93,7 +93,7 @@ function MapFigure({ ctx }: { ctx: DashCtx }) {
               <span
                 aria-hidden="true"
                 className="inline-block h-1.5 w-3"
-                style={{ background: `var(--ramp-${i + 1})` }}
+                style={{ background: `var(--dash-ramp-${i + 1})` }}
               />
               {l}
             </li>

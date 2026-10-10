@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { localePath, type Locale } from "@/i18n/config";
 import { fill, getDictionary } from "@/i18n/get-dictionary";
+import { chromeExtra } from "@/i18n/extra/chrome";
 import { BrandLockup } from "@/components/brand/BrandMark";
 import { SilkField } from "@/components/silk/SilkField";
 import { Container } from "@/components/ui/Container";
@@ -12,10 +13,13 @@ import { ThemeSettings } from "@/components/system/ThemeSettings";
 import { MotionToggle } from "@/components/system/MotionToggle";
 import { CONTACT_EMAIL, WHATSAPP_DISPLAY, WHATSAPP_HREF, WHATSAPP_NUMBER } from "@/lib/contact-info";
 import { servicesFor } from "@/lib/services";
-import { WhatsAppGlyph } from "./MobileMenu";
+import { NavLink, WhatsAppGlyph } from "./MobileMenu";
 
 const linkClass =
-  "group t-small inline-flex min-h-11 items-center gap-2 text-muted transition-colors duration-[160ms] hover:text-fg";
+  "group t-small inline-flex min-h-11 items-center gap-2 text-muted transition-colors duration-[160ms] hover:text-fg data-[active=true]:text-fg";
+
+/** The label of a page link: the thread underline stays drawn on the page showing. */
+const labelClass = "link-thread pb-0.5 group-data-[active=true]:[background-size:100%_2px]";
 
 /**
  * A footer column. Desktop: a vertical R1 on its left, centred in the column
@@ -42,14 +46,20 @@ function Column({ title, children, className }: { title: string; children: React
  * Site footer (§6.10): an ink band in both themes. A static silk plate (no
  * canvas) carries the tagline, then R2, four columns, a preferences row
  * (language, theme, motion) and the legal line.
+ *
+ * Every page of the site is linked from here; the one showing is marked
+ * aria-current="page" with its thread underline drawn (NavLink). Services:
+ * the three service pages, all services and the sample dashboards. Company
+ * (§6.10): process, security, team, FAQ, privacy.
  */
 export async function Footer({ lang }: { lang: Locale }) {
   const t = await getDictionary(lang);
   const f = t.footer;
+  const x = chromeExtra[lang].footer;
   const home = localePath(lang, "/");
-  const at = (id: string) => `${home}#${id}`;
   const services = servicesFor(lang);
-  const company = [at("process"), at("security"), at("team"), at("faq"), localePath(lang, "/privacy")];
+  /** Paths of the dictionary's company links, in its order. */
+  const company = ["/process", "/security", "/team", "/faq", "/privacy"];
   const year = new Date().getFullYear();
 
   return (
@@ -85,29 +95,32 @@ export async function Footer({ lang }: { lang: Locale }) {
           <Column title={f.columns.services} className="lg:col-span-3">
             {services.map((s, i) => (
               <li key={s.slug}>
-                <Link href={localePath(lang, `/services/${s.slug}`)} className={linkClass}>
-                  <span className="link-thread pb-0.5">{f.services[i] ?? s.navLabel}</span>
-                </Link>
+                <NavLink href={localePath(lang, `/services/${s.slug}`)} className={linkClass}>
+                  <span className={labelClass}>{f.services[i] ?? s.navLabel}</span>
+                </NavLink>
               </li>
             ))}
+            <li>
+              <NavLink href={localePath(lang, "/services")} className={linkClass}>
+                <span className={labelClass}>{x.allServices}</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink href={localePath(lang, "/dashboards")} className={linkClass}>
+                <span className={labelClass}>{x.dashboards}</span>
+              </NavLink>
+            </li>
           </Column>
 
           <Column title={f.columns.company} className="lg:col-span-2">
             {f.company.map((label, i) => {
-              const href = company[i];
-              if (!href) return null;
-              const inPage = href.includes("#");
+              const path = company[i];
+              if (!path) return null;
               return (
-                <li key={href}>
-                  {inPage ? (
-                    <a href={href} data-hash-link className={linkClass}>
-                      <span className="link-thread pb-0.5">{label}</span>
-                    </a>
-                  ) : (
-                    <Link href={href} className={linkClass}>
-                      <span className="link-thread pb-0.5">{label}</span>
-                    </Link>
-                  )}
+                <li key={path}>
+                  <NavLink href={localePath(lang, path)} className={linkClass}>
+                    <span className={labelClass}>{label}</span>
+                  </NavLink>
                 </li>
               );
             })}
@@ -127,6 +140,11 @@ export async function Footer({ lang }: { lang: Locale }) {
               <a href={`mailto:${CONTACT_EMAIL}`} className={linkClass}>
                 <span className="link-thread pb-0.5">{fill(f.contact.email, { email: CONTACT_EMAIL })}</span>
               </a>
+            </li>
+            <li>
+              <NavLink href={localePath(lang, "/contact")} className={linkClass}>
+                <span className={labelClass}>{x.contactPage}</span>
+              </NavLink>
             </li>
             <li className="t-small flex min-h-11 items-center text-muted">{f.contact.location}</li>
           </Column>

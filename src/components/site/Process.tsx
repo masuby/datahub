@@ -9,7 +9,8 @@ import { cn } from "@/lib/utils";
 import styles from "./Process.module.css";
 
 /**
- * 04 — How we work.
+ * 04 — How we work: the /process page (`headingLevel` 1 there, where its
+ * title is the page's h1 and the step titles step up to h2).
  *
  * Four steps on one track. Desktop: the track runs across the 12 columns with
  * a node at the start of cols 1, 4, 7 and 10 and a hairline dropping from each
@@ -20,14 +21,22 @@ import styles from "./Process.module.css";
  * scroll-driven animation exists, and draws once on reveal elsewhere (see
  * Process.module.css). Zero client JS beyond the shared <Reveal>.
  */
-export async function Process({ lang }: { lang: Locale }) {
+export async function Process({ lang, headingLevel = 2 }: { lang: Locale; headingLevel?: 1 | 2 }) {
   const t = (await getDictionary(lang)).process;
   const titleId = "process-title";
+  const StepHeading = headingLevel === 1 ? "h2" : "h3";
 
   return (
     <Section id="process" labelledBy={titleId}>
       <Container>
-        <SectionHeader index="04" eyebrow={t.eyebrow} title={t.title} titleId={titleId} lead={t.lead} />
+        <SectionHeader
+          index="04"
+          eyebrow={t.eyebrow}
+          title={t.title}
+          titleId={titleId}
+          lead={t.lead}
+          headingLevel={headingLevel}
+        />
 
         <Reveal>
           <div className={styles.flow}>
@@ -46,7 +55,7 @@ export async function Process({ lang }: { lang: Locale }) {
                   <span aria-hidden="true" className={styles.drop} />
 
                   <p className="t-eyebrow">{step.index}</p>
-                  <h3 className="t-title mt-3">{step.title}</h3>
+                  <StepHeading className="t-title mt-3">{step.title}</StepHeading>
                   <p className="t-body mt-3 text-muted">{step.description}</p>
                   <p className="t-small mt-5 text-fg">
                     <span className="t-data">{t.receivePrefix}</span> {step.receive}

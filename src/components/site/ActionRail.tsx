@@ -6,9 +6,9 @@ import { ActionRailBar } from "./MobileMenu";
 
 /**
  * Mobile action rail (§6.11, below 1024px only): WhatsApp + "Start a
- * conversation", fixed to the bottom edge. Behaviour lives in the client
- * island; this only supplies the strings and links. The WhatsApp half
- * disappears when no number is configured.
+ * conversation" (the contact page), fixed to the bottom edge. Behaviour
+ * lives in the client island; this only supplies the strings and links. The
+ * WhatsApp half disappears when no number is configured.
  */
 export async function ActionRail({ lang }: { lang: Locale }) {
   const t = await getDictionary(lang);
@@ -20,7 +20,7 @@ export async function ActionRail({ lang }: { lang: Locale }) {
       newTabLabel={t.a11y.opensNewTab}
       ctaLabel={t.rail.cta}
       ctaShortLabel={chromeExtra[lang].rail.ctaShort}
-      ctaHref={`${localePath(lang, "/")}#contact`}
+      ctaHref={localePath(lang, "/contact")}
     />
   );
 }

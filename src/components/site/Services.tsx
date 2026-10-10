@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { localePath, type Locale } from "@/i18n/config";
-import { getDictionary } from "@/i18n/get-dictionary";
+import { getDictionary, type Dictionary } from "@/i18n/get-dictionary";
 import { servicesFor } from "@/lib/services";
+import type { ServiceSlug } from "@/lib/service-slugs";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -10,11 +11,12 @@ import { Rule } from "@/components/ui/Rule";
 import { ServiceGlyph, type GlyphKind } from "./ServiceGlyph";
 
 /**
- * 01 — What we do.
+ * 01 — What we do: the head of /services (`headingLevel` 1 there, where its
+ * title is the page's h1 and the row titles step up to h2).
  *
  * The three services as one ledger of links: rows between an R2 above and an
  * R2 below, R1 hairlines between them. Each row is a single <a> (the whole row
- * is the hit area) containing its <h3>; the link's name comes from its content,
+ * is the hit area) containing its heading; the link's name comes from its content,
  * so every screen reader hears the tagline, description and deliverables too.
  * The section reveal comes only from <Reveal> (§4.3: rows move on hover/focus
  * only). On hover/focus a thread draws over the row's top rule, the index
@@ -26,33 +28,44 @@ import { ServiceGlyph, type GlyphKind } from "./ServiceGlyph";
  * exactly what the service page promises.
  */
 
-/** Service slug → dictionary item key. Slugs never change (SEO URLs). */
-const ITEM_KEY = {
+/**
+ * Service slug → dictionary item key. Slugs never change (SEO URLs). Shared
+ * with the home page's teaser and the service pages' "Also from DataHub".
+ */
+export const SERVICE_ITEM_KEY = {
   dashboards: "dashboards",
   automation: "automation",
   "ai-agents": "aiAgents",
-} as const satisfies Record<GlyphKind, string>;
+} as const satisfies Record<ServiceSlug, keyof Dictionary["services"]["items"]>;
 
-const isGlyphKind = (slug: string): slug is GlyphKind => slug in ITEM_KEY;
+const isGlyphKind = (slug: string): slug is GlyphKind => slug in SERVICE_ITEM_KEY;
 
 const ARROW_MOVE =
   "inline-block transition-transform duration-[280ms] ease-[var(--ease-silk)] group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5";
 
-export async function Services({ lang }: { lang: Locale }) {
+export async function Services({ lang, headingLevel = 2 }: { lang: Locale; headingLevel?: 1 | 2 }) {
   const t = await getDictionary(lang);
   const s = t.services;
   const rows = servicesFor(lang).filter((svc) => isGlyphKind(svc.slug));
+  const RowHeading = headingLevel === 1 ? "h2" : "h3";
 
   return (
     <Section id="services" labelledBy="services-title">
       <Container>
-        <SectionHeader index="01" eyebrow={s.eyebrow} title={s.title} titleId="services-title" lead={s.lead} />
+        <SectionHeader
+          index="01"
+          eyebrow={s.eyebrow}
+          title={s.title}
+          titleId="services-title"
+          lead={s.lead}
+          headingLevel={headingLevel}
+        />
 
         <Reveal>
           <ol className="list-none p-0" role="list">
             {rows.map((svc, i) => {
               const kind = svc.slug as GlyphKind;
-              const item = s.items[ITEM_KEY[kind]];
+              const item = s.items[SERVICE_ITEM_KEY[kind]];
               const titleId = `service-${svc.slug}-title`;
               return (
                 <li key={svc.slug}>
@@ -80,12 +93,12 @@ export async function Services({ lang }: { lang: Locale }) {
                     </p>
 
                     {/* Title */}
-                    <h3
+                    <RowHeading
                       id={titleId}
                       className="t-h3 col-span-4 mt-4 sm:col-span-6 sm:mt-0 lg:col-span-4 lg:pr-6"
                     >
                       {item.title}
-                    </h3>
+                    </RowHeading>
 
                     {/* Tagline, description, deliverables */}
                     <div className="col-span-4 mt-6 sm:col-span-4 sm:col-start-3 sm:mt-6 lg:col-span-4 lg:col-start-7 lg:mt-2">

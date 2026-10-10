@@ -1,22 +1,38 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useTransition,
+  type AnchorHTMLAttributes,
+  type MouseEventHandler,
+  type ReactNode,
+} from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { stripLocale } from "@/i18n/config";
 import { BrandLockup } from "@/components/brand/BrandMark";
+import { useMotionAllowed } from "@/components/system/motion-store";
+import { sanitizeRef } from "@/components/system/RefKeeper";
 import { ButtonPrimary } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { cn } from "@/lib/utils";
+import styles from "./MobileMenu.module.css";
 
 /*
  * Client islands of the site chrome: the header shell (scroll state, progress
- * thread, active section, in-page links that keep the query string), the
- * mobile menu sheet, and the mobile action rail. They share one signal — the
- * menu being open — published as <html data-menu="open"> plus an event.
+ * thread, page-change thread, links that keep the campaign tag), the page
+ * links that know which page is showing, the mobile menu sheet, and the
+ * mobile action rail. They share one signal — the menu being open —
+ * published as <html data-menu="open"> plus an event.
  */
 
 const MENU_EVENT = "dh-menu-change";
-const SECTION_IDS = ["services", "dashboards", "estimator", "process", "security", "team", "faq", "contact"] as const;
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -60,23 +76,146 @@ function focusSection(section: HTMLElement) {
   el.focus({ preventScroll: true });
 }
 
+/* ───────────────────────── Campaign tag ───────────────────────── */
+
+/** A path that is a page of the site, not an API route, build asset or file. */
+const isPagePath = (path: string) => !/^\/(api|_next)\//.test(path) && !/\.[^/]*$/.test(path);
+
+/**
+ * `href` (a path, optionally with a #fragment) carrying the campaign tag of
+ * the address bar — `?ref=`, else `?utm_source=`, sanitised as RefKeeper
+ * does — when there is one and `href` has no query of its own.
+ *
+ * When the site was one page, every menu link scrolled within it and the
+ * tag stayed in the address bar. Now they are pages, so the tag travels with
+ * the visitor instead: the contact form still reads it from the URL even
+ * where sessionStorage (RefKeeper's copy) is blocked.
+ */
+export function withCampaign(href: string): string {
+  const params = new URLSearchParams(window.location.search);
+  const ref = sanitizeRef(params.get("ref") ?? params.get("utm_source"));
+  const hashAt = href.indexOf("#");
+  const path = hashAt < 0 ? href : href.slice(0, hashAt);
+  if (!ref || path.includes("?")) return href;
+  return `${path}?ref=${ref}${hashAt < 0 ? "" : href.slice(hashAt)}`;
+}
+
+/* ───────────────────────── Where am I ───────────────────────── */
+
+/**
+ * The page being shown, locale-free ("/team"). usePathname may report the
+ * internal /en rewrite on the server and the public path in the browser;
+ * stripLocale makes both the same, so the server HTML and the hydrated tree
+ * agree on which link is current.
+ */
+function useHere(): string {
+  return stripLocale(usePathname() ?? "/");
+}
+
+/** "page" when `href` is the page being shown. A link to a part of a page (`#…`) never is. */
+function currentOf(here: string, href: string): "page" | undefined {
+  return !href.includes("#") && stripLocale(href) === here ? "page" : undefined;
+}
+
+/**
+ * A link to a page of the site that knows whether it is the page showing:
+ * `aria-current="page"` and `data-active` (the thread underline) on the
+ * current one. `also` lists further locale-free paths that belong to this
+ * item — the service pages under Services — which light the underline but
+ * are not announced as the current page, because they are not it.
+ */
+export function NavLink({
+  href,
+  also,
+  className,
+  children,
+  ...rest
+}: {
+  href: string;
+  also?: readonly string[];
+  className?: string;
+  children: ReactNode;
+} & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "className" | "children">) {
+  const here = useHere();
+  const current = currentOf(here, href);
+  const active = current !== undefined || Boolean(also?.includes(here));
+  return (
+    <Link
+      href={href}
+      aria-current={current}
+      data-active={active ? "true" : undefined}
+      className={className}
+      {...rest}
+    >
+      {children}
+    </Link>
+  );
+}
+
+/** The primary action as a page link, marked current on that page (the header CTA on /contact). */
+export function PrimaryLink({
+  href,
+  children,
+  size,
+  className,
+  onClick,
+}: {
+  href: string;
+  children: ReactNode;
+  size?: "default" | "compact";
+  className?: string;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
+}) {
+  const here = useHere();
+  return (
+    <ButtonPrimary href={href} size={size} aria-current={currentOf(here, href)} onClick={onClick} className={className}>
+      {children}
+    </ButtonPrimary>
+  );
+}
+
 /* ───────────────────────── Header shell ───────────────────────── */
 
 /**
  * The sticky <header>. Transparent at the top of the page; from 8px of scroll
  * it takes the header surface and an R1 bottom hairline. A 2px thread on that
- * hairline shows reading progress (one passive, rAF-throttled listener). The
- * nav link of the section in view gets `data-active` (an in-page position,
- * so not aria-current).
+ * hairline shows reading progress (one passive, rAF-throttled listener).
  *
- * It also makes every `a[data-hash-link]` that points at a section of the
- * current page scroll there without a navigation, so `?ref=` stays in the
- * address bar (a plain `/#contact` would drop it).
+ * It also handles two kinds of link click for the whole page:
+ * - `a[data-hash-link]` pointing at a section of the current page scrolls
+ *   there without a navigation, so the query string stays in the address bar
+ *   (a plain `#estimator` link would keep it too, but not a `/services#…`
+ *   one rendered by next/link);
+ * - a link to another page of the site, while the address bar carries a
+ *   campaign tag, navigates with the tag (see withCampaign). Language links
+ *   (hreflang) refresh their own href from the live URL and are left alone.
+ *
+ * Page changes. Every page is rendered per request (the CSP nonce), so none
+ * is prefetched and a tap waits for the server: on a slow phone network,
+ * one to three seconds with nothing on screen changing. While the next page
+ * is on its way the header carries `data-navigating`, and a second thread
+ * takes the place of the reading-progress one (MobileMenu.module.css). It
+ * covers both ways of leaving: the campaign push above, run as a transition
+ * (isPending), and a plain click on a link to another page, which next/link
+ * then carries out. That one ends when the path changes — or, after a full
+ * page load, when the browser brings this page back from its cache.
  */
 export function HeaderShell({ children, progressLabel }: { children: ReactNode; progressLabel: string }) {
-  const ref = useRef<HTMLElement>(null);
   const barRef = useRef<HTMLSpanElement>(null);
   const [scrolled, setScrolled] = useState(false);
+  const router = useRouter();
+  const motion = useMotionAllowed();
+  const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
+  const [leaving, setLeaving] = useState(false);
+  // The next page is showing: the change is over. Adjusted while rendering
+  // (React's pattern for state that follows a prop), not in an effect.
+  const [shownPath, setShownPath] = useState(pathname);
+  if (shownPath !== pathname) {
+    setShownPath(pathname);
+    setLeaving(false);
+  }
+  const navigating = isPending || leaving;
 
   // Scroll state and progress.
   useEffect(() => {
@@ -111,66 +250,76 @@ export function HeaderShell({ children, progressLabel }: { children: ReactNode; 
     };
   }, []);
 
-  // Active section: the one crossing a thin band about a third down the viewport.
-  useEffect(() => {
-    const header = ref.current;
-    if (!header || typeof IntersectionObserver === "undefined") return;
-    const links = Array.from(header.querySelectorAll<HTMLElement>("[data-nav]"));
-    const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
-      (el): el is HTMLElement => el !== null,
-    );
-    if (!links.length || !sections.length) return;
-    const inBand = new Set<string>();
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) inBand.add(e.target.id);
-          else inBand.delete(e.target.id);
-        }
-        const active = SECTION_IDS.find((id) => inBand.has(id));
-        for (const a of links) {
-          if (a.dataset.nav === active) a.setAttribute("data-active", "true");
-          else a.removeAttribute("data-active");
-        }
-      },
-      { rootMargin: "-35% 0px -60% 0px" },
-    );
-    sections.forEach((s) => io.observe(s));
-    return () => io.disconnect();
-  }, []);
-
-  // Same-page section links keep the query string. Capture phase, so it runs
-  // before next/link's handler (which then sees defaultPrevented and stands down).
+  // Capture phase, so it runs before next/link's handler (which then sees
+  // defaultPrevented and stands down). On the global 404, HardLinks has
+  // already turned the click into a full page load: defaultPrevented again.
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      const a = (e.target as Element | null)?.closest?.("a[data-hash-link]");
-      if (!(a instanceof HTMLAnchorElement) || !a.hash) return;
-      if (a.origin !== window.location.origin || a.pathname !== window.location.pathname) return;
-      const target = fragmentTarget(a.hash);
-      if (!target) return;
-      e.preventDefault();
-      const url = `${window.location.pathname}${window.location.search}${a.hash}`;
-      if (`${window.location.pathname}${window.location.search}${window.location.hash}` !== url) {
-        history.pushState(history.state, "", url);
+      const a = (e.target as Element | null)?.closest?.("a[href]");
+      if (!(a instanceof HTMLAnchorElement) || a.origin !== window.location.origin) return;
+
+      // A section of this page.
+      if (a.hasAttribute("data-hash-link") && a.hash && a.pathname === window.location.pathname) {
+        const target = fragmentTarget(a.hash);
+        if (target) {
+          e.preventDefault();
+          const url = `${window.location.pathname}${window.location.search}${a.hash}`;
+          if (`${window.location.pathname}${window.location.search}${window.location.hash}` !== url) {
+            history.pushState(history.state, "", url);
+          }
+          // After this click's other handlers (e.g. the menu closing and
+          // unlocking the page) have run. Smoothness follows html's
+          // scroll-behavior, which is off under reduced motion. Then focus
+          // follows the jump, as a native fragment link would move it.
+          setTimeout(() => {
+            target.scrollIntoView();
+            focusSection(target);
+          }, 0);
+          return;
+        }
       }
-      // After this click's other handlers (e.g. the menu closing and
-      // unlocking the page) have run. Smoothness follows html's
-      // scroll-behavior, which is off under reduced motion. Then focus
-      // follows the jump, as a native fragment link would move it.
-      setTimeout(() => {
-        target.scrollIntoView();
-        focusSection(target);
-      }, 0);
+
+      // Another page of the site. Language links are full page loads (the
+      // browser shows its own progress) and keep their own query.
+      if (
+        a.hasAttribute("hreflang") ||
+        a.hasAttribute("download") ||
+        (a.target && a.target !== "_self") ||
+        !isPagePath(a.pathname)
+      ) {
+        return;
+      }
+      // Keep the campaign tag.
+      if (!a.search) {
+        const plain = `${a.pathname}${a.hash}`;
+        const tagged = withCampaign(plain);
+        if (tagged !== plain) {
+          e.preventDefault();
+          startTransition(() => router.push(tagged));
+          return;
+        }
+      }
+      // next/link (or, for a plain <a>, the browser) takes it from here;
+      // mark the header until the page changes.
+      if (a.pathname !== window.location.pathname) setLeaving(true);
+    };
+    // Back from the browser's page cache after a full page load: nothing is on its way.
+    const onShow = (e: PageTransitionEvent) => {
+      if (e.persisted) setLeaving(false);
     };
     document.addEventListener("click", onClick, true);
-    return () => document.removeEventListener("click", onClick, true);
-  }, []);
+    window.addEventListener("pageshow", onShow);
+    return () => {
+      document.removeEventListener("click", onClick, true);
+      window.removeEventListener("pageshow", onShow);
+    };
+  }, [router]);
 
   return (
     <header
-      ref={ref}
       data-scrolled={scrolled ? "true" : undefined}
+      data-navigating={navigating ? "" : undefined}
       className={cn(
         "sticky top-0 z-40 transition-colors duration-[160ms]",
         scrolled ? "bg-[var(--header-bg)]" : "bg-transparent",
@@ -189,8 +338,14 @@ export function HeaderShell({ children, progressLabel }: { children: ReactNode; 
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={0}
-        className="thread pointer-events-none absolute inset-x-0 bottom-0"
+        className={cn("thread pointer-events-none absolute inset-x-0 bottom-0", styles.progress)}
         style={{ transform: "scaleX(0)" }}
+      />
+      {/* The page-change thread. Still (full width) with reduced motion or motion paused. */}
+      <span
+        aria-hidden="true"
+        data-still={motion ? undefined : ""}
+        className={cn("thread pointer-events-none absolute inset-x-0 bottom-0", styles.pending)}
       />
     </header>
   );
@@ -198,17 +353,26 @@ export function HeaderShell({ children, progressLabel }: { children: ReactNode; 
 
 /* ───────────────────────── Mobile menu ───────────────────────── */
 
-export type MenuItem = { href: string; label: string; index: string };
+export type MenuItem = {
+  href: string;
+  label: string;
+  /** The chapter number, 01–08. */
+  index: string;
+  /** Locale-free paths that also belong to this item (see NavLink). */
+  also?: readonly string[];
+};
 
 /**
  * "Menu" text button (below 1024px) that opens a full-screen sheet: links in
- * Outfit 2rem numbered 01–08, separated by R1, each a full-row 56px target;
- * then the primary action, WhatsApp, and the language and theme preferences
- * (passed in as `children`).
+ * Outfit 2rem numbered 01–08 by chapter, separated by R1, each a full-row
+ * 56px target, the current page underlined and announced; then the primary
+ * action, WhatsApp, and the language and theme preferences (passed in as
+ * `children`).
  *
  * While open: focus is trapped in the sheet, everything else on the page is
  * `inert`, the page does not scroll, and Esc or Close returns focus to the
- * Menu button. Following a link closes it and lets the page scroll there.
+ * Menu button. Following a link closes it, then the page changes (or, for a
+ * part of the page showing, scrolls there).
  */
 export function MobileMenu({
   labels,
@@ -344,17 +508,21 @@ export function MobileMenu({
             {items.map((it, i) => (
               <li key={it.href}>
                 {i > 0 && <span aria-hidden="true" className="rule-hair" />}
-                <a
+                <NavLink
                   href={it.href}
-                  data-hash-link
+                  also={it.also}
+                  // Only acts when the link is a part of the page showing.
+                  data-hash-link={it.href.includes("#") ? "" : undefined}
                   onClick={onNavigate}
                   className="group flex min-h-14 items-baseline gap-4 py-3"
                 >
-                  <span className="t-mono w-6 shrink-0 text-subtle tnum">{it.index}</span>
-                  <span className="font-display text-[2rem] font-medium leading-[1.15] tracking-[-0.02em] transition-colors duration-[160ms] group-hover:text-accent">
+                  <span className="t-mono w-6 shrink-0 text-subtle tnum group-data-[active=true]:text-accent">
+                    {it.index}
+                  </span>
+                  <span className="link-thread pb-0.5 font-display text-[2rem] font-medium leading-[1.15] tracking-[-0.02em] transition-colors duration-[160ms] group-hover:text-accent group-data-[active=true]:[background-size:100%_2px]">
                     {it.label}
                   </span>
-                </a>
+                </NavLink>
               </li>
             ))}
           </ol>
@@ -362,9 +530,9 @@ export function MobileMenu({
         <span aria-hidden="true" className="rule-hair" />
 
         <div className="mt-8 flex flex-col items-start gap-2">
-          <ButtonPrimary href={ctaHref} data-hash-link onClick={onNavigate} className="w-full sm:w-auto">
+          <PrimaryLink href={ctaHref} onClick={onNavigate} className="w-full sm:w-auto">
             {labels.cta}
-          </ButtonPrimary>
+          </PrimaryLink>
           {whatsappHref && (
             <LinkArrow href={whatsappHref} external newTabLabel={newTabLabel} arrow="↗">
               {labels.whatsapp}
@@ -405,11 +573,12 @@ export function MobileMenu({
 
 /**
  * Mobile-only fixed bottom rail: WhatsApp (glyph + word) and the primary
- * action. It slides in once the hero's call to action has scrolled away and
- * steps aside while the contact section is on screen, while a text field has
- * focus (the keyboard is up), and while the menu is open. Hidden, it is
- * `inert`, so it never takes focus. Without a WhatsApp number the action
- * takes the full width.
+ * action, a link to the contact page. It slides in once the page's opening
+ * (the hero's call to action, or a page's h1 marked data-rail-anchor) has
+ * scrolled away and steps aside while the contact section is on screen,
+ * while a text field has focus (the keyboard is up), and while the menu is
+ * open. Hidden, it is `inert`, so it never takes focus. Without a WhatsApp
+ * number the action takes the full width.
  */
 export function ActionRailBar({
   label,
@@ -433,10 +602,11 @@ export function ActionRailBar({
   const [atContact, setAtContact] = useState(false);
   const [typing, setTyping] = useState(false);
   const [menu, setMenu] = useState(false);
+  const here = useHere();
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
-    // The hero CTA (#hero-cta, or anything marked data-rail-anchor); elsewhere
+    // The hero CTA (#hero-cta) or a page's h1 (data-rail-anchor); elsewhere
     // the first block of <main> (a service page's opening) stands in for it.
     const anchor = document.querySelector("[data-rail-anchor], #hero-cta") ?? document.querySelector("#main > *");
     const timer = setTimeout(() => {
@@ -505,7 +675,7 @@ export function ActionRailBar({
         <ButtonPrimary
           href={ctaHref}
           size="compact"
-          data-hash-link
+          aria-current={currentOf(here, ctaHref)}
           className="min-w-0 flex-1 whitespace-nowrap px-4 max-[359px]:px-3"
         >
           <span className="max-[359px]:hidden">{ctaLabel}</span>

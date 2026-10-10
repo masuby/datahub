@@ -138,3 +138,36 @@ export function filamentPath(p: SilkPreset, i: number, t = 0, k = 0, tol = p.tol
   }
   return d;
 }
+
+/**
+ * Points of light travelling along the filaments into the hand: data flowing
+ * into the mark (iteration-2 §B; desktop canvas only). Pure, like `silkY`:
+ * light j runs a loop of its own length and, each time round, picks another
+ * filament and starting point. Light 0 rides the decision filament past the
+ * hand and down onto the hero's bottom rule. `x` is normalised along the
+ * field, `alpha` fades it in as it leaves and out as it reaches the hand.
+ */
+export type SilkLight = { i: number; x: number; alpha: number };
+
+const hash = (a: number) => {
+  const v = Math.sin(a * 127.1) * 43758.5453;
+  return v - Math.floor(v);
+};
+
+export function silkLights(p: SilkPreset, t: number, count = 10): SilkLight[] {
+  const out: SilkLight[] = [];
+  for (let j = 0; j < count; j++) {
+    const period = 6.5 + hash(j + 1) * 4;
+    const clock = t + hash(j + 7) * period;
+    const lap = Math.floor(clock / period);
+    const u = clock / period - lap;
+    const decision = j === 0 && p.decision >= 0;
+    let i = decision ? p.decision : Math.floor(hash(j * 31 + lap * 7.3) * p.N);
+    if (!decision && i === p.decision) i = (i + 1) % p.N;
+    const from = decision ? 0.3 : 0.04 + hash(j * 13 + lap) * 0.3;
+    const to = decision ? 0.96 : p.sinkX + 0.015;
+    const alpha = Math.min(1, u / 0.15) * (1 - Math.max(0, (u - 0.85) / 0.15));
+    out.push({ i, x: from + (to - from) * u, alpha });
+  }
+  return out;
+}

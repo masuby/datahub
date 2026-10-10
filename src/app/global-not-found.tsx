@@ -125,7 +125,7 @@ function NotFoundCopy({ lang, t }: { lang: Locale; t: Dictionary }) {
       </p>
       <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 a-rise" style={{ animationDelay: "300ms" }}>
         <ButtonPrimary href={home}>{nf.home}</ButtonPrimary>
-        <LinkArrow href={`${home}#contact`}>{nf.contact}</LinkArrow>
+        <LinkArrow href={localePath(lang, "/contact")}>{nf.contact}</LinkArrow>
       </div>
     </section>
   );

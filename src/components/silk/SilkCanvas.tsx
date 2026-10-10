@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useEffectEvent, useRef } from "react";
-import { PRESETS, SHEEN_BUCKETS, sheenBucket, silkSheen, silkY, type SilkPresetName } from "@/lib/silk";
+import { PRESETS, SHEEN_BUCKETS, sheenBucket, silkLights, silkSheen, silkY, type SilkPresetName } from "@/lib/silk";
 import { THEME_TRANSITION_EVENT } from "@/components/system/ThemeToggle";
 
 /**
@@ -25,10 +25,13 @@ import { THEME_TRANSITION_EVENT } from "@/components/system/ThemeToggle";
  *   (the parent unmounts it) and the SVG underneath remains.
  * - Colours come from the --silk-* tokens, re-read whenever <html class>
  *   changes, so a theme switch repaints without a reload.
+ * - `lights` (desktop hero): small points of light travel along the
+ *   filaments into the hand, each with a short tail (silkLights in
+ *   src/lib/silk.ts) — about ten tails, sprites and dots a frame.
  *
  * `fit` mirrors how the SVG underneath maps the preset box onto the element:
  * "fill" for a non-uniformly stretched box (desktop hero, so the sink and the
- * decision filament's landing sit exactly on the mark and the index rule),
+ * decision filament's landing sit exactly on the mark and the floor rule),
  * "slice" for preserveAspectRatio="xMidYMid slice" (mobile band).
  */
 
@@ -44,9 +47,20 @@ const POINTER_R = 180;
 const POINTER_EASE_MS = 300;
 /** Safety net if the "transition finished" event never arrives. */
 const THEME_HOLD_MAX_MS = 2000;
+/** Lights: tail length (normalised x), glow radius and core radius (CSS px). */
+const LIGHT_TAIL = 0.05;
+const LIGHT_GLOW = 9;
+const LIGHT_CORE = 1.4;
 
 type Rgb = readonly [number, number, number];
-type Palette = { tones: string[]; decision: string; maxAlpha: number; blend: GlobalCompositeOperation };
+type Palette = {
+  tones: string[];
+  decision: string;
+  maxAlpha: number;
+  blend: GlobalCompositeOperation;
+  light: string;
+  lightGlow: string;
+};
 
 function hexToRgb(value: string): Rgb | null {
   const m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(value.trim());
@@ -111,7 +125,31 @@ function readPalette(el: Element): Palette {
     decision: get("--silk-decision") || bRaw || tones[TONES - 1],
     maxAlpha: Number.isFinite(alpha) ? Math.min(1, Math.max(0, alpha)) : 0.32,
     blend: get("--silk-blend") === "lighter" ? "lighter" : "source-over",
+    light: get("--silk-light") || "#ffffff",
+    lightGlow: get("--silk-light-glow") || bRaw || "#68d4fb",
   };
+}
+
+/** `color` at `alpha`, for gradient stops (hex tokens; anything else passes through). */
+function withAlpha(color: string, alpha: number): string {
+  const rgb = hexToRgb(color);
+  return rgb ? `rgb(${rgb[0]} ${rgb[1]} ${rgb[2]} / ${alpha})` : color;
+}
+
+/** The soft glow drawn round each light: pre-rendered once per theme. */
+function glowSprite(color: string): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = c.height = 48;
+  const g = c.getContext("2d");
+  if (g) {
+    const grad = g.createRadialGradient(24, 24, 0, 24, 24, 24);
+    grad.addColorStop(0, withAlpha(color, 1));
+    grad.addColorStop(0.25, withAlpha(color, 0.5));
+    grad.addColorStop(1, withAlpha(color, 0));
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 48, 48);
+  }
+  return c;
 }
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
@@ -121,6 +159,8 @@ export type SilkCanvasProps = {
   fit: "fill" | "slice";
   /** Visitor pressed "Pause motion": keep the current frame, stop the loop. */
   paused: boolean;
+  /** Points of light travelling along the filaments into the hand. */
+  lights?: boolean;
   className?: string;
   /** The first frame is on the canvas: safe to crossfade over the SVG. */
   onFirstFrame?: () => void;
@@ -132,7 +172,17 @@ export type SilkCanvasProps = {
   onDetach?: () => void;
 };
 
-export function SilkCanvas({ preset, fit, paused, className, onFirstFrame, onStop, onError, onDetach }: SilkCanvasProps) {
+export function SilkCanvas({
+  preset,
+  fit,
+  paused,
+  lights = false,
+  className,
+  onFirstFrame,
+  onStop,
+  onError,
+  onDetach,
+}: SilkCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pausedRef = useRef(paused);
   const updateRef = useRef<(() => void) | null>(null);
@@ -167,6 +217,7 @@ export function SilkCanvas({ preset, fit, paused, className, onFirstFrame, onSto
     const calmAllowed = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
     let palette = readPalette(canvas);
+    let sprite = glowSprite(palette.lightGlow);
     let cssW = 1;
     let cssH = 1;
     let dpr = 1;
@@ -236,20 +287,24 @@ export function SilkCanvas({ preset, fit, paused, className, onFirstFrame, onSto
         py = ly;
       }
 
+      /** Canvas y of filament i at normalised x (canvas X), pointer calm included. */
+      const yAt = (i: number, x: number, X: number) => {
+        let Y = oy + silkY(p, i, x, t, kScroll) * sy;
+        if (calmOn) {
+          const d = Math.hypot(X - px, Y - py);
+          if (d < POINTER_R) {
+            const f = 1 - d / POINTER_R;
+            Y = oy + silkY(p, i, x, t, Math.min(1, kScroll + 0.6 * f * f * calm)) * sy;
+          }
+        }
+        return Y;
+      };
+
       const trace = (i: number) => {
         for (let s = 0; s <= SAMPLES; s++) {
           const x = s / SAMPLES;
           const X = ox + x * p.W * sx;
-          let y = silkY(p, i, x, t, kScroll);
-          let Y = oy + y * sy;
-          if (calmOn) {
-            const d = Math.hypot(X - px, Y - py);
-            if (d < POINTER_R) {
-              const f = 1 - d / POINTER_R;
-              y = silkY(p, i, x, t, Math.min(1, kScroll + 0.6 * f * f * calm));
-              Y = oy + y * sy;
-            }
-          }
+          const Y = yAt(i, x, X);
           if (s === 0) g.moveTo(X, Y);
           else g.lineTo(X, Y);
         }
@@ -296,6 +351,40 @@ export function SilkCanvas({ preset, fit, paused, className, onFirstFrame, onSto
         g.strokeStyle = palette.decision;
         g.lineWidth = 1.5;
         g.stroke();
+      }
+
+      if (lights) {
+        // Data flowing into the mark: a point of light with a short tail
+        // that fades back along its filament.
+        g.globalCompositeOperation = palette.blend;
+        g.lineWidth = 1.5;
+        for (const light of silkLights(p, t)) {
+          if (light.alpha <= 0.01) continue;
+          const xs = Math.max(0, light.x - LIGHT_TAIL);
+          const X0 = ox + xs * p.W * sx;
+          const X1 = ox + light.x * p.W * sx;
+          const Y0 = yAt(light.i, xs, X0);
+          const Y1 = yAt(light.i, light.x, X1);
+          const tail = g.createLinearGradient(X0, Y0, X1, Y1);
+          tail.addColorStop(0, withAlpha(palette.lightGlow, 0));
+          tail.addColorStop(1, withAlpha(palette.lightGlow, 0.9));
+          g.beginPath();
+          for (let s = 0; s <= 8; s++) {
+            const x = xs + ((light.x - xs) * s) / 8;
+            const X = ox + x * p.W * sx;
+            if (s === 0) g.moveTo(X, yAt(light.i, x, X));
+            else g.lineTo(X, yAt(light.i, x, X));
+          }
+          g.strokeStyle = tail;
+          g.globalAlpha = light.alpha;
+          g.stroke();
+          g.drawImage(sprite, X1 - LIGHT_GLOW, Y1 - LIGHT_GLOW, LIGHT_GLOW * 2, LIGHT_GLOW * 2);
+          g.fillStyle = palette.light;
+          g.beginPath();
+          g.arc(X1, Y1, LIGHT_CORE, 0, Math.PI * 2);
+          g.fill();
+        }
+        g.globalCompositeOperation = "source-over";
       }
       g.globalAlpha = 1;
     };
@@ -417,6 +506,7 @@ export function SilkCanvas({ preset, fit, paused, className, onFirstFrame, onSto
       if (key === paletteKey) return;
       palette = next;
       paletteKey = key;
+      sprite = glowSprite(palette.lightGlow);
       paint(false);
     });
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
@@ -468,7 +558,7 @@ export function SilkCanvas({ preset, fit, paused, className, onFirstFrame, onSto
       }
       detached();
     };
-  }, [preset, fit]);
+  }, [preset, fit, lights]);
 
   return <canvas ref={canvasRef} className={className ?? "block size-full"} />;
 }

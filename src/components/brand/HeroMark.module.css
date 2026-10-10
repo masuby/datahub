@@ -4,8 +4,12 @@
    off, --sweep stays 360deg and the whole D shows. The mask colour is an
    alpha source, not a design colour.
 
-   Animation shorthands live in the component's style attribute, not here:
-   CSS Modules would rename the global dh-* keyframe names. */
+   The entrance animations live in the component's style attribute: CSS
+   Modules would rename the global dh-* keyframe names. The loops below use
+   this file's own keyframes, and play only while the hero section carries
+   data-hero-motion="run" (HeroLive). Until then (and without JavaScript)
+   they rest on their first frame, the plain mark; paused, they hold still
+   where they are. */
 .sweep {
   -webkit-mask-image: conic-gradient(from 302deg at 50% 50%, #000 var(--sweep), transparent 0);
   mask-image: conic-gradient(from 302deg at 50% 50%, #000 var(--sweep), transparent 0);
@@ -15,19 +19,103 @@
   transform-box: fill-box;
 }
 
-.ring {
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
+/* The wave: the hand's whole <svg> turns about the wrist (the hand's
+   lower-left corner, (12, 97) of the 100×100 viewBox, which fills the box),
+   ±12°, two or three swings in ~1.7 s that settle, then a ~4 s rest. A
+   transform on the <svg> box runs on the compositor. */
+.wave {
+  transform-box: border-box;
+  transform-origin: 12% 97%;
+  animation: wave 5.8s ease-in-out 1.2s infinite both paused;
+}
+@keyframes wave {
+  0%,
+  30%,
+  100% {
+    transform: rotate(0deg);
+  }
+  4.5% {
+    transform: rotate(-12deg);
+  }
+  10% {
+    transform: rotate(11deg);
+  }
+  16% {
+    transform: rotate(-9deg);
+  }
+  22% {
+    transform: rotate(6deg);
+  }
+  27% {
+    transform: rotate(-2deg);
+  }
 }
 
-.probe {
+/* A faint glow that breathes around the D: the D's own outline, stroked
+   wide and pale, on its own <svg> so the breathing (opacity) is composited.
+   It rests at nothing: the mark is plain until the loops run. */
+.halo {
+  fill: none;
+  stroke: var(--comet-glow);
+  stroke-linejoin: round;
   opacity: 0;
+  animation: breathe 4.2s ease-in-out 1.2s infinite both paused;
+}
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* The comet: every dash's head travels the same 0 → 1.1 of the spine (its
+   offset runs from --len to --to = --len − 1.1, set by HeroMark.tsx), so
+   they run as one light, core in front: it rises out of the top terminal,
+   runs round the bowl and fades as it reaches the bottom one (from 63%,
+   head at ~0.95 of the spine, to 72%, head just past the end): ~2.6 s a
+   pass, then a ~1 s rest. pathLength="1"; the gap (2) keeps one dash on
+   the path. */
+.comet path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: var(--len) 2;
+  stroke-dashoffset: var(--len);
+  opacity: 0;
+  animation: comet 3.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) 1.6s infinite both paused;
+}
+@keyframes comet {
+  0% {
+    stroke-dashoffset: var(--len);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  63% {
+    opacity: 1;
+  }
+  72% {
+    opacity: 0;
+  }
+  84%,
+  100% {
+    stroke-dashoffset: var(--to);
+    opacity: 0;
+  }
+}
+
+:global([data-hero-motion="run"]) .wave,
+:global([data-hero-motion="run"]) .halo,
+:global([data-hero-motion="run"]) .comet path {
+  animation-play-state: running;
 }
 
 @media (forced-colors: active) {
-  .ring,
-  .probe {
+  .halo,
+  .comet {
     display: none;
   }
 }

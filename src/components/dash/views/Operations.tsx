@@ -12,7 +12,7 @@ import {
 } from "@/lib/sample-data";
 import { cn } from "@/lib/utils";
 import { marksFor, notesFor, type DashCtx } from "../context";
-import { Cell, Figure, PlateRow, StatusMark } from "../Figure";
+import { Cell, Figure, FigureTitle, PlateRow, StatusMark } from "../Figure";
 import type { Kpi } from "../KpiStrip";
 import { Plate } from "../Plate";
 import { ReadMarker, ReadNotes } from "../ReadMarker";
@@ -171,9 +171,9 @@ export function AgentLog({ ctx }: { ctx: DashCtx }) {
   return (
     <figure className={cn(styles.fig, "min-w-0")} aria-labelledby={`${id}-h`}>
       <figcaption>
-        <h3 id={`${id}-h`} className="t-title text-fg">
+        <FigureTitle ctx={ctx} id={`${id}-h`}>
           {log.title}
-        </h3>
+        </FigureTitle>
         <p className="t-small mt-2 font-normal text-muted">{log.caption}</p>
       </figcaption>
       <div className={cn(styles.figBody, "mt-4")}>

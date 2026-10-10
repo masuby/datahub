@@ -15,7 +15,8 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ContactForm } from "./ContactForm";
 
 /**
- * 08 — Contact.
+ * 08 — Contact: the /contact page (`headingLevel` 1 there, where its title
+ * is the page's h1 and the headings under it step up to h2).
  *
  * Desktop: direct lines in columns 1–5 (WhatsApp, email, location as R1 rows,
  * then "what happens next"), the form in columns 7–12. Mobile is one column in
@@ -31,26 +32,21 @@ const ARROW_MOVE =
 const ROW_THREAD =
   "thread pointer-events-none absolute inset-x-0 top-[-1.5px] scale-x-0 transition-transform duration-[280ms] ease-[var(--ease-thread)] group-hover:scale-x-100 group-focus-visible:scale-x-100";
 
-/**
- * Contact is section 08 of 8 on the home page and the closing section of a
- * service page, so its number is a prop: every number on the site states a
- * position (spec §3.4), and "08 / 08" on a six-section page would lie.
- */
+/** Chapter 08 (spec §3.4): the eyebrow's number, and the prefix of the next steps (08.1, 08.2…). */
+const INDEX = "08";
+
 export async function Contact({
   lang,
-  index = "08",
-  total = 8,
-  eyebrow,
+  headingLevel = 2,
 }: {
   lang: Locale;
-  index?: string;
-  total?: number;
-  /** Numbered eyebrow override, e.g. "06 — Contact" on service pages. */
-  eyebrow?: string;
+  /** 1 on /contact, where this section is the page. */
+  headingLevel?: 1 | 2;
 }) {
   const t = await getDictionary(lang);
   const c = t.contact;
   const hasWhatsapp = Boolean(WHATSAPP_NUMBER);
+  const SubHeading = headingLevel === 1 ? "h2" : "h3";
 
   const whatsappRow = hasWhatsapp && (
     <a
@@ -85,12 +81,12 @@ export async function Contact({
     <Section id="contact" labelledBy="contact-title">
       <Container>
         <SectionHeader
-          index={index}
-          total={total}
-          eyebrow={eyebrow ?? c.eyebrow}
+          index={INDEX}
+          eyebrow={c.eyebrow}
           title={c.title}
           titleId="contact-title"
           lead={c.lead}
+          headingLevel={headingLevel}
         />
 
         <Grid className="lg:grid-rows-[auto_1fr]">
@@ -114,6 +110,7 @@ export async function Contact({
             <Reveal>
               <ContactForm
                 strings={t.form}
+                successHeading={SubHeading}
                 prefillAnnouncement={t.estimator.added}
                 newTabLabel={t.a11y.opensNewTab}
                 privacy={{
@@ -165,7 +162,7 @@ export async function Contact({
               </ul>
               <Rule />
 
-              <h3 className="t-eyebrow mt-12 lg:mt-16">{c.next.title}</h3>
+              <SubHeading className="t-eyebrow mt-12 lg:mt-16">{c.next.title}</SubHeading>
               <ol role="list" className="mt-4 list-none p-0">
                 {c.next.steps.map((step, i) => (
                   <li
@@ -179,7 +176,7 @@ export async function Contact({
                         className="t-data shrink-0 pt-[0.3em]"
                         aria-hidden="true"
                       >
-                        {index}.{i + 1}
+                        {INDEX}.{i + 1}
                       </span>
                       <p className="t-body text-fg">{step}</p>
                     </div>

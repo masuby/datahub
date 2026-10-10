@@ -5,7 +5,7 @@ import styles from "./dash.module.css";
 
 /**
  * Read mode ("Explain this view", spec §10.1): a numbered 24px ring placed at
- * a data coordinate. On the home page it is a focusable <button> described by
+ * a data coordinate. On /dashboards it is a focusable <button> described by
  * its note; with read mode off it is display:none (out of the tab order and
  * the accessibility tree). On service pages notes are always shown and the
  * marker is a plain numeral beside the chart.

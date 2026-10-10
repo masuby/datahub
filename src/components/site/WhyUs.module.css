@@ -1,5 +1,6 @@
 /*
- * 05 — Why DataHub. Ledger strike-through and the column divider.
+ * 05 — Security (WhyUs): the ledger strike-through and column divider, the
+ * practice and colophon row rules, the policy block.
  *
  * The strike is drawn as a 1px background line on the inline text run (with
  * box-decoration-break: clone, so every wrapped line of a long Kiswahili item

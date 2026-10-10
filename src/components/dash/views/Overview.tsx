@@ -12,7 +12,7 @@ import {
 } from "@/lib/sample-data";
 import { cn } from "@/lib/utils";
 import { marksFor, notesFor, type DashCtx } from "../context";
-import { Cell, Figure, PlateRow, StatusMark } from "../Figure";
+import { Cell, Figure, FigureTitle, PlateRow, StatusMark } from "../Figure";
 import type { Kpi } from "../KpiStrip";
 import { Plate, monthAnchor, monthLabels } from "../Plate";
 import { ReadMarker } from "../ReadMarker";
@@ -155,9 +155,9 @@ export function ChangedBlock({ ctx }: { ctx: DashCtx }) {
   return (
     <section aria-labelledby={`${ctx.idp}-changed`} className="grid gap-x-[var(--col-gap)] gap-y-4 lg:grid-cols-12">
       <div className="lg:col-span-4">
-        <h3 id={`${ctx.idp}-changed`} className="t-title text-fg">
+        <FigureTitle ctx={ctx} id={`${ctx.idp}-changed`}>
           {c.label}
-        </h3>
+        </FigureTitle>
         <p className="t-small mt-2 font-normal text-subtle">{c.byline}</p>
       </div>
       <ul className="lg:col-span-8">

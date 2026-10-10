@@ -16,7 +16,7 @@ import {
 } from "@/lib/sample-data";
 import { cn } from "@/lib/utils";
 import { marksFor, notesFor, type DashCtx } from "../context";
-import { Cell, Figure, PlateRow, StatusMark } from "../Figure";
+import { Cell, Figure, FigureTitle, PlateRow, StatusMark } from "../Figure";
 import type { Kpi } from "../KpiStrip";
 import { Plate, monthAnchor, monthLabels } from "../Plate";
 import { ReadMarker, ReadNotes } from "../ReadMarker";
@@ -30,7 +30,8 @@ import styles from "../dash.module.css";
 
 /** Read-mode anchors for the ageing buckets are the English bucket names. */
 const AGEING_KEYS = ["Current", "1–30 days", "31–60 days", "61–90 days", "90+ days"];
-const RAMP = ["var(--ramp-1)", "var(--ramp-2)", "var(--ramp-3)", "var(--ramp-4)", "var(--ramp-5)"];
+/** The figures' five-step ramp (dash.module.css, .fig): faint → strong against the page, in both themes. */
+const RAMP = [1, 2, 3, 4, 5].map((i) => `var(--dash-ramp-${i})`);
 
 export function loansKpis(ctx: DashCtx): Kpi[] {
   const k = ctx.t.views.loans.kpis;
@@ -221,9 +222,9 @@ function OfficersFigure({ ctx }: { ctx: DashCtx }) {
   return (
     <figure className={cn(styles.fig, "min-w-0")} aria-labelledby={`${id}-h`}>
       <figcaption>
-        <h3 id={`${id}-h`} className="t-title text-fg">
+        <FigureTitle ctx={ctx} id={`${id}-h`}>
           {o.title}
-        </h3>
+        </FigureTitle>
         <p className="t-small mt-2 font-normal text-muted">{o.caption}</p>
       </figcaption>
       <div className={cn(styles.figBody, "mt-4")}>

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { CONTACT_EMAIL, WHATSAPP_DISPLAY } from "@/lib/contact-info";
 import { servicesFor, type Service } from "@/lib/services";
 import { LANG_TAG, OG_LOCALE, localePath, type Locale } from "@/i18n/config";
@@ -54,6 +55,51 @@ export function shareCard(o: {
       images,
     },
     twitter: { card: "summary_large_image" as const, title: o.title, description: o.description, images },
+  };
+}
+
+/**
+ * Canonical and hreflang set for one page: en-TZ, sw-TZ and x-default
+ * (English), exactly as the sitemap lists them. `path` is locale-free.
+ */
+export function alternatesFor(lang: Locale, path: string) {
+  return {
+    canonical: localePath(lang, path),
+    languages: {
+      [LANG_TAG.en]: localePath("en", path),
+      [LANG_TAG.sw]: localePath("sw", path),
+      "x-default": localePath("en", path),
+    },
+  };
+}
+
+/**
+ * Everything a standalone page's metadata needs: its title (run through the
+ * layout's "%s · DataHub" template), description, canonical, hreflang and
+ * the full share card, whose title carries the brand since it is read away
+ * from the site.
+ */
+export function pageMetadata(o: {
+  lang: Locale;
+  path: string;
+  title: string;
+  description: string;
+  siteName: string;
+  titleTemplate: string;
+  imageAlt: string;
+}): Metadata {
+  return {
+    title: o.title,
+    description: o.description,
+    alternates: alternatesFor(o.lang, o.path),
+    ...shareCard({
+      lang: o.lang,
+      path: o.path,
+      title: o.titleTemplate.replace("%s", o.title),
+      description: o.description,
+      siteName: o.siteName,
+      imageAlt: o.imageAlt,
+    }),
   };
 }
 

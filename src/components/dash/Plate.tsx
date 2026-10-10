@@ -67,18 +67,3 @@ export function monthAnchor(start: number, length: number) {
 export function monthLabels(ctx: DashCtx, start: number, length: number): string[] {
   return Array.from({ length }, (_, i) => ctx.t.months[(start + i) % 12]);
 }
-
-/**
- * The ink band's top and bottom edges (spec §6.3): full-bleed 1px
- * --rule-strong lines, so in dark theme the band separates from the page by
- * more than its navy wash. Two parallel rules, never a frame. Place inside a
- * `Section ink` (which is position: relative).
- */
-export function BandEdges() {
-  return (
-    <>
-      <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-px bg-rule-strong" />
-      <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-rule-strong" />
-    </>
-  );
-}

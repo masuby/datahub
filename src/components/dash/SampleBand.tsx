@@ -4,7 +4,6 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { BandEdges } from "./Plate";
 import { SamplePlate, type SampleService } from "./SamplePlate";
 import { makeDashCtx } from "./make-ctx";
 import styles from "./dash.module.css";
@@ -13,11 +12,13 @@ import styles from "./dash.module.css";
 const SECTION = "03";
 
 /**
- * The ink band on service pages ("03 — See it in a sample", spec §7.4):
- * no tabs. The same figures as the home page, with read-mode notes always
+ * The sample band on service pages ("03 — See it in a sample", spec §7.4):
+ * no tabs. The same figures as /dashboards, with read-mode notes always
  * shown as numbered lists; `service` picks the figures (see SamplePlate).
+ * It sits on the page background and follows the visitor's theme, like
+ * every other section (iteration 2, §C): no ink surface.
  *
- * Same SAMPLE stamp, honesty notice and credit lines as the home page. The
+ * Same SAMPLE stamp, honesty notice and credit lines as /dashboards. The
  * plate sits in <Reveal> so its charts draw when scrolled to.
  */
 export async function SampleBand({
@@ -35,8 +36,7 @@ export async function SampleBand({
   const s = dict.servicePage.sample;
 
   return (
-    <Section id="sample" labelledBy="sample-title" ink>
-      <BandEdges />
+    <Section id="sample" labelledBy="sample-title">
       <Container>
         <SectionHeader index={SECTION} total={total} eyebrow={s.eyebrow} title={s.title} titleId="sample-title" lead={s.lead}>
           <p className="t-eyebrow mt-5 text-accent">{ctx.t.notice}</p>
