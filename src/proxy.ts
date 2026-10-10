@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { buildCsp } from "@/lib/csp";
 
 /**
  * Two jobs, in this order:
@@ -10,7 +11,8 @@ import type { NextRequest } from "next/server";
  *    page request is rewritten to `/en/...` (the address bar does not change),
  *    and a literal `/en/...` is redirected to the root so English has exactly
  *    one URL per page. Kept in sync with src/i18n/config.ts — Proxy is bundled
- *    separately from the app, so it deliberately imports nothing from it.
+ *    separately from the app, so it deliberately imports nothing from it except
+ *    src/lib/csp.ts, which itself imports nothing.
  *
  * 2. Per-request Content-Security-Policy. Production uses a strict nonce-based
  *    policy with 'strict-dynamic' — only scripts carrying the request nonce (and
@@ -37,28 +39,6 @@ function isNonPage(pathname: string): boolean {
     // Anything with a file extension is a static asset from public/.
     /\.[a-z0-9]{2,5}$/i.test(pathname)
   );
-}
-
-function buildCsp(nonce: string, isDev: boolean): string {
-  const scriptSrc = isDev
-    ? "'self' 'unsafe-inline' 'unsafe-eval'"
-    : `'self' 'nonce-${nonce}' 'strict-dynamic'`;
-
-  return [
-    "default-src 'self'",
-    "base-uri 'self'",
-    "form-action 'self'",
-    "frame-ancestors 'none'",
-    "object-src 'none'",
-    "img-src 'self' data: blob:",
-    "font-src 'self' data:",
-    "style-src 'self' 'unsafe-inline'",
-    `script-src ${scriptSrc}`,
-    `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
-    "worker-src 'self' blob:",
-    "manifest-src 'self'",
-    "upgrade-insecure-requests",
-  ].join("; ");
 }
 
 export function proxy(request: NextRequest) {

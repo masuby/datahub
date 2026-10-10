@@ -1,5 +1,6 @@
 import { CONTACT_EMAIL, WHATSAPP_DISPLAY } from "@/lib/contact-info";
-import type { Service } from "@/lib/services";
+import { servicesFor, type Service } from "@/lib/services";
+import { LANG_TAG, localePath, type Locale } from "@/i18n/config";
 
 /**
  * Structured data (JSON-LD).
@@ -10,34 +11,57 @@ import type { Service } from "@/lib/services";
  * and the local pack, which sit above organic results for commercial queries.
  *
  * Keep these objects factual. Marking up claims the page does not actually make
- * is a structured-data violation and can earn a manual penalty.
+ * is a structured-data violation and can earn a manual penalty. Every page
+ * emits its own language's markup: /sw describes itself in Kiswahili.
  */
 
-export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.datahub.co.tz";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.datahub.co.tz";
 
-const FOUNDER = "Daniel Clement Masubi";
+/** Absolute URL of a page in a locale. */
+export const absoluteUrl = (lang: Locale, path = "/") => {
+  const p = localePath(lang, path);
+  return p === "/" ? SITE_URL : `${SITE_URL}${p}`;
+};
+
+type TeamMember = { name: string; alternateName?: string; jobTitle: string; image: string };
+
+/** The people named on the site. Titles exactly as the owner gave them. */
+export const TEAM: TeamMember[] = [
+  {
+    name: "Daniel C. Masubi",
+    alternateName: "Daniel Clement Masubi",
+    jobTitle: "Chief Technology Officer",
+    image: "/team/daniel-masubi.png",
+  },
+  { name: "Kanuda L. Sasi", jobTitle: "Head of Operations", image: "/team/kanuda-sasi.png" },
+  { name: "Yohana K. Mussa", jobTitle: "Head of Marketing", image: "/team/yohana-mussa.png" },
+];
+
+const person = (m: TeamMember) => ({
+  "@type": "Person",
+  name: m.name,
+  ...(m.alternateName ? { alternateName: m.alternateName } : {}),
+  jobTitle: m.jobTitle,
+  image: `${SITE_URL}${m.image}`,
+  worksFor: { "@id": `${SITE_URL}/#organization` },
+});
 
 /** The organisation itself — the anchor entity every other node points at. */
-export function organizationSchema() {
+export function organizationSchema(lang: Locale, description: string) {
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "@id": `${SITE_URL}/#organization`,
     name: "DataHub",
-    url: SITE_URL,
-    logo: `${SITE_URL}/icon.svg`,
+    slogan: lang === "sw" ? "Kutoka Data hadi Maamuzi" : "From Data to Decisions",
+    url: absoluteUrl(lang),
+    logo: `${SITE_URL}/brand/logo-512.png`,
     image: `${SITE_URL}/opengraph-image`,
-    description:
-      "DataHub builds custom dashboards, automated reporting and business intelligence software for organisations in Tanzania.",
+    description,
     email: CONTACT_EMAIL,
     ...(WHATSAPP_DISPLAY ? { telephone: WHATSAPP_DISPLAY } : {}),
-    founder: {
-      "@type": "Person",
-      name: FOUNDER,
-      jobTitle: "Data Engineer",
-      image: `${SITE_URL}/daniel-masubi.png`,
-    },
+    founder: person(TEAM[0]),
+    employee: TEAM.map(person),
     address: {
       "@type": "PostalAddress",
       addressLocality: "Dar es Salaam",
@@ -58,49 +82,29 @@ export function organizationSchema() {
     ],
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: "Services",
-      itemListElement: [
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Reporting Platform",
-            description:
-              "Live dashboards and scheduled reports built around the metrics an organisation actually decides on.",
-          },
+      name: lang === "sw" ? "Huduma" : "Services",
+      itemListElement: servicesFor(lang).map((s) => ({
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: s.navLabel,
+          description: s.metaDescription,
+          url: absoluteUrl(lang, `/services/${s.slug}`),
         },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Automation",
-            description:
-              "Replacing repetitive spreadsheet and reporting work with pipelines that run unattended.",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "AI Agent Design",
-            description:
-              "Agents that read operational data, summarise what changed, and act on it.",
-          },
-        },
-      ],
+      })),
     },
   };
 }
 
 /** Lets Google associate the domain with the brand name in search results. */
-export function websiteSchema() {
+export function websiteSchema(lang: Locale) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": `${SITE_URL}/#website`,
     url: SITE_URL,
     name: "DataHub",
-    inLanguage: "en-TZ",
+    inLanguage: LANG_TAG[lang],
     publisher: { "@id": `${SITE_URL}/#organization` },
   };
 }
@@ -109,10 +113,7 @@ export function websiteSchema() {
  * FAQ markup. Only ever generated from questions genuinely rendered on the
  * page — marking up invisible content is against Google's guidelines.
  */
-export function faqSchema(
-  items: { q: string; a: string }[],
-  id: string = `${SITE_URL}/#faq`,
-) {
+export function faqSchema(items: readonly { q: string; a: string }[], id: string) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -126,15 +127,16 @@ export function faqSchema(
 }
 
 /** A single service page, tied back to the organisation as its provider. */
-export function serviceSchema(service: Service) {
-  const url = `${SITE_URL}/services/${service.slug}`;
+export function serviceSchema(service: Service, lang: Locale) {
+  const url = absoluteUrl(lang, `/services/${service.slug}`);
   return {
     "@context": "https://schema.org",
     "@type": "Service",
-    "@id": `${url}/#service`,
+    "@id": `${url}#service`,
     name: service.title,
     description: service.metaDescription,
     url,
+    inLanguage: LANG_TAG[lang],
     serviceType: service.navLabel,
     provider: { "@id": `${SITE_URL}/#organization` },
     areaServed: [
@@ -146,11 +148,7 @@ export function serviceSchema(service: Service) {
       name: service.title,
       itemListElement: service.deliverables.map((d) => ({
         "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: d.title,
-          description: d.desc,
-        },
+        itemOffered: { "@type": "Service", name: d.title, description: d.desc },
       })),
     },
   };

@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
 import { getPoster, posterSize, type PosterKind, type Poster } from "@/lib/posters";
-import { netSvgDataUri, qrSvgDataUri } from "@/lib/poster-art";
+import { markTileDataUri, netSvgDataUri, qrSvgDataUri } from "@/lib/poster-art";
 
 /**
  * Renders a campaign poster as a PNG.
@@ -21,41 +21,47 @@ import { netSvgDataUri, qrSvgDataUri } from "@/lib/poster-art";
 export const runtime = "nodejs";
 
 /**
- * Geist — the site's own typeface — loaded as TTF because Satori supports
- * TTF/OTF/WOFF but not WOFF2, which is all next/font emits. Without this the
- * renderer silently falls back to its bundled default and every poster comes
- * out in a typeface that is not the brand's.
+ * Outfit — the display face that matches the DataHub wordmark — loaded as TTF
+ * because Satori supports TTF/OTF/WOFF but not WOFF2, which is all next/font
+ * emits. Without this the renderer silently falls back to its bundled default
+ * and every poster comes out in a typeface that is not the brand's. Outfit 500
+ * is registered for weight 400 too: Satori needs a face for the default weight.
  *
  * Read once per process rather than per request.
  */
-let fontCache: { name: string; data: Buffer; weight: 400 | 600 | 700; style: "normal" }[] | null =
-  null;
+type Weight = 400 | 500 | 600 | 700 | 800;
+let fontCache: { name: string; data: Buffer; weight: Weight; style: "normal" }[] | null = null;
 
 async function brandFonts() {
   if (fontCache) return fontCache;
   const dir = path.join(process.cwd(), "assets", "fonts");
-  const load = async (file: string, weight: 400 | 600 | 700) => ({
-    name: "Geist",
+  const load = async (file: string, weight: Weight) => ({
+    name: "Outfit",
     data: await readFile(path.join(dir, file)),
     weight,
     style: "normal" as const,
   });
   fontCache = await Promise.all([
-    load("Geist-Regular.ttf", 400),
-    load("Geist-SemiBold.ttf", 600),
-    load("Geist-Bold.ttf", 700),
+    load("Outfit-500.ttf", 400),
+    load("Outfit-500.ttf", 500),
+    load("Outfit-600.ttf", 600),
+    load("Outfit-700.ttf", 700),
+    load("Outfit-800.ttf", 800),
   ]);
   return fontCache;
 }
 
-const BG = "#0a0f1d";
-const SURFACE = "#0f1626";
-const FG = "#e7edf6";
-const MUTED = "#94a3b8";
-const ACCENT = "#22d3ee";
-const ACCENT_2 = "#34d399";
-const BORDER = "#1e293b";
-const GRAD = `linear-gradient(135deg, ${ACCENT} 0%, ${ACCENT_2} 100%)`;
+// The website's dark-theme tokens and the brand blues (navy #022970, royal
+// #036BFB, sky #68D4FB), so a poster and the page it links to look like one
+// company. ROYAL_LIFT is royal raised for legibility on the dark ground.
+const BG = "#030A1C";
+const SURFACE = "#071430";
+const FG = "#EAF1FF";
+const MUTED = "#A7B6D3";
+const ACCENT = "#68D4FB";
+const ACCENT_2 = "#3D8BFF";
+const BORDER = "#1B2C55";
+const GRAD = `linear-gradient(135deg, ${ACCENT} 0%, #036BFB 100%)`;
 
 /** Descending bars — reporting time collapsing from hours to seconds. */
 function Bars() {
@@ -140,7 +146,7 @@ function Contrast({ bad, good }: { bad: string; good: string }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-      {card("BEFORE", bad, "#f87171")}
+      {card("BEFORE", bad, "#FF8B8B")}
       {card("AFTER", good, ACCENT_2)}
     </div>
   );
@@ -184,7 +190,7 @@ export async function GET(
           justifyContent: "space-between",
           background: BG,
           padding: `${padY}px ${padX}px`,
-          fontFamily: "Geist",
+          fontFamily: "Outfit",
         }}
       >
         {/* Background net — full-bleed, behind everything. */}
@@ -205,30 +211,18 @@ export async function GET(
             left: 0,
             width: size.width,
             height: size.height,
-            background: `radial-gradient(ellipse at 30% 55%, ${BG} 0%, rgba(10,15,29,0.85) 38%, rgba(10,15,29,0) 75%)`,
+            background: `radial-gradient(ellipse at 30% 55%, ${BG} 0%, rgba(3,10,28,0.85) 38%, rgba(3,10,28,0) 75%)`,
           }}
         />
 
         {/* Wordmark */}
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 66,
-              height: 66,
-              borderRadius: 18,
-              background: GRAD,
-              color: BG,
-              fontSize: 40,
-              fontWeight: 700,
-            }}
-          >
-            D
-          </div>
-          <div style={{ display: "flex", fontSize: 42, fontWeight: 700 }}>
-            <span style={{ color: FG }}>Data</span>
+          {/* The mark sits on a white tile, exactly as on the brand board:
+              navy on a dark poster would vanish. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={markTileDataUri()} width={66} height={66} alt="" />
+          <div style={{ display: "flex", fontSize: 42, fontWeight: 800, letterSpacing: "-0.02em" }}>
+            <span style={{ color: ACCENT_2 }}>Data</span>
             <span style={{ color: ACCENT }}>Hub</span>
           </div>
         </div>

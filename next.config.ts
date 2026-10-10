@@ -28,6 +28,9 @@ const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
   reactStrictMode: true,
+  // Team portraits are transparent PNGs; served as AVIF/WebP they are a
+  // fraction of the bytes on the phones most visitors arrive on.
+  images: { formats: ["image/avif", "image/webp"] },
   async headers() {
     return [
       {

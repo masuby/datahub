@@ -1,4 +1,5 @@
 import QRCode from "qrcode";
+import { MARK_D, MARK_HAND } from "@/components/brand/mark-paths";
 
 /**
  * Decorative and functional artwork for the posters.
@@ -9,9 +10,9 @@ import QRCode from "qrcode";
  * a hand-built network of dots and lines would not survive it.
  */
 
-const BG = "#0a0f1d";
-const ACCENT = "#22d3ee";
-const ACCENT_2 = "#34d399";
+const BG = "#030A1C";
+const ACCENT = "#68D4FB";
+const ACCENT_2 = "#3D8BFF";
 
 function toDataUri(svg: string): string {
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
@@ -39,7 +40,7 @@ function seededRandom(seed: string) {
  * arrangement while `npm run posters` stays reproducible.
  *
  * Kept faint on purpose — it sits *behind* headline text, so contrast with the
- * background must stay low enough that Geist at 66-88px still reads cleanly.
+ * background must stay low enough that Outfit at 66-88px still reads cleanly.
  */
 export function netSvgDataUri(seed: string, width: number, height: number): string {
   const rand = seededRandom(seed);
@@ -50,7 +51,7 @@ export function netSvgDataUri(seed: string, width: number, height: number): stri
     x: rand() * width,
     y: rand() * height,
     r: 2.2 + rand() * 2.6,
-    emerald: rand() < 0.3,
+    royal: rand() < 0.3,
   }));
 
   const lines: string[] = [];
@@ -71,7 +72,7 @@ export function netSvgDataUri(seed: string, width: number, height: number): stri
 
   const dots = nodes.map(
     (n) =>
-      `<circle cx="${n.x.toFixed(1)}" cy="${n.y.toFixed(1)}" r="${n.r.toFixed(1)}" fill="${n.emerald ? ACCENT_2 : ACCENT}" fill-opacity="0.42"/>`,
+      `<circle cx="${n.x.toFixed(1)}" cy="${n.y.toFixed(1)}" r="${n.r.toFixed(1)}" fill="${n.royal ? ACCENT_2 : ACCENT}" fill-opacity="0.42"/>`,
   );
 
   const svg =
@@ -99,5 +100,18 @@ export async function qrSvgDataUri(url: string = QR_TARGET): Promise<string> {
     errorCorrectionLevel: "M",
     color: { dark: BG, light: "#ffffff" },
   });
+  return toDataUri(svg);
+}
+
+/**
+ * The DataHub mark on a white rounded tile, as the brand board presents it on
+ * dark backgrounds. Same path data as the website's <BrandMark>.
+ */
+export function markTileDataUri(): string {
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-14 -14 128 128">` +
+    `<rect x="-14" y="-14" width="128" height="128" rx="30" fill="#FFFFFF"/>` +
+    `<path fill="#036BFB" d="${MARK_D}"/><path fill="#022970" d="${MARK_HAND}"/>` +
+    `</svg>`;
   return toDataUri(svg);
 }

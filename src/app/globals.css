@@ -1,301 +1,658 @@
 @import "tailwindcss";
 
 /*
-  DataHub design tokens.
-  Dark, premium "data/analytics" aesthetic: deep slate canvas, cyan→emerald accent.
+  DataHub design system.
+
+  Direction: luminous deep-blue silk (the brand board) on a calm field, with
+  structure drawn entirely by hairlines. The rule of the site: lines may run,
+  cross at T-junctions and stop, but they never close into a rectangle around
+  content. No cards, no shadows, no glass, no rounded containers.
+
+  Every colour here is verified for WCAG contrast in both themes (see the
+  design spec's contrast table). Change a token, re-run that check.
 */
+
+/* Dark utilities are allowed only for rare one-offs; everything themes through tokens. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@property --sweep {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 360deg;
+}
+
 :root {
-  --background: #0a0f1d;
-  --surface: #0f1626;
-  --surface-2: #141d31;
-  --border: #1e293b;
-  --foreground: #e7edf6;
-  --muted: #94a3b8;
-  --muted-2: #64748b;
-  --accent: #22d3ee;
-  --accent-2: #34d399;
-  --accent-soft: rgba(34, 211, 238, 0.12);
-  --ring: rgba(34, 211, 238, 0.45);
+  color-scheme: light;
+
+  /* Brand constants (never re-defined per theme) */
+  --navy: #022970;
+  --royal: #036bfb;
+  --sky: #68d4fb;
+
+  /* Surfaces */
+  --bg: #f6f9fe; /* porcelain page */
+  --bg-elev: #ffffff; /* header when scrolled, mobile menu sheet, native popups. Never cards. */
+  --bg-sunk: #eaf1fc; /* selected table row, active read-mode note, input autofill */
+  --bg-ink: #040c21; /* only consumed by .surface-ink */
+  --header-bg: color-mix(in srgb, var(--bg) 94%, transparent);
+
+  /* Text */
+  --fg: #061433;
+  --fg-muted: #3b4b6b;
+  --fg-subtle: #55668a;
+
+  /* Lines */
+  --rule: #d9e2f1; /* R1 hairline: decorative, never the only cue */
+  --rule-strong: #b7c6df; /* R2 section rule, floor rule, column dividers in lists */
+  --rule-input: #7486a8; /* R3 form underline, slider track, radio ring: >= 3:1 */
+  --thread: linear-gradient(90deg, var(--royal), var(--sky));
+
+  /* Accent and action */
+  --accent: #0257d6; /* links and small accent text */
+  --accent-display: #036bfb; /* accent text >= 24px (or >= 19px at 700), accent rules */
+  --action: #036bfb;
+  --action-hover: #022970;
+  --on-action: #ffffff;
+  --on-action-hover: #ffffff;
+  --focus: #036bfb;
+
+  /* Status (always paired with a glyph and a word) */
+  --error: #b42335;
+  --warn: #9a5700;
+  --ok: #0257d6;
+
+  /* Charts */
+  --s1: #036bfb;
+  --s2: #022970;
+  --s3: #0b7fbf;
+  --s-ref: #55668a; /* target / reference line, dashed 4 4 */
+  --s-fill: rgb(3 107 251 / 0.14); /* area under series 1 */
+  --s-hatch: rgb(180 35 53 / 0.18); /* breach zone hatch */
+  --ramp-1: #5b8fe0;
+  --ramp-2: #2f74e6;
+  --ramp-3: #036bfb;
+  --ramp-4: #0a4db8;
+  --ramp-5: #022970;
+
+  /* Brand lockup */
+  --mark-d: #036bfb;
+  --mark-hand: #022970;
+  --wordmark-data: #036bfb;
+  --wordmark-hub: #1fa2e0; /* deeper sky for light backgrounds; logotype, WCAG-exempt. Owner to confirm. */
+
+  /* Silk field (consumed by src/lib/silk.ts renderers) */
+  --silk-wash: #cfe0fb;
+  --silk-a: #022970; /* filament colour at u = 0 */
+  --silk-b: #036bfb; /* filament colour at u = 1 */
+  --silk-hi: #036bfb; /* sheen highlight colour */
+  --silk-decision: #036bfb; /* the decision filament */
+  --silk-max-alpha: 0.32;
+  --silk-blend: source-over;
+  --silk-safe-alpha: 0.2; /* mask alpha inside the hero text zone */
+
+  --selection: rgb(3 107 251 / 0.18);
+
+  /* Motion */
+  --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-thread: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --dur-micro: 160ms;
+  --dur-ui: 280ms;
+  --dur-reveal: 700ms;
+  --dur-draw: 900ms;
+  --dur-mark: 1100ms;
+
+  /* Layout */
+  --gutter-x: 20px;
+  --col-gap: 16px;
+  --section-y: clamp(4.5rem, 2.6rem + 8vw, 9rem);
+  --header-h: 56px;
+}
+@media (min-width: 640px) {
+  :root {
+    --gutter-x: 32px;
+    --col-gap: 24px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --gutter-x: 48px;
+    --header-h: 64px;
+  }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-border: var(--border);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-muted-2: var(--muted-2);
-  --color-accent: var(--accent);
-  --color-accent-2: var(--accent-2);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Dark theme, and the ink surface (dark tokens in either theme). */
+.dark,
+.surface-ink {
+  color-scheme: dark;
+  --bg: #030a1c;
+  --bg-elev: #071430;
+  --bg-sunk: #0b1d42;
+  --bg-ink: #040c21;
+  --header-bg: color-mix(in srgb, var(--bg-elev) 94%, transparent);
+
+  --fg: #eaf1ff;
+  --fg-muted: #a7b6d3;
+  --fg-subtle: #8292b4;
+
+  --rule: #14254a;
+  --rule-strong: #23396a;
+  --rule-input: #5b6e96;
+
+  --accent: #68d4fb;
+  --accent-display: #68d4fb;
+  --action: #036bfb;
+  --action-hover: #68d4fb;
+  --on-action: #ffffff;
+  --on-action-hover: #030a1c;
+  --focus: #68d4fb;
+
+  --error: #ff8b8b;
+  --warn: #ffc266;
+  --ok: #68d4fb;
+
+  --s1: #68d4fb;
+  --s2: #3d8bff;
+  --s3: #b8c7e6;
+  --s-ref: #8292b4;
+  --s-fill: rgb(104 212 251 / 0.16);
+  --s-hatch: rgb(255 139 139 / 0.16);
+  --ramp-1: #2e6fd8;
+  --ramp-2: #3d8bff;
+  --ramp-3: #4fb4f8;
+  --ramp-4: #8fddfc;
+  --ramp-5: #d5f3ff;
+
+  --mark-d: #036bfb;
+  --mark-hand: #eaf1ff;
+  --wordmark-data: #036bfb;
+  --wordmark-hub: #68d4fb;
+
+  --silk-wash: #022970;
+  --silk-a: #022970;
+  --silk-b: #036bfb;
+  --silk-hi: #68d4fb;
+  --silk-decision: #68d4fb;
+  --silk-max-alpha: 0.55;
+  --silk-blend: lighter;
+
+  --selection: rgb(104 212 251 / 0.3);
 }
 
-* {
-  border-color: var(--border);
+/* No-JS fallback only: ThemeScript always sets .light or .dark when JS runs.
+   These values are IDENTICAL to the .dark block above — keep them in sync. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) {
+    color-scheme: dark;
+    --bg: #030a1c;
+    --bg-elev: #071430;
+    --bg-sunk: #0b1d42;
+    --bg-ink: #040c21;
+    --header-bg: color-mix(in srgb, var(--bg-elev) 94%, transparent);
+    --fg: #eaf1ff;
+    --fg-muted: #a7b6d3;
+    --fg-subtle: #8292b4;
+    --rule: #14254a;
+    --rule-strong: #23396a;
+    --rule-input: #5b6e96;
+    --accent: #68d4fb;
+    --accent-display: #68d4fb;
+    --action: #036bfb;
+    --action-hover: #68d4fb;
+    --on-action: #ffffff;
+    --on-action-hover: #030a1c;
+    --focus: #68d4fb;
+    --error: #ff8b8b;
+    --warn: #ffc266;
+    --ok: #68d4fb;
+    --s1: #68d4fb;
+    --s2: #3d8bff;
+    --s3: #b8c7e6;
+    --s-ref: #8292b4;
+    --s-fill: rgb(104 212 251 / 0.16);
+    --s-hatch: rgb(255 139 139 / 0.16);
+    --ramp-1: #2e6fd8;
+    --ramp-2: #3d8bff;
+    --ramp-3: #4fb4f8;
+    --ramp-4: #8fddfc;
+    --ramp-5: #d5f3ff;
+    --mark-d: #036bfb;
+    --mark-hand: #eaf1ff;
+    --wordmark-data: #036bfb;
+    --wordmark-hub: #68d4fb;
+    --silk-wash: #022970;
+    --silk-a: #022970;
+    --silk-b: #036bfb;
+    --silk-hi: #68d4fb;
+    --silk-decision: #68d4fb;
+    --silk-max-alpha: 0.55;
+    --silk-blend: lighter;
+    --selection: rgb(104 212 251 / 0.3);
+  }
+}
+
+.surface-ink {
+  background:
+    radial-gradient(60% 80% at 78% 40%, rgb(2 41 112 / 0.55), transparent 70%),
+    var(--bg-ink);
+  color: var(--fg);
 }
 
 html {
-  scroll-behavior: smooth;
+  background: var(--bg);
+  color: var(--fg);
+  scroll-padding-top: calc(var(--header-h) + 16px);
+  scroll-padding-bottom: 88px;
+  hyphens: manual;
 }
-
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg);
+  color: var(--fg);
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
-
-/* Subtle dotted grid backdrop for the "data" feel. */
-.bg-grid {
-  background-image: radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.08) 1px, transparent 0);
-  background-size: 28px 28px;
+::selection {
+  background: var(--selection);
+  color: var(--fg);
+}
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
-.text-gradient {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+/* Language switch crossfade where supported (full navigation). */
+@view-transition {
+  navigation: auto;
 }
 
-.accent-gradient {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+@theme inline {
+  --color-bg: var(--bg);
+  --color-elev: var(--bg-elev);
+  --color-sunk: var(--bg-sunk);
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-subtle: var(--fg-subtle);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-rule-input: var(--rule-input);
+  --color-accent: var(--accent);
+  --color-accent-display: var(--accent-display);
+  --color-action: var(--action);
+  --color-action-hover: var(--action-hover);
+  --color-on-action: var(--on-action);
+  --color-on-action-hover: var(--on-action-hover);
+  --color-focus: var(--focus);
+  --color-error: var(--error);
+  --color-warn: var(--warn);
+  --color-ok: var(--ok);
+  --color-navy: var(--navy);
+  --color-royal: var(--royal);
+  --color-sky: var(--sky);
+  --color-s1: var(--s1);
+  --color-s2: var(--s2);
+  --color-s3: var(--s3);
+  --color-s-ref: var(--s-ref);
+
+  --font-display: var(--font-outfit);
+  --font-sans: var(--font-manrope);
+  --font-mono: var(--font-geist-mono);
+
+  --ease-silk: var(--ease-silk);
+  --ease-thread: var(--ease-thread);
 }
 
-/* Entrance animations (pure CSS — always resolve to the visible state). */
-@keyframes fade-up {
+/* ─────────────────────────────────────────────────────────────
+   Type scale — fluid between 360px and 1440px. Use these classes;
+   do not hand-roll sizes.
+   ───────────────────────────────────────────────────────────── */
+@layer components {
+  .t-display {
+    --fs: clamp(2.75rem, 1rem + 7.6vw, 7.5rem);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--fs) * var(--display-scale, 1));
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  .t-sub {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.875rem);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--fg-muted);
+    text-wrap: balance;
+  }
+  .t-h1-page {
+    --fs: clamp(2.25rem, 1.2rem + 4.4vw, 4.5rem);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--fs) * var(--display-scale, 1));
+    line-height: 1;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .t-h2 {
+    --fs: clamp(2.125rem, 1.4rem + 3.1vw, 4rem);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: calc(var(--fs) * var(--display-scale, 1));
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  .t-h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.75rem, 1.35rem + 1.7vw, 2.75rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .t-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .t-kpi {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .t-result {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.5rem, 1.6rem + 3.8vw, 4.75rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .t-lead {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(1.125rem, 1.02rem + 0.45vw, 1.375rem);
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+    color: var(--fg-muted);
+    max-width: 60ch;
+    text-wrap: pretty;
+  }
+  .t-body {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(1rem, 0.98rem + 0.09vw, 1.0625rem);
+    line-height: 1.65;
+    max-width: 64ch;
+    text-wrap: pretty;
+  }
+  .t-small {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  .t-eyebrow {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: clamp(0.6875rem, 0.66rem + 0.12vw, 0.75rem);
+    line-height: 1.3;
+    letter-spacing: 0.14em;
+    color: var(--fg-subtle);
+  }
+  .t-mono {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+  .t-data {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: clamp(0.6875rem, 0.66rem + 0.12vw, 0.75rem);
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg-subtle);
+  }
+  .t-footer-mark {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(3rem, 0.5rem + 12.2vw, 12rem);
+    line-height: 0.86;
+    letter-spacing: -0.045em;
+  }
+
+  /* ── Rules: the only structure on the site ─────────────────── */
+  /* R1 hairline */
+  .rule-hair {
+    display: block;
+    height: 1px;
+    width: 100%;
+    background: var(--rule);
+    border: 0;
+  }
+  .rule-hair-v {
+    display: block;
+    width: 1px;
+    align-self: stretch;
+    background: var(--rule);
+  }
+  /* R2 section rule: 1px strong line whose first 48px is a 2px thread. */
+  .rule-section {
+    position: relative;
+    display: block;
+    height: 1px;
+    width: 100%;
+    background: var(--rule-strong);
+    border: 0;
+  }
+  .rule-section::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -0.5px;
+    width: 48px;
+    height: 2px;
+    background: var(--thread);
+  }
+  /* Thread: 2px "you are here" line that draws from the left. */
+  .thread {
+    display: block;
+    height: 2px;
+    background: var(--thread);
+    transform-origin: left;
+  }
+  /* Thread underline for links: grows from the left on hover/focus. */
+  .link-thread {
+    background-image: var(--thread);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 2px;
+    transition: background-size var(--dur-ui) var(--ease-thread);
+  }
+  .link-thread:hover,
+  .link-thread:focus-visible,
+  .link-thread[data-active="true"] {
+    background-size: 100% 2px;
+  }
+}
+
+/* Scroll-lit section rules (zero JS, progressive). */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .rule-section::after {
+      content: "";
+      position: absolute;
+      inset: -0.5px 0 auto 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgb(104 212 251 / 0.55), transparent) no-repeat;
+      background-size: 120px 2px;
+      animation: dh-rule-sheen linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 60%;
+      pointer-events: none;
+    }
+  }
+}
+
+/* Kiswahili runs ~25% longer: display sizes take 6% off. */
+:lang(sw) {
+  --display-scale: 0.94;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Motion — things are drawn, settled and lit, never thrown.
+   Every keyframe is defined `from` only with fill-mode both, so with
+   animation disabled every element simply shows its final state.
+   ───────────────────────────────────────────────────────────── */
+@keyframes dh-rise {
   from {
     opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: translateY(16px);
   }
 }
-
-@keyframes grow-up {
+@keyframes dh-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes dh-draw-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes dh-grow-y {
   from {
     transform: scaleY(0);
   }
+}
+@keyframes dh-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+@keyframes dh-sweep {
+  from {
+    --sweep: 0deg;
+  }
+}
+@keyframes dh-hand {
+  from {
+    opacity: 0;
+    transform: translateY(8%);
+  }
+}
+@keyframes dh-ring {
+  from {
+    transform: scale(0.2);
+    opacity: 0.9;
+  }
   to {
-    transform: scaleY(1);
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+@keyframes dh-sending {
+  to {
+    stroke-dashoffset: -1;
+  }
+}
+@keyframes dh-rule-sheen {
+  from {
+    background-position: -120px 0;
+  }
+  to {
+    background-position: calc(100% + 120px) 0;
   }
 }
 
-/* Legacy mount-time reveal (still used inside the hero, which is always in view). */
-.reveal {
-  opacity: 0;
-  animation: fade-up 0.7s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+.a-rise {
+  animation: dh-rise var(--dur-reveal) var(--ease-silk) both;
+}
+.a-fade {
+  animation: dh-fade var(--dur-reveal) var(--ease-silk) both;
+}
+.a-draw-x {
+  transform-origin: left;
+  animation: dh-draw-x var(--dur-draw) var(--ease-thread) both;
+}
+.a-grow-y {
+  transform-origin: bottom;
+  transform-box: fill-box;
+  animation: dh-grow-y var(--dur-draw) var(--ease-silk) both;
+}
+.a-draw {
+  stroke-dasharray: 1;
+  animation: dh-draw var(--dur-draw) var(--ease-thread) both;
 }
 
-/*
-  Scroll-triggered reveal. Server HTML renders fully visible (crawlers, no-JS).
-  After hydration <Reveal> adds .reveal-init to anything below the fold and
-  swaps it for .reveal-in when it scrolls into view.
-*/
+/* Section-scoped: animations wait for <Reveal>. Server HTML is fully
+   visible; only after hydration does Reveal hide what is below the fold. */
 .reveal-init {
   opacity: 0;
-  transform: translateY(22px);
+  transform: translateY(16px);
 }
 .reveal-in {
   opacity: 1;
   transform: none;
   transition:
-    opacity 0.7s cubic-bezier(0.21, 0.47, 0.32, 0.98),
-    transform 0.7s cubic-bezier(0.21, 0.47, 0.32, 0.98);
+    opacity var(--dur-reveal) var(--ease-silk),
+    transform var(--dur-reveal) var(--ease-silk);
+}
+.reveal-init :is(.a-rise, .a-fade, .a-draw-x, .a-grow-y, .a-draw) {
+  animation-play-state: paused;
 }
 
-.grow-bar {
-  transform-origin: bottom;
-  animation: grow-up 0.8s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+.tnum {
+  font-variant-numeric: tabular-nums;
 }
 
-/* Respect users who prefer reduced motion. */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+    animation: none !important;
     transition-duration: 0.01ms !important;
   }
+  .reveal-init {
+    opacity: 1;
+    transform: none;
+  }
 }
-
-::selection {
-  background: var(--accent-soft);
-  color: var(--foreground);
+@media (forced-colors: active) {
+  .silk-layer,
+  .rule-section::after {
+    display: none;
+  }
+  .thread,
+  .rule-section::before {
+    background: CanvasText;
+  }
 }
-
-
-/* ─────────────────────────────────────────────────────────────
-   Design layer: motion + surfaces
-   ───────────────────────────────────────────────────────────── */
-
-/* Slow-drifting aurora blobs behind the hero. Transform-only so it stays cheap. */
-@keyframes aurora {
-  0%   { transform: translate3d(0, 0, 0) scale(1); }
-  33%  { transform: translate3d(6%, -4%, 0) scale(1.08); }
-  66%  { transform: translate3d(-4%, 5%, 0) scale(0.96); }
-  100% { transform: translate3d(0, 0, 0) scale(1); }
-}
-.aurora {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(90px);
-  opacity: 0.55;
-  will-change: transform;
-  animation: aurora 22s ease-in-out infinite;
-}
-.aurora-2 { animation-duration: 28s; animation-direction: reverse; }
-
-/* Grid that fades out radially so it reads as depth, not wallpaper. */
-.bg-grid-fade {
-  background-image:
-    linear-gradient(to right, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
-  background-size: 48px 48px;
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 75%);
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 75%);
-}
-
-/* Glass surface with a hairline gradient border (border drawn via mask so it
-   follows the radius exactly). */
-.glass {
-  position: relative;
-  background: rgba(15, 22, 38, 0.72);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-}
-.glass::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    135deg,
-    rgba(34, 211, 238, 0.55),
-    rgba(30, 41, 59, 0.6) 40%,
-    rgba(52, 211, 153, 0.45)
-  );
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
-
-/* Outer glow for the hero card and primary CTA. */
-.glow-ring {
-  box-shadow:
-    0 0 0 1px rgba(34, 211, 238, 0.12),
-    0 24px 80px -20px rgba(34, 211, 238, 0.35),
-    0 12px 40px -16px rgba(52, 211, 153, 0.25);
-}
-
-/* Pointer spotlight on cards: --mx/--my are set from JS as percentages. */
-.spotlight-card {
-  position: relative;
-  overflow: hidden;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  transition: transform 0.35s cubic-bezier(0.21, 0.47, 0.32, 0.98), border-color 0.35s;
-}
-.spotlight-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 0.35s;
-  background: radial-gradient(
-    520px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(34, 211, 238, 0.14),
-    transparent 45%
-  );
-  pointer-events: none;
-}
-.spotlight-card:hover { transform: translateY(-4px); border-color: rgba(34, 211, 238, 0.45); }
-.spotlight-card:hover::before { opacity: 1; }
-
-/* Shimmer sweep on the primary button. */
-@keyframes shimmer {
-  from { transform: translateX(-130%) skewX(-18deg); }
-  to   { transform: translateX(230%) skewX(-18deg); }
-}
-.btn-shine { position: relative; overflow: hidden; }
-.btn-shine::after {
-  content: "";
-  position: absolute;
-  top: 0; bottom: 0; left: 0;
-  width: 38%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-  transform: translateX(-130%) skewX(-18deg);
-  pointer-events: none;
-}
-.btn-shine:hover::after { animation: shimmer 0.9s cubic-bezier(0.21, 0.47, 0.32, 0.98); }
-
-/* Animated gradient text for the rotating hero word. */
-@keyframes gradient-shift {
-  0%   { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
-}
-.text-gradient-animate {
-  background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent), var(--accent-2));
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: gradient-shift 6s linear infinite alternate;
-}
-
-/* Marquee ticker (list is duplicated in markup so the loop is seamless). */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-.marquee { animation: marquee 38s linear infinite; }
-.marquee:hover { animation-play-state: paused; }
-.ticker-mask {
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-}
-
-/* Self-drawing strokes (sparkline, process pipeline). Length is set in the
-   markup via stroke-dasharray so one keyframe serves every path. */
-@keyframes draw {
-  to { stroke-dashoffset: 0; }
-}
-.draw-path {
-  stroke-dashoffset: var(--len, 1000);
-  stroke-dasharray: var(--len, 1000);
-  animation: draw 1.6s cubic-bezier(0.21, 0.47, 0.32, 0.98) forwards;
-  animation-delay: var(--draw-delay, 0.3s);
-}
-/* Pipeline line only draws once its section has revealed. */
-.reveal-init .draw-on-reveal { animation-play-state: paused; }
-.reveal-in  .draw-on-reveal { animation-play-state: running; }
-
-/* Gentle float for the floating badge in the hero card. */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
-}
-.float { animation: float 4.5s ease-in-out infinite; }
-
-/* Tabular numerals wherever numbers are compared. */
-.tnum { font-variant-numeric: tabular-nums; }
-
-/* Reduced motion: the global rule above already collapses every animation and
-   transition; these make sure nothing is left hidden or offset. */
-@media (prefers-reduced-motion: reduce) {
-  .reveal-init { opacity: 1; transform: none; }
-  .draw-path { stroke-dashoffset: 0; }
-  .aurora { animation: none; }
-  .marquee { animation: none; }
+@media print {
+  .silk-layer,
+  header,
+  .action-rail,
+  .lang-hint {
+    display: none;
+  }
+  .surface-ink {
+    background: none;
+    color: #000;
+  }
 }
