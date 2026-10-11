@@ -4,13 +4,11 @@ import { localePath, type Locale } from "@/i18n/config";
 import { fill, getDictionary } from "@/i18n/get-dictionary";
 import { chromeExtra } from "@/i18n/extra/chrome";
 import { BrandLockup } from "@/components/brand/BrandMark";
-import { SilkField } from "@/components/silk/SilkField";
+import { SocialLinks } from "@/components/brand/SocialLinks";
+import { FooterMark } from "@/components/footer/FooterMark";
 import { Container } from "@/components/ui/Container";
 import { Grid } from "@/components/ui/Grid";
 import { Rule } from "@/components/ui/Rule";
-import { LangSwitch } from "@/components/system/LangSwitch";
-import { ThemeSettings } from "@/components/system/ThemeSettings";
-import { MotionToggle } from "@/components/system/MotionToggle";
 import { CONTACT_EMAIL, WHATSAPP_DISPLAY, WHATSAPP_NUMBER, whatsappHref } from "@/lib/contact-info";
 import { servicesFor } from "@/lib/services";
 import { NavLink, WhatsAppGlyph } from "./MobileMenu";
@@ -43,9 +41,13 @@ function Column({ title, children, className }: { title: string; children: React
 }
 
 /**
- * Site footer (§6.10): an ink band in both themes. A static silk plate (no
- * canvas) carries the tagline, then R2, four columns, a preferences row
- * (language, theme, motion) and the legal line.
+ * Site footer (§6.10, iteration-3 §A). It follows the theme, like every
+ * other part of the page (it was an ink band in both themes). A hairline
+ * opens it; then the living wordmark (FooterMark: "From Data to" and a word
+ * that writes itself, the waving mark, the dot field and the silk, with its
+ * own pause control), R2, four columns, and the bottom line: the legal
+ * line, DataHub's social profiles and "Back to top". Language and theme are
+ * chosen in the header, so the old preferences row is gone.
  *
  * Every page of the site is linked from here; the one showing is marked
  * aria-current="page" with its thread underline drawn (NavLink). Services:
@@ -63,23 +65,12 @@ export async function Footer({ lang }: { lang: Locale }) {
   const year = new Date().getFullYear();
 
   return (
-    <footer
-      id="footer"
-      className="surface-ink relative pb-[calc(56px+env(safe-area-inset-bottom)+2rem)] lg:pb-10"
-    >
-      {/* Silk plate with the tagline over its lower left; filaments sink to the right. */}
-      <div className="relative overflow-hidden">
-        <SilkField preset="plate" className="silk-layer pointer-events-none absolute inset-0 h-full w-full" />
-        <Container className="relative flex min-h-[160px] items-end pb-8 pt-16 lg:min-h-[260px] lg:pb-12 lg:pt-24">
-          <p className="t-footer-mark text-fg">
-            <span className="block">
-              {f.tagline.line1Before}
-              <span className="text-accent-display">{f.tagline.line1Accent}</span>
-            </span>
-            <span className="block">{f.tagline.line2}</span>
-          </p>
-        </Container>
-      </div>
+    // Room at the bottom for what floats over it: on phones the action rail
+    // (with the WhatsApp button docked in it), on desktop the WhatsApp button
+    // (24px from the edge, 56px tall), so neither ever rests on the last line.
+    <footer id="footer" className="relative pb-[calc(56px+env(safe-area-inset-bottom)+2rem)] lg:pb-[6.5rem]">
+      <span aria-hidden="true" className="rule-hair" />
+      <FooterMark lang={lang} />
 
       <Container>
         <Rule variant="section" />
@@ -151,28 +142,19 @@ export async function Footer({ lang }: { lang: Locale }) {
         </Grid>
 
         <Rule variant="hair" className="mt-10 lg:mt-16" />
-        <div className="flex flex-col gap-2 py-5 lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-12">
-          <h2 className="t-eyebrow text-fg lg:mr-2">{f.columns.preferences}</h2>
-          <LangSwitch lang={lang} labels={t.lang} variant="full" />
-          <ThemeSettings labels={t.theme.settings} />
-          <MotionToggle
-            variant="footer"
-            labels={{
-              pause: t.motion.pause,
-              resume: t.motion.resume,
-              label: t.motion.legend,
-              on: t.motion.on,
-              off: t.motion.off,
-            }}
-          />
-        </div>
-        <Rule variant="hair" />
 
-        <div className="flex flex-col gap-1 pt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-          <p className="t-data">{fill(f.legal, { year })}</p>
+        {/* Phones: the social icons first, then the legal line and "Back to top". */}
+        <div className="flex flex-col gap-1 pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-6">
+          <div className="-ml-2.5 flex items-center gap-2 sm:order-2 sm:ml-0">
+            <p aria-hidden="true" className="t-eyebrow pl-2.5 sm:pl-0">
+              {x.follow}
+            </p>
+            <SocialLinks lang={lang} size="footer" />
+          </div>
+          <p className="t-data sm:order-1">{fill(f.legal, { year })}</p>
           <a
             href="#main"
-            className="t-data group inline-flex min-h-11 items-center gap-1.5 transition-colors duration-[160ms] hover:text-fg"
+            className="t-data group inline-flex min-h-11 items-center gap-1.5 transition-colors duration-[160ms] hover:text-fg sm:order-3"
           >
             <span className="link-thread pb-0.5">{f.backToTop}</span>
             <span aria-hidden="true" className="inline-block transition-transform duration-[280ms] group-hover:-translate-y-0.5">

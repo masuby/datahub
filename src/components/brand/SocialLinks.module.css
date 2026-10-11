@@ -1,0 +1,30 @@
+/* The social marks (SocialLinks). Their colours are set on each <use> (the
+   brand's own, from globals.css); here only the white under Facebook's "f"
+   and LinkedIn's "in" (the logos' own white, in either theme), the gentle
+   lift on hover and focus, and the forced-colors fallback. */
+
+.underlay {
+  fill: #ffffff;
+}
+
+.glyph {
+  transition: transform var(--dur-micro) var(--ease-silk);
+}
+.link:hover > .glyph,
+.link:focus-visible > .glyph {
+  transform: translateY(-2px);
+}
+
+/* High Contrast: the system's colours, not the brands' (the inline fills
+   would otherwise win). */
+@media (forced-colors: active) {
+  .underlay {
+    display: none;
+  }
+  .glyph use {
+    fill: CanvasText !important;
+  }
+  .link .glyph use {
+    fill: LinkText !important;
+  }
+}

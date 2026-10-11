@@ -5,8 +5,10 @@ import { fontVariables } from "./fonts";
 import { DEFAULT_LOCALE, LANG_TAG, hasLocale, localePath, type Locale } from "@/i18n/config";
 import { getDictionary, type Dictionary } from "@/i18n/get-dictionary";
 import { MarkSprite } from "@/components/brand/MarkSprite";
+import { SocialSprite } from "@/components/brand/SocialSprite";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
 import { SilkField } from "@/components/silk/SilkField";
 import { HardLinks } from "@/components/system/HardLinks";
 import { RefKeeper } from "@/components/system/RefKeeper";
@@ -80,6 +82,7 @@ export default async function GlobalNotFound() {
       <body className="flex min-h-svh flex-col">
         <RefKeeper />
         <MarkSprite />
+        <SocialSprite />
         <Header lang={lang} />
         <main id="main" className="flex-1">
           <div className={cn("relative isolate overflow-hidden", styles.hero)}>
@@ -105,6 +108,7 @@ export default async function GlobalNotFound() {
           </div>
         </main>
         <Footer lang={lang} />
+        <FloatingWhatsApp lang={lang} />
       </body>
     </html>
   );

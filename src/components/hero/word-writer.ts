@@ -26,6 +26,13 @@ import { frameGeneration, onFrames } from "./frame-clock";
  * It only ever draws the words it was given, over the text it measured: if
  * anything rewrites that text — a browser translating the page — it stops
  * for good and the (translated) text word stays.
+ *
+ * The footer's wordmark (iteration-3 §A) writes with the same engine, its
+ * Title Case words with the capitals' outlines (glyphs-upper.ts, which the
+ * caller fetches and passes in only for words that have one, so the hero
+ * never loads them), and a pen nib instead of the hero's point of light: the nib rides the writing edge,
+ * lifts as it hops from one letter to the next, and rises away once the
+ * word is written.
  */
 
 /**
@@ -33,6 +40,12 @@ import { frameGeneration, onFrames } from "./frame-clock";
  * touch or low-end one (HeroWords decides).
  */
 export type WriterTier = "full" | "lite";
+
+/**
+ * What leads the line: "light", the hero's small bright point; "nib", a
+ * fountain-pen nib with a smaller light at its tip (the footer's).
+ */
+export type WriterPen = "light" | "nib";
 
 export type Writer = {
   /** Play, or freeze and show the current word as text. */
@@ -76,6 +89,18 @@ const PEN_HALO = 0.19;
 const PEN_CORE = 0.028;
 const SHEEN_W = 0.75;
 const LIFT = 0.06;
+/**
+ * The nib: its length and width, the angle it is held at (up and to the
+ * right of the line, as a right hand holds a pen; canvas y points down),
+ * how far it sways while writing, how far it lifts away when it arrives and
+ * leaves, and how far it rises as it hops between letters.
+ */
+const NIB_LEN = 0.56;
+const NIB_W = 0.2;
+const NIB_ANGLE = (-50 * Math.PI) / 180;
+const NIB_SWAY = (4 * Math.PI) / 180;
+const NIB_AWAY = 0.35;
+const NIB_HOP = 0.1;
 /** A letter comes apart through many small soft holes; some of them send up a spark. */
 const HOLE = 0.075;
 const HOLES_PER_GLYPH = 80;
@@ -192,10 +217,13 @@ function prng(seed: number) {
   };
 }
 
-function glyph(ch: string, probe: CanvasRenderingContext2D): Glyph | null {
+/** Outlines beyond a–z (the capitals, glyphs-upper.ts), when the words need them. */
+type ExtraGlyphs = Readonly<Record<string, string>> | undefined;
+
+function glyph(ch: string, probe: CanvasRenderingContext2D, extra: ExtraGlyphs): Glyph | null {
   const hit = glyphCache.get(ch);
   if (hit) return hit;
-  const d = GLYPHS[ch];
+  const d = GLYPHS[ch] ?? extra?.[ch];
   if (!d) return null;
   const loops = flatten(d);
   let outer = 0;
@@ -289,6 +317,11 @@ type Palette = {
   halo: string;
   spark: string;
   sheen: string;
+  /** The nib: tip and heel of its body, the light along its edge, its slit. */
+  nib: string;
+  nibTo: string;
+  nibEdge: string;
+  nibSlit: string;
   glow: number;
   blend: GlobalCompositeOperation;
 };
@@ -317,6 +350,10 @@ function readPalette(el: Element): Palette {
     halo: v("--word-halo", "#68d4fb"),
     spark: v("--word-spark", "#ffffff"),
     sheen: v("--word-sheen", "#ffffff"),
+    nib: v("--word-nib", "#022970"),
+    nibTo: v("--word-nib-to", "#036bfb"),
+    nibEdge: v("--word-nib-edge", "#68d4fb"),
+    nibSlit: v("--word-nib-slit", "#f6f9fe"),
     glow: Number.isFinite(glow) ? glow : 1,
     blend: v("--word-blend", "source-over") === "lighter" ? "lighter" : "source-over",
   };
@@ -378,6 +415,8 @@ export function createWriter({
   canvas,
   words,
   tier,
+  pen = "light",
+  capitals,
 }: {
   /** Holds one `[data-i]` span per word (the hidden copies the letters are measured from). */
   slot: HTMLElement;
@@ -385,13 +424,16 @@ export function createWriter({
   canvas: HTMLCanvasElement;
   words: readonly string[];
   tier: WriterTier;
+  pen?: WriterPen;
+  /** The outlines of A–Z (glyphs-upper.ts), for words with capitals; without them such words are not written. */
+  capitals?: Readonly<Record<string, string>>;
 }): Writer | null {
   const ctx = canvas.getContext("2d");
   const layerCanvas = document.createElement("canvas");
   const layerCtx = layerCanvas.getContext("2d");
   const probeCtx = document.createElement("canvas").getContext("2d");
   if (!ctx || !layerCtx || !probeCtx || words.length < 2) return null;
-  for (const w of words) for (const ch of w) if (!glyph(ch, probeCtx)) return null;
+  for (const w of words) for (const ch of w) if (!glyph(ch, probeCtx, capitals)) return null;
   const g = ctx;
   const lg = layerCtx;
   const probe = probeCtx;
@@ -415,6 +457,9 @@ export function createWriter({
   ]);
   let layout: Word[] = [];
   let dpr = 1;
+  /** The nib's outline, for the font size it was built at. */
+  let nibPath: Path2D | null = null;
+  let nibEm = 0;
 
   let k = 0; // current word
   let tau = 0; // seconds into it
@@ -497,7 +542,7 @@ export function createWriter({
       let top = Infinity;
       let bottom = -Infinity;
       for (let i = 0; i < word.length; i++) {
-        const gl = glyph(word[i], probe)!;
+        const gl = glyph(word[i], probe, capitals)!;
         let ox = 0;
         let base = 0;
         if (text && text.nodeType === Node.TEXT_NODE && i < (text.textContent ?? "").length) {
@@ -549,7 +594,7 @@ export function createWriter({
         L.e = exitStart + (n - 1 - i) * EXIT_STEP;
         // The dissolve runs through the letter right to left; each hole opens
         // as it passes, and some of them send up a spark.
-        const gl = glyph(word[i], probe)!;
+        const gl = glyph(word[i], probe, capitals)!;
         const rand = prng((wi + 1) * 1009 + i * 97);
         const span = L.x1 - L.x0 || 1;
         const count = Math.round((gl.seeds.length / 2) * holeShare);
@@ -765,14 +810,20 @@ export function createWriter({
     let i = 0;
     while (i + 1 < ls.length && ls[i + 1].w <= tau) i++;
     let [x, y] = penAt(ls[i]);
+    let hop = 0;
     if (i > 0 && tau < ls[i].w + HOP) {
       // Glide from where the previous letter's pen is now to this letter's start.
       const u = easeInOut((tau - ls[i].w) / HOP);
       const [px, py] = penAt(ls[i - 1]);
       x = px + (x - px) * u;
       y = py + (y - py) * u;
+      hop = Math.sin(Math.PI * u);
     }
     const em = W.em;
+    if (pen === "nib") {
+      drawNib(x, y, fade, (1 - fade) * NIB_AWAY + hop * NIB_HOP, em);
+      return;
+    }
     const r = PEN_HALO * em;
     g.globalCompositeOperation = palette.blend;
     g.globalAlpha = Math.min(1, fade * palette.glow);
@@ -784,6 +835,76 @@ export function createWriter({
     g.fill();
     g.globalAlpha = 1;
     g.globalCompositeOperation = "source-over";
+  }
+
+  /** The nib's outline at this font size: tip at the origin, heel along +x. */
+  function nibOutline(em: number): Path2D {
+    if (nibPath && nibEm === em) return nibPath;
+    const L = NIB_LEN * em;
+    const h = (NIB_W * em) / 2;
+    const p = new Path2D();
+    // From the tip the flanks swell out to the shoulders, then run straight to the heel.
+    p.moveTo(0, 0);
+    p.quadraticCurveTo(0.2 * L, 0.84 * h, 0.55 * L, h);
+    p.lineTo(L, h);
+    p.lineTo(L, -h);
+    p.lineTo(0.55 * L, -h);
+    p.quadraticCurveTo(0.2 * L, -0.84 * h, 0, 0);
+    p.closePath();
+    nibPath = p;
+    nibEm = em;
+    return p;
+  }
+
+  /**
+   * The nib, its tip at (x, y): `fade` its opacity, `lift` how far (in em) it
+   * stands off the line along its own axis. A small light marks the point
+   * where it touches the line, and goes out as the nib lifts.
+   */
+  function drawNib(x: number, y: number, fade: number, lift: number, em: number) {
+    const a = NIB_ANGLE + NIB_SWAY * Math.sin(tau * 5.1);
+    const L = NIB_LEN * em;
+    const h = (NIB_W * em) / 2;
+    const touch = 1 - clamp01(lift / 0.06);
+    if (touch > 0) {
+      const r = PEN_HALO * 0.6 * em;
+      g.globalCompositeOperation = palette.blend;
+      g.globalAlpha = Math.min(1, fade * touch * palette.glow);
+      g.drawImage(halo, x - r, y - r, r * 2, r * 2);
+      g.globalCompositeOperation = "source-over";
+    }
+    g.save();
+    g.translate(x + Math.cos(a) * lift * em, y + Math.sin(a) * lift * em);
+    g.rotate(a);
+    g.globalAlpha = fade;
+    const body = g.createLinearGradient(0, 0, L, 0);
+    body.addColorStop(0, palette.nib);
+    body.addColorStop(1, palette.nibTo);
+    g.fillStyle = body;
+    g.fill(nibOutline(em));
+    // Light along the upper flank, then the slit and its breather hole.
+    g.globalAlpha = fade * 0.7;
+    g.strokeStyle = palette.nibEdge;
+    g.lineWidth = 0.012 * em;
+    g.lineCap = "round";
+    g.beginPath();
+    g.moveTo(0.06 * L, -0.06 * h);
+    g.quadraticCurveTo(0.2 * L, -0.84 * h, 0.55 * L, -h);
+    g.lineTo(0.96 * L, -h);
+    g.stroke();
+    g.globalAlpha = fade;
+    g.strokeStyle = palette.nibSlit;
+    g.fillStyle = palette.nibSlit;
+    g.lineWidth = 0.014 * em;
+    g.beginPath();
+    g.moveTo(0.04 * L, 0);
+    g.lineTo(0.5 * L, 0);
+    g.stroke();
+    g.beginPath();
+    g.arc(0.5 * L, 0, 0.032 * em, 0, Math.PI * 2);
+    g.fill();
+    g.restore();
+    g.globalAlpha = 1;
   }
 
   function drawSparks(W: Word, t: number) {

@@ -48,13 +48,15 @@
 }
 
 /* Larger than the slot on every side: sparks rise above the line, the glow
-   and the pen reach past the letters. */
+   and the pen reach past the letters. A word written with a nib (the
+   footer's) sets --writer-reach-* on an ancestor: the nib stands up and to
+   the right of the line it draws. */
 .canvas {
   position: absolute;
-  top: -0.7em;
+  top: calc(-1 * var(--writer-reach-top, 0.7em));
   left: -0.35em;
-  width: calc(100% + 0.95em);
-  height: calc(100% + 1.1em);
+  width: calc(100% + 0.35em + var(--writer-reach-right, 0.6em));
+  height: calc(100% + var(--writer-reach-top, 0.7em) + 0.4em);
   pointer-events: none;
   opacity: 0;
   transition: opacity 250ms var(--ease-silk);

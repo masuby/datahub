@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { useHeroRunning } from "./HeroLive";
+import { useLiveRunning, type LiveScope } from "./HeroLive";
 import { lowEndDevice, saveDataOn } from "./device";
-import type { Writer, WriterTier } from "./word-writer";
+import type { Writer, WriterPen, WriterTier } from "./word-writer";
 import styles from "./HeroWords.module.css";
 
 /**
  * The headline's second line: one word that writes itself, then moves on.
+ * The footer's wordmark (iteration-3 §A) uses it too, with its own `scope`
+ * (when it may move) and a pen nib for a pen (`pen`, see word-writer.ts).
  *
  * Server HTML: every word, stacked in one grid cell, only the first visible
  * — it is the text visitors see first (painted with the page), what they keep
@@ -15,24 +17,32 @@ import styles from "./HeroWords.module.css";
  * longest word's width so nothing ever shifts. The H1 around it carries the
  * constant accessible name; all of this is aria-hidden.
  *
- * Client: the first time the word may move — the hero may (HeroLive) and
- * the word's own line is on screen — after an idle moment and once the
- * display font is in, the writer (word-writer.ts, its own lazy chunk with
- * the glyph outlines) takes over on a canvas laid over the slot. It pauses
- * whenever the word may not move, and the slot shows the current word as
- * text again: off screen (on a phone the line scrolls away long before the
- * rest of the hero), and in forced-colors mode, where the canvas is hidden —
- * also when High Contrast is turned on mid-visit. Never under Save-Data (the
- * chunk is not even fetched). Touch devices and low-end ones (spec §4.4:
- * deviceMemory or cores < 4) get the writer's lite tier: 30 fps and half the
- * sparks; a desktop that turns out too slow for the full tier steps down to
- * it (the writer's kill switch).
+ * Client: the first time the word may move — its part of the page may
+ * (LiveGate) and the word's own line is on screen — after an idle moment
+ * and once the display font is in, the writer (word-writer.ts, its own lazy
+ * chunk with the glyph outlines) takes over on a canvas laid over the slot.
+ * It pauses whenever the word may not move, and the slot shows the current
+ * word as text again: off screen (on a phone the line scrolls away long
+ * before the rest of the hero), and in forced-colors mode, where the canvas
+ * is hidden — also when High Contrast is turned on mid-visit. Never under
+ * Save-Data (the chunk is not even fetched). Touch devices and low-end ones
+ * (spec §4.4: deviceMemory or cores < 4) get the writer's lite tier: 30 fps
+ * and half the sparks; a desktop that turns out too slow for the full tier
+ * steps down to it (the writer's kill switch).
  */
-export function HeroWords({ words }: { words: readonly string[] }) {
+export function HeroWords({
+  words,
+  scope = "hero",
+  pen = "light",
+}: {
+  words: readonly string[];
+  scope?: LiveScope;
+  pen?: WriterPen;
+}) {
   const slotRef = useRef<HTMLSpanElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const writerRef = useRef<Writer | null>(null);
-  const running = useHeroRunning();
+  const running = useLiveRunning(scope);
   const forced = useSyncExternalStore(subscribeForced, forcedColors, () => false);
   const [onScreen, setOnScreen] = useState(false);
   const [armed, setArmed] = useState(false);
@@ -82,11 +92,16 @@ export function HeroWords({ words }: { words: readonly string[] }) {
     let writer: Writer | null = null;
     (async () => {
       if (!(await displayFontLoaded(slot))) return;
-      const { createWriter } = await import("./word-writer");
+      // The capitals' outlines are a chunk of their own, fetched only for
+      // words that have one (the footer's Title Case): the hero's are lower case.
+      const [{ createWriter }, capitals] = await Promise.all([
+        import("./word-writer"),
+        words.some((w) => /[A-Z]/.test(w)) ? import("./glyphs-upper").then((m) => m.GLYPHS_UPPER) : undefined,
+      ]);
       if (cancelled) return;
       const tier: WriterTier =
         window.matchMedia("(pointer: fine)").matches && !lowEndDevice() ? "full" : "lite";
-      writer = createWriter({ slot, canvas, words, tier });
+      writer = createWriter({ slot, canvas, words, tier, pen, capitals });
       if (!writer) return;
       writerRef.current = writer;
       setReady(true);
@@ -102,7 +117,7 @@ export function HeroWords({ words }: { words: readonly string[] }) {
       writer?.destroy();
       writerRef.current = null;
     };
-  }, [armed, words]);
+  }, [armed, words, pen]);
 
   useEffect(() => {
     if (ready) writerRef.current?.setRunning(live);

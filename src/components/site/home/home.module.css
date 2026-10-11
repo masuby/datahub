@@ -1,0 +1,487 @@
+/*
+  The home page after the hero (iteration-3 §C): a vertical rhythm instead of
+  horizontal row rules.
+
+  Desktop and tablet (>=640): three tiles side by side, each a link, divided
+  by vertical hairlines that fade out at both ends (lines that stop; nothing
+  runs across and nothing closes into a box). The tiles have no gap of their
+  own, so the dividers sit at exactly one and two thirds of the container:
+  from 1440px the dashboard teaser's divider below lands on the first of
+  them, and the three sections read as one set of columns. Inside a row the
+  tiles share their rows (subgrid): icon, index, title, line and arrow line
+  up across the three even when one title wraps.
+  Phones (<640): the tiles stack as rows — visual, title and line, arrow —
+  with space between them and no rules.
+
+  Each tile carries a real 3D icon (Fluent Emoji 3D, src/assets/fluent-3d)
+  or, for the team, the three portraits as overlapping avatars. Hover and
+  keyboard focus give gentle depth: the icon lifts a few pixels over its
+  contact shadow, the glow behind it brightens and grows, the title's thread
+  underline draws and the arrow moves 6px. Hover only where hover is real
+  (no sticky lift after a tap). Under reduced motion nothing moves or
+  scales: the glow only brightens and the underline appears. Nothing moves
+  on its own.
+*/
+
+/* ── Theme ─────────────────────────────────────────────────────────────── */
+.tiles,
+.teaser {
+  /* The contact shadow under a lifted icon, and the avatars' backdrop. */
+  --tile-shadow: rgb(2 41 112 / 0.22);
+  --avatar-bg: color-mix(in srgb, var(--sky) 22%, var(--bg-sunk));
+  /* Hairline dividers fade in and out over this length. */
+  --fade: 18%;
+}
+:global(.dark) .tiles,
+:global(.dark) .teaser {
+  --tile-shadow: rgb(0 0 0 / 0.7);
+  --avatar-bg: color-mix(in srgb, var(--royal) 22%, var(--bg-sunk));
+}
+/* No-JS fallback, mirrors globals.css (ThemeScript sets .light/.dark when JS runs). */
+@media (prefers-color-scheme: dark) {
+  :global(:root:not(.light):not(.dark)) .tiles,
+  :global(:root:not(.light):not(.dark)) .teaser {
+    --tile-shadow: rgb(0 0 0 / 0.7);
+    --avatar-bg: color-mix(in srgb, var(--royal) 22%, var(--bg-sunk));
+  }
+}
+
+/* ── Tiles ─────────────────────────────────────────────────────────────── */
+/* No margin here: the opener-to-tiles space is a utility on the list. */
+.tiles {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 1.25rem;
+}
+.tile {
+  position: relative;
+}
+
+.link {
+  /* Phones: visual | title over line | arrow. 4rem: a 56px icon, or the
+     64px avatar stack. */
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr) auto;
+  grid-template-areas:
+    "visual title arrow"
+    "visual line  arrow";
+  column-gap: 1rem;
+  align-items: center;
+  min-height: 3.5rem;
+  color: var(--fg);
+}
+
+.visual {
+  grid-area: visual;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+}
+/* The glow behind the icon: the hero mark's, quieter until hover/focus. */
+.visual::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -45%;
+  background: radial-gradient(closest-side, var(--hero-glow-a), var(--hero-glow-b) 50%, transparent 100%);
+  opacity: 0.45;
+  transition:
+    opacity var(--dur-ui) var(--ease-silk),
+    transform var(--dur-ui) var(--ease-silk);
+}
+/* The contact shadow the icon stands over; it tightens as the icon lifts. */
+.visual::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 16%;
+  right: 16%;
+  bottom: -9%;
+  height: 14%;
+  background: radial-gradient(closest-side, var(--tile-shadow), transparent);
+  transition:
+    opacity var(--dur-ui) var(--ease-silk),
+    transform var(--dur-ui) var(--ease-silk);
+}
+/* The avatars set their own width, at every size. */
+.visual.avatarsVisual {
+  width: auto;
+}
+/* Portraits are not objects standing on the page: no contact shadow. */
+.avatarsVisual::after {
+  display: none;
+}
+
+/* The <img> itself is the box's child (TileImage wraps it in <picture>). */
+.visual picture {
+  display: contents;
+}
+.icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: transform var(--dur-ui) var(--ease-silk);
+}
+
+/* The team: three portraits overlapping, each cut out of the page colour.
+   Each <img> sits in its own <picture> (display: contents, above). */
+.avatars {
+  display: flex;
+  align-items: center;
+}
+.avatar {
+  display: block;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: none;
+  border: 2px solid var(--bg);
+  border-radius: 9999px;
+  background: radial-gradient(circle at 50% 32%, var(--avatar-bg), var(--bg-sunk) 70%);
+  object-fit: cover;
+  transition: transform var(--dur-ui) var(--ease-silk);
+}
+/* Phones: three 28px portraits, 10px overlap: 64px, the visual column. */
+.avatars > picture + picture .avatar {
+  margin-left: -0.625rem;
+}
+
+.index {
+  display: none;
+}
+.title {
+  grid-area: title;
+  align-self: end;
+}
+/* The title's thread underline, drawn while the tile is hovered or focused. */
+.titleText {
+  background-image: var(--thread);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  padding-bottom: 0.125rem;
+  transition: background-size var(--dur-ui) var(--ease-thread);
+}
+.line {
+  grid-area: line;
+  align-self: start;
+  margin-top: 0.125rem;
+  color: var(--fg-muted);
+}
+/* Phones: a step under t-body, so the line sits below its title rather than
+   beside it, and the rows stay short. */
+@media (max-width: 639.98px) {
+  .line {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+}
+.arrow {
+  grid-area: arrow;
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--accent);
+  transition: transform var(--dur-ui) var(--ease-silk);
+}
+
+/* ── States ──────────────────────────────────────────────────────────────
+   At every motion setting: the underline and the brighter glow. */
+.link:focus-visible .titleText {
+  background-size: 100% 2px;
+}
+.link:focus-visible .visual::before {
+  opacity: 1;
+}
+@media (hover: hover) {
+  .link:hover .titleText {
+    background-size: 100% 2px;
+  }
+  .link:hover .visual::before {
+    opacity: 1;
+  }
+}
+/* Without reduced motion only: the lift, the growing glow, the arrow. */
+@media (prefers-reduced-motion: no-preference) {
+  .link:focus-visible .visual::before {
+    transform: scale(1.12);
+  }
+  .link:focus-visible .arrow {
+    transform: translateX(6px);
+  }
+  .link:focus-visible .icon {
+    transform: translateY(-6px) scale(1.04);
+  }
+  .link:focus-visible .visual::after {
+    opacity: 0.55;
+    transform: scaleX(0.82);
+  }
+  .link:focus-visible .avatar {
+    transform: translateY(-3px);
+  }
+  .link:focus-visible .avatars > picture:nth-child(2) .avatar {
+    transform: translate(5px, -3px);
+  }
+  .link:focus-visible .avatars > picture:nth-child(3) .avatar {
+    transform: translate(10px, -3px);
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .link:hover .visual::before {
+    transform: scale(1.12);
+  }
+  .link:hover .arrow {
+    transform: translateX(6px);
+  }
+  .link:hover .icon {
+    transform: translateY(-6px) scale(1.04);
+  }
+  .link:hover .visual::after {
+    opacity: 0.55;
+    transform: scaleX(0.82);
+  }
+  .link:hover .avatar {
+    transform: translateY(-3px);
+  }
+  .link:hover .avatars > picture:nth-child(2) .avatar {
+    transform: translate(5px, -3px);
+  }
+  .link:hover .avatars > picture:nth-child(3) .avatar {
+    transform: translate(10px, -3px);
+  }
+}
+
+/* ── Tablet and desktop: three columns, vertical hairlines ─────────────── */
+@media (min-width: 640px) {
+  .tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 0;
+  }
+  /* Dividers between columns only: none at the outer edges. */
+  .tile + .tile::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--rule-strong) var(--fade),
+      var(--rule-strong) calc(100% - var(--fade)),
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  /* Where subgrid is missing (see below): each tile a column of its own,
+     the arrow at its foot. */
+  .link {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100%;
+    padding: 0.75rem clamp(1.25rem, 0.2rem + 2.6vw, 2.5rem) 0.5rem;
+  }
+  .tile:first-child .link {
+    padding-left: 0;
+  }
+  .tile:last-child .link {
+    padding-right: 0;
+  }
+
+  .visual {
+    width: 5rem;
+    height: 5rem;
+  }
+  .index {
+    display: block;
+    margin-top: 1.75rem;
+  }
+  .title {
+    align-self: auto;
+    margin-top: 0.5rem;
+  }
+  .line {
+    margin-top: 0.5rem;
+    max-width: 32ch;
+  }
+  .arrow {
+    margin-top: auto;
+    padding-top: 1.25rem;
+  }
+
+  .avatar {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-width: 3px;
+  }
+  .avatars > picture + picture .avatar {
+    margin-left: -1rem;
+  }
+}
+/* The three tiles share five rows — visual, index, title, line, arrow — so
+   a title that wraps in one tile moves the lines of all three together. */
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 640px) {
+    .tiles {
+      grid-template-rows: repeat(5, auto);
+    }
+    .tile {
+      display: grid;
+      grid-row: span 5;
+      grid-template-rows: subgrid;
+    }
+    .link {
+      display: grid;
+      grid-row: span 5;
+      grid-template-rows: subgrid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: none;
+      align-items: start;
+      justify-items: start;
+      height: auto;
+    }
+    .visual,
+    .title,
+    .line,
+    .arrow {
+      grid-area: auto;
+    }
+    .arrow {
+      margin-top: 0;
+      align-self: end;
+    }
+  }
+}
+@media (min-width: 1024px) {
+  .visual {
+    width: 6rem;
+    height: 6rem;
+  }
+  .avatar {
+    width: 4rem;
+    height: 4rem;
+  }
+  .avatars > picture + picture .avatar {
+    margin-left: -1.125rem;
+  }
+}
+
+/* ── The dashboard teaser ──────────────────────────────────────────────────
+   Below 1440px: title, notice, plate, link, stacked. Two thirds of a
+   narrower page squeeze the KPI strip ("TZS bilioni 18.4" breaks below
+   about 1390px), so the side-by-side form starts where the page is at its
+   full width and only ever renders at that one size (plate 880px): the bar
+   chart, title, notice and link in the first third, one under the other,
+   and the plate in the other two thirds behind a vertical hairline on the
+   line of the first tile divider. */
+.teaser {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "text"
+    "plate"
+    "link";
+}
+.teaserText {
+  grid-area: text;
+}
+.teaserPlate {
+  grid-area: plate;
+  position: relative;
+  min-width: 0;
+  margin-top: 1.5rem;
+}
+.teaserLink {
+  grid-area: link;
+  justify-self: start;
+}
+@media (min-width: 90rem) {
+  .teaser {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    /* The last row takes the rest of the plate's height, so the link sits
+       right under the notice. */
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas:
+      "text plate"
+      "link plate"
+      ".    plate";
+  }
+  .teaserText {
+    padding-right: 2.5rem;
+  }
+  .teaserLink {
+    margin-top: 1.75rem;
+  }
+  .teaserPlate {
+    margin-top: 0;
+    padding-left: 2.5rem;
+  }
+  .teaserPlate::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--rule-strong) 8%,
+      var(--rule-strong) 92%,
+      transparent
+    );
+    pointer-events: none;
+  }
+}
+
+/* ── The icons' credit and licence (ArtCredit) ─────────────────────────────
+   As the dashboards' "View as table": + / −, muted until hovered. */
+/* Baseline, so the sign stays on the first line when the label wraps. */
+.credit > summary {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding-block: 0.875rem;
+  cursor: pointer;
+  list-style: none;
+  color: var(--fg-muted);
+}
+.credit > summary::-webkit-details-marker {
+  display: none;
+}
+.credit > summary::before {
+  content: "+";
+  display: inline-block;
+  width: 1ch;
+  font-family: var(--font-mono);
+}
+.credit[open] > summary::before {
+  content: "−";
+}
+.credit > summary:hover {
+  color: var(--fg);
+}
+.licence {
+  max-width: 72ch;
+  color: var(--fg-muted);
+}
+
+@media (forced-colors: active) {
+  .visual::before,
+  .visual::after {
+    display: none;
+  }
+  .tile + .tile::before,
+  .teaserPlate::before {
+    background: CanvasText;
+  }
+  /* The cut-out stays the page colour, not a ring in the link colour. */
+  .avatar {
+    border-color: Canvas;
+  }
+}

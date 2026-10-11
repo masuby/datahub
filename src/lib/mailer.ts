@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import type { ContactInput } from "./validation";
-import { SERVICE_LABELS } from "./validation";
+import { serviceLabels } from "./validation";
 
 /**
  * SMTP transport. Configured entirely from environment variables so no
@@ -44,7 +44,10 @@ export async function sendLeadNotification(lead: ContactInput): Promise<void> {
     return;
   }
 
-  const serviceLabel = lead.service ? SERVICE_LABELS[lead.service] : "—";
+  // Any number of choices: one per line in the HTML, a comma list in text.
+  const services = serviceLabels(lead.service);
+  const servicesHtml = services.length ? services.map(esc).join("<br>") : "—";
+  const servicesText = services.length ? services.join(", ") : "—";
   const company = lead.company?.trim() || "—";
   const phone = lead.phone?.trim() || "";
   const source = lead.source?.trim() || "direct";
@@ -64,7 +67,7 @@ export async function sendLeadNotification(lead: ContactInput): Promise<void> {
               : ""
           }
           <tr><td style="padding:6px 0;color:#64748b">Company</td><td style="padding:6px 0">${esc(company)}</td></tr>
-          <tr><td style="padding:6px 0;color:#64748b">Interested in</td><td style="padding:6px 0">${esc(serviceLabel)}</td></tr>
+          <tr><td style="padding:6px 0;color:#64748b;vertical-align:top">Interested in</td><td style="padding:6px 0">${servicesHtml}</td></tr>
           <tr><td style="padding:6px 0;color:#64748b">Came from</td><td style="padding:6px 0"><strong>${esc(source)}</strong></td></tr>
         </table>
         <div style="margin-top:14px;padding-top:14px;border-top:1px solid #e2e8f0">
@@ -78,7 +81,7 @@ export async function sendLeadNotification(lead: ContactInput): Promise<void> {
 Name: ${lead.name}
 Email: ${lead.email}${phone ? `\nPhone: ${phone}` : ""}
 Company: ${company}
-Interested in: ${serviceLabel}
+Interested in: ${servicesText}
 Came from: ${source}
 
 Message:

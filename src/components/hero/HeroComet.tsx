@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "@/components/system/motion-store";
-import { useHeroRunning } from "./HeroLive";
+import { useLiveRunning, type LiveScope } from "./HeroLive";
 import { frugalDevice } from "./device";
 import { COMET_DELAY, COMET_GLOWS, COMET_PASS, COMET_REST, cometKeyframes } from "./comet";
 import styles from "./HeroComet.module.css";
@@ -10,12 +10,13 @@ import styles from "./HeroComet.module.css";
 /**
  * The light along the D, laid over the mark's D and under the hand.
  *
- * Server HTML: the comet's glows, invisible. The first time the hero may
- * move (useHeroRunning), each glow gets its keyframes (comet.ts) through the
+ * Server HTML: the comet's glows, invisible. The first time its part of the
+ * page may move (the hero, or the footer's wordmark: `scope`, through
+ * useLiveRunning), each glow gets its keyframes (comet.ts) through the
  * Web Animations API — transform and opacity only, so the compositor runs
  * them. Between passes nothing is animated at all: an element with a
  * running animation, composited or not, is restyled in every frame the
- * page draws for its canvases. The comet pauses whenever the hero may not
+ * page draws for its canvases. The comet pauses whenever its part may not
  * move (holding still, like the mark's CSS loops), resets under reduced
  * motion, and never starts on a frugal device (Save-Data, low-end: the
  * silk's tier) or without JavaScript.
@@ -27,10 +28,10 @@ import styles from "./HeroComet.module.css";
  * one off screen would still be restyled in every canvas frame, so the comet
  * plays only while its own layer is on screen.
  */
-export function HeroComet() {
+export function HeroComet({ scope = "hero" }: { scope?: LiveScope }) {
   const ref = useRef<HTMLSpanElement>(null);
   const player = useRef<CometPlayer | null>(null);
-  const running = useHeroRunning();
+  const running = useLiveRunning(scope);
   const reduced = useReducedMotion();
   const [shown, setShown] = useState(false);
 

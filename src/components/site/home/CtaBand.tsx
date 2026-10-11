@@ -7,7 +7,6 @@ import { ButtonPrimary } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Grid } from "@/components/ui/Grid";
 import { Reveal } from "@/components/ui/Reveal";
-import { Rule } from "@/components/ui/Rule";
 import { Section } from "@/components/ui/Section";
 
 /** Fills `{slot}` placeholders with nodes, so a link can sit inside a translated sentence. */
@@ -54,7 +53,9 @@ export async function CtaBand({ lang }: { lang: Locale }) {
     <Section id="start" labelledBy="start-title" compact>
       <Container>
         <Reveal>
-          <Rule variant="section" animate />
+          {/* The short brand thread that opens every home section (iteration-3
+              §C: no full-width horizontal rules after the hero). */}
+          <span aria-hidden="true" className="thread a-draw-x block w-8" />
           <Grid className="mt-8 items-end gap-y-8 lg:mt-12">
             <h2
               id="start-title"

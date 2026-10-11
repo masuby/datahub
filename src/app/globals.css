@@ -111,6 +111,24 @@
   --word-sheen: #ffffff;
   --word-glow: 1;
   --word-blend: source-over;
+  /* The footer's word is written with a pen nib (iteration 3): navy at the
+     tip to royal at the heel, a sky light along its edge, the page showing
+     through its slit. */
+  --word-nib: #022970;
+  --word-nib-to: #036bfb;
+  --word-nib-edge: #68d4fb;
+  --word-nib-slit: var(--bg);
+
+  /* Brand marks of the networks we link to (iteration 3), in their owners'
+     colours. Logos, so outside the contrast table; Facebook's and LinkedIn's
+     blues still clear 3:1 on --bg in both themes. TikTok's note is black on
+     light, white on dark, with its cyan and red edges. Instagram's gradient
+     is drawn in SocialSprite, WhatsApp's green circle in FloatingWhatsApp. */
+  --brand-facebook: #0866ff;
+  --brand-linkedin: #0a66c2;
+  --brand-tiktok: #000000;
+  --brand-tiktok-cyan: #25f4ee;
+  --brand-tiktok-red: #fe2c55;
 
   --selection: rgb(3 107 251 / 0.18);
 
@@ -207,6 +225,11 @@
   --word-line: #e6f8ff;
   --word-spark: #ffffff;
   --word-blend: lighter;
+  --word-nib: #eaf1ff;
+  --word-nib-to: #68d4fb;
+  --word-nib-edge: #ffffff;
+
+  --brand-tiktok: #ffffff;
 
   --selection: rgb(104 212 251 / 0.3);
 }
@@ -268,6 +291,10 @@
     --word-line: #e6f8ff;
     --word-spark: #ffffff;
     --word-blend: lighter;
+    --word-nib: #eaf1ff;
+    --word-nib-to: #68d4fb;
+    --word-nib-edge: #ffffff;
+    --brand-tiktok: #ffffff;
     --selection: rgb(104 212 251 / 0.3);
   }
 }
@@ -470,9 +497,11 @@ body {
     font-variant-numeric: tabular-nums;
     color: var(--fg-subtle);
   }
+  /* 700, not 800: the footer's word is written with the Outfit 700 outlines
+     (src/components/hero/glyphs.ts), laid exactly over this text. */
   .t-footer-mark {
     font-family: var(--font-display);
-    font-weight: 800;
+    font-weight: 700;
     font-size: clamp(3rem, 0.5rem + 12.2vw, 12rem);
     line-height: 0.86;
     letter-spacing: -0.045em;

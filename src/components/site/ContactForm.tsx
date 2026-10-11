@@ -15,6 +15,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Dictionary } from "@/i18n/get-dictionary";
+import type { FormExtra } from "@/i18n/extra/form";
 import { CONTACT_EMAIL, WHATSAPP_DISPLAY } from "@/lib/contact-info";
 import { formatNumber } from "@/lib/format";
 import { readRef } from "@/components/system/RefKeeper";
@@ -29,12 +30,16 @@ import styles from "./ContactForm.module.css";
  * The contact form (client island).
  *
  * THE LEAD PIPELINE IS FIXED: POST /api/contact with JSON keys exactly
- * name, email, company, phone, service, message, source, website. The
- * honeypot input is named "hp" and its value travels as `website`. `source` is
- * the campaign tag (?ref / ?utm_source, else the sessionStorage copy kept by
- * RefKeeper). The zod schema in src/lib/validation.ts decides validity; the
- * checks below mirror its limits only to choose a localised message and to
- * spare a round trip (and a rate-limit slot) for an obviously empty field.
+ * name, email, company, phone, service, message, source, website. `service`
+ * is the ticked "Interested in" boxes as one comma-separated string in the
+ * order the form lists them ("dashboards,automation"), left out when none is
+ * ticked; the server still takes the single value the radio-button form
+ * sent. The honeypot input is named "hp" and its value travels as
+ * `website`. `source` is the campaign tag (?ref / ?utm_source, else the
+ * sessionStorage copy kept by RefKeeper). The zod schema in
+ * src/lib/validation.ts decides validity; the checks below mirror its limits
+ * only to choose a localised message and to spare a round trip (and a
+ * rate-limit slot) for an obviously empty field.
  *
  * Takes the hours estimator's sentence two ways: on mount, where the
  * estimator left it before opening this page (system/prefill: sessionStorage,
@@ -48,6 +53,11 @@ export type FormStrings = Dictionary["form"];
 
 const subscribeNothing = () => () => {};
 
+/**
+ * Keep in step with SERVICE_VALUES in src/lib/validation.ts, which the server
+ * validates against. It cannot be imported from there: zod would ship to the
+ * browser with it.
+ */
 const SERVICE_VALUES = [
   "dashboards",
   "automation",
@@ -55,6 +65,8 @@ const SERVICE_VALUES = [
   "other",
 ] as const;
 type ServiceValue = (typeof SERVICE_VALUES)[number];
+const isServiceValue = (v: string): v is ServiceValue =>
+  (SERVICE_VALUES as readonly string[]).includes(v);
 const SERVICE_LABEL_KEY = {
   dashboards: "dashboards",
   automation: "automation",
@@ -81,7 +93,8 @@ type Values = {
   phone: string;
   email: string;
   company: string;
-  service: "" | ServiceValue;
+  /** Ticked boxes, always in SERVICE_VALUES order. */
+  service: readonly ServiceValue[];
   message: string;
 };
 type Errors = Partial<Record<FieldName, string>>;
@@ -91,7 +104,7 @@ const EMPTY: Values = {
   phone: "",
   email: "",
   company: "",
-  service: "",
+  service: [],
   message: "",
 };
 
@@ -131,7 +144,8 @@ function check(
     case "company":
       return v.company.trim().length > 140 ? e.company.tooLong : undefined;
     case "service":
-      return v.service && !SERVICE_VALUES.includes(v.service)
+      return v.service.length > SERVICE_VALUES.length ||
+        !v.service.every(isServiceValue)
         ? e.service.invalid
         : undefined;
     case "message": {
@@ -198,9 +212,16 @@ export function ContactForm({
   privacy,
   newTabLabel,
   whatsappHref,
+  extra,
   successHeading: SuccessHeading = "h3",
 }: {
   strings: FormStrings;
+  /**
+   * The multi-choice strings (formExtra[lang]): the legend's "choose any"
+   * hint, and the message for a rejected choice, which replaces the
+   * dictionary's radio-era "choose one of the options".
+   */
+  extra: FormExtra;
   /** Shown and announced after the estimator adds a sentence (estimator.added). */
   prefillAnnouncement: string;
   privacy: { text: string; linkLabel: string; href: string };
@@ -232,7 +253,10 @@ export function ContactForm({
     n: number;
   } | null>(null);
 
-  const E = strings.errors;
+  const E: FormStrings["errors"] = {
+    ...strings.errors,
+    service: { invalid: extra.service.invalid },
+  };
   const F = strings.fields;
   const sending = phase === "sending";
 
@@ -267,9 +291,9 @@ export function ContactForm({
   useLayoutEffect(() => {
     const form = formRef.current;
     if (!form) return;
-    const read = (name: FieldName) => {
+    const read = (name: Exclude<FieldName, "service">) => {
       const el = form.elements.namedItem(name);
-      return el instanceof RadioNodeList || el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement
+      return el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement
         ? el.value
         : "";
     };
@@ -278,8 +302,13 @@ export function ContactForm({
       const v = read(key);
       if (v) typed[key] = v;
     }
-    const service = read("service");
-    if (service in SERVICE_LABEL_KEY) typed.service = service as ServiceValue;
+    const ticked = new Set(
+      Array.from(
+        form.querySelectorAll<HTMLInputElement>('input[name="service"]:checked'),
+        (el) => el.value,
+      ),
+    );
+    if (ticked.size) typed.service = SERVICE_VALUES.filter((v) => ticked.has(v));
     // Syncing state from the DOM once, on mount: the external-system case.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (Object.keys(typed).length) setValues((prev) => ({ ...prev, ...typed }));
@@ -351,8 +380,13 @@ export function ContactForm({
     setErrors((prev) => ({ ...prev, [field]: check(field, values, E) }));
   };
 
-  const chooseService = (value: ServiceValue) => {
-    setValues((v) => ({ ...v, service: value }));
+  const toggleService = (value: ServiceValue, on: boolean) => {
+    setValues((v) => ({
+      ...v,
+      service: SERVICE_VALUES.filter((s) =>
+        s === value ? on : v.service.includes(s),
+      ),
+    }));
     setErrors((prev) =>
       prev.service ? { ...prev, service: undefined } : prev,
     );
@@ -377,7 +411,7 @@ export function ContactForm({
       email: values.email,
       company: values.company,
       phone: values.phone,
-      service: values.service || undefined,
+      service: values.service.length ? values.service.join(",") : undefined,
       message: values.message,
       source: readRef(),
       // Honeypot: the input is named "hp" so autofill leaves it alone.
@@ -507,8 +541,8 @@ export function ContactForm({
     );
   }
 
-  const describedBy = (field: FieldName, ...extra: string[]) =>
-    [errors[field] ? id(`${field}-error`) : "", ...extra]
+  const describedBy = (field: FieldName, ...more: string[]) =>
+    [errors[field] ? id(`${field}-error`) : "", ...more]
       .filter(Boolean)
       .join(" ") || undefined;
 
@@ -690,48 +724,73 @@ export function ContactForm({
           )}
         </div>
 
-        {/* Interested in: four native radios as R1 rows. */}
+        {/* Interested in: four native checkboxes as R1 rows; any number,
+          none included. Each is its own tab stop and toggles with Space. */}
         <fieldset
           className="mt-10 min-w-0"
           aria-describedby={errors.service ? id("service-error") : undefined}
         >
+          {/* Shown as "INTERESTED IN · CHOOSE ANY · OPTIONAL", named
+            "Interested in, choose any, optional": the dots are for the eye
+            (they stay in forced colours, where the grey shift is lost), the
+            sr-only commas for the ear. Each item keeps its dot and its words
+            on one line, so a wrapped legend (Kiswahili at 390px) breaks
+            before a dot, never after one or inside "si lazima". */}
           <legend className="t-eyebrow text-muted">
             {F.service.legend}
-            <span className="ml-2 text-subtle">{strings.optional}</span>
+            <span className="sr-only">,</span>{" "}
+            <span className="text-subtle">
+              <span className="whitespace-nowrap">
+                <span aria-hidden="true">· </span>
+                {extra.service.hint}
+              </span>
+              <span className="sr-only">,</span>{" "}
+              <span className="whitespace-nowrap">
+                <span aria-hidden="true">· </span>
+                {strings.optional}
+              </span>
+            </span>
           </legend>
           <div className="mt-3">
-            {SERVICE_VALUES.map((value, i) => (
-              <label
-                key={value}
-                className={cn(
-                  "group flex min-h-12 cursor-pointer items-center gap-4 border-t border-rule py-3",
-                  i === SERVICE_VALUES.length - 1 && "border-b",
-                )}
-              >
-                <input
-                  type="radio"
-                  name="service"
-                  value={value}
-                  checked={values.service === value}
-                  onChange={() => chooseService(value)}
+            {SERVICE_VALUES.map((value, i) => {
+              const on = values.service.includes(value);
+              return (
+                <label
+                  key={value}
                   className={cn(
-                    "relative grid size-[18px] shrink-0 cursor-pointer appearance-none place-content-center rounded-full border border-rule-input bg-transparent",
-                    "before:size-2.5 before:scale-0 before:rounded-full before:bg-action before:transition-transform before:duration-[160ms] before:content-['']",
-                    "checked:border-action checked:before:scale-100 forced-colors:appearance-auto",
-                  )}
-                />
-                <span
-                  className={cn(
-                    "font-sans text-base transition-colors duration-[160ms] group-hover:text-fg",
-                    values.service === value
-                      ? "font-semibold text-fg"
-                      : "text-muted",
+                    "group flex min-h-12 cursor-pointer items-center gap-4 border-t border-rule py-3",
+                    i === SERVICE_VALUES.length - 1 && "border-b",
                   )}
                 >
-                  {F.service.options[SERVICE_LABEL_KEY[value]]}
-                </span>
-              </label>
-            ))}
+                  <span className={styles.check}>
+                    <input
+                      type="checkbox"
+                      name="service"
+                      value={value}
+                      checked={on}
+                      onChange={(ev) => toggleService(value, ev.target.checked)}
+                      className={styles.box}
+                    />
+                    <svg
+                      viewBox="0 0 18 18"
+                      aria-hidden="true"
+                      focusable="false"
+                      className={styles.tick}
+                    >
+                      <path d="M4.25 9.25 7.5 12.5 13.75 5.75" pathLength={1} />
+                    </svg>
+                  </span>
+                  <span
+                    className={cn(
+                      "font-sans text-base transition-colors duration-[160ms] group-hover:text-fg",
+                      on ? "font-semibold text-fg" : "text-muted",
+                    )}
+                  >
+                    {F.service.options[SERVICE_LABEL_KEY[value]]}
+                  </span>
+                </label>
+              );
+            })}
           </div>
           {errors.service && (
             <p

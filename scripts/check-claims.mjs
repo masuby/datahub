@@ -22,6 +22,9 @@
  *   - The contact form: JSON only (a disguised media type is refused), no
  *     cross-site posts, and "a few messages per network address" holds even
  *     when a client invents a new X-Forwarded-For for every request.
+ *   - "Interested in" takes one choice or several (comma-separated, as the
+ *     form sends them) and nothing else. The schema's own unit checks are in
+ *     scripts/check-contact-schema.mjs.
  */
 
 import { readdirSync, statSync } from "node:fs";
@@ -63,6 +66,8 @@ const fail = (where, msg) => {
   console.log(`  FAIL  ${where}: ${msg}`);
 };
 const pass = (where, msg) => console.log(`  ok    ${where}: ${msg}`);
+/** Could not be checked on this run (not a failure); says why. */
+const skip = (where, msg) => console.log(`  skip  ${where}: ${msg}`);
 
 function directive(csp, name) {
   const d = csp.split(";").map((s) => s.trim()).find((s) => s.startsWith(`${name} `) || s === name);
@@ -220,6 +225,40 @@ for (const name of readdirSync(publicDir)) {
   });
   if (cross.status !== 403) fail("/api/contact cross-site", `status ${cross.status}, expected 403`);
   else pass("/api/contact cross-site", "403");
+}
+
+// Contact: "Interested in" takes any number of choices, sent as one
+// comma-separated `service` value. Every probe carries a one-letter name, so
+// it always fails validation (422) and nothing is stored or mailed; what is
+// checked is whether `service` is among the rejected fields. Two probes over
+// HTTP (the single value, blanks, lengths and the rest are unit-checked in
+// scripts/check-contact-schema.mjs). Their own X-Real-IP keeps them inside
+// the limit tested below; behind a proxy that sets X-Real-IP itself they
+// count against this machine's address, and a run inside the window of the
+// last one gets a 429 before validation. That is reported as a skip, not a
+// failure: the rate limit, not the list, answered.
+{
+  const realIp = `198.19.${Math.floor(Math.random() * 250)}.${Math.floor(Math.random() * 250)}`;
+  for (const [label, service, accepted] of [
+    ["several choices, with a duplicate", "other,dashboards,dashboards", true],
+    ["an unknown choice", "dashboards,teleport", false],
+  ]) {
+    const res = await fetch(`${base}/api/contact`, {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-real-ip": realIp },
+      body: JSON.stringify({ name: "x", email: "x@example.com", message: "x", service }),
+    });
+    const data = await res.json().catch(() => null);
+    const issues = Object.keys(data?.issues ?? {});
+    const where = `/api/contact service ${label}`;
+    if (res.status === 429) {
+      skip(where, "not checked: rate-limited by this machine's address (a proxy sets X-Real-IP); run again after the window");
+    } else if (res.status !== 422 || !issues.includes("name")) {
+      fail(where, `status ${res.status}, issues [${issues.join(", ")}], expected 422 on name`);
+    } else if (issues.includes("service") === accepted) {
+      fail(where, accepted ? "service was rejected" : "service was accepted");
+    } else pass(where, accepted ? "accepted" : "rejected");
+  }
 }
 
 // Rate limit: a client cannot reset it by inventing X-Forwarded-For values.

@@ -1,0 +1,232 @@
+/* The footer's living wordmark (FooterMark). Geometry, masks, the field and
+   its twinkling dots; colours are the theme's tokens, so it follows the
+   theme like the rest of the page.
+
+   The decoration covers the whole stage at every width, so the dot field
+   runs behind the wordmark too. The silk plate, its wash and the mark fill
+   --plate-h of it: the whole stage on desktop, a band at its top below
+   1024px, with the wordmark under the band. The mark's centre is the
+   plate's sink: (0.85, 0.40) of the plate (src/lib/silk.ts, preset
+   "plate"), at (--mark-x, --mark-y). */
+
+.stage {
+  --mark-size: 96px;
+  --field-step: 22px;
+  --plate-h: 176px;
+  --mark-x: 85%;
+  --mark-y: calc(var(--plate-h) * 0.4);
+  /* The writer's canvas reaches past the wordmark's column (the nib, on the
+     widest word, HeroWords.module.css): on the narrowest phones the screen's
+     edge cuts it rather than the page scrolling sideways. clip (not hidden)
+     leaves the other axis alone, so the nib still rises freely. */
+  overflow-x: clip;
+}
+@supports not (overflow-x: clip) {
+  .stage {
+    overflow-x: hidden;
+  }
+}
+
+.deco {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  background: radial-gradient(
+      46% 70% at 85% 40%,
+      color-mix(in srgb, var(--silk-wash) 55%, transparent),
+      transparent 72%
+    )
+    0 0 / 100% var(--plate-h) no-repeat;
+}
+@supports not (overflow: clip) {
+  .deco {
+    overflow: hidden;
+  }
+}
+
+/* Below 1024px the wordmark starts under the band. */
+.text {
+  padding-top: calc(var(--plate-h) + 20px);
+}
+
+/* The wordmark sizes itself to its column: its widest line (--fit-em, from
+   the font's advances, set by FooterMark) fits, so the word line never
+   wraps, down to a 320px phone. The paragraph is the size container. */
+.title {
+  container-type: inline-size;
+  /* The nib stands up and to the right of the line it writes: the writer's
+     canvas reaches further than the hero's (HeroWords.module.css). */
+  --writer-reach-top: 0.95em;
+  --writer-reach-right: 0.9em;
+}
+.display {
+  --fs: clamp(3rem, 0.5rem + 12.2vw, 12rem);
+  font-size: min(calc(var(--fs) * var(--display-scale, 1)), 100cqi / var(--fit-em));
+}
+
+/* Under the wordmark, at its left edge (the button's own inset brought
+   back), at every width: the floating WhatsApp button keeps the bottom
+   right, so the two never meet. Positioned, so it sits above the word's
+   ink padding (HeroWords.module.css), which reaches down over it and
+   would otherwise take its clicks. */
+.pause {
+  position: relative;
+  display: flex;
+  min-height: 2.75rem;
+  margin: 8px 0 0 -4px;
+}
+
+@media (min-width: 640px) {
+  .stage {
+    --mark-size: 128px;
+    --plate-h: 216px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .stage {
+    --mark-size: clamp(168px, 15vw, 232px);
+    --plate-h: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: clamp(380px, 31vw, 470px);
+  }
+  .text {
+    padding-top: 96px;
+    padding-bottom: 8px;
+  }
+  /* Clear of the descenders of the word above (g, y) at display size. */
+  .pause {
+    margin-top: 20px;
+  }
+}
+
+/* Mark and the glow behind it, centred on the sink — on the narrowest
+   phones a few pixels left of it, so the mark keeps clear of the edge. */
+.mark,
+.glow {
+  left: min(var(--mark-x), 100% - var(--mark-size) / 2 - 8px);
+  top: var(--mark-y);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+}
+.mark {
+  width: var(--mark-size);
+}
+.glow {
+  width: calc(var(--mark-size) * 1.9);
+  background: radial-gradient(closest-side, var(--hero-glow-a), var(--hero-glow-b) 45%, transparent 100%);
+  opacity: 0.6;
+}
+
+/* The silk plate, stretched over the plate's height; quiet where the
+   wordmark stands (left), full at the mark. Mask colours are alpha
+   sources, not design colours. */
+.silk {
+  height: var(--plate-h);
+  -webkit-mask-image: linear-gradient(to right, rgb(0 0 0 / 0.5) 0 35%, #000 70%);
+  mask-image: linear-gradient(to right, rgb(0 0 0 / 0.5) 0 35%, #000 70%);
+}
+
+/* The dot field (the hero's), over the whole stage: a pool round the mark,
+   and a steady floor of dots everywhere else, behind the wordmark too (the
+   owner's brief: dots in the slogan's background). The floor is 60% of
+   the pool's strength, so the words stay the first thing read. */
+.field {
+  background-image: radial-gradient(circle at center, var(--field-dot) 0 1px, transparent 1.5px);
+  background-size: var(--field-step) var(--field-step);
+  -webkit-mask-image: radial-gradient(
+    60% calc(var(--plate-h) * 0.95) at var(--mark-x) var(--mark-y),
+    #000 0%,
+    rgb(0 0 0 / 0.85) 35%,
+    rgb(0 0 0 / 0.6) 80%
+  );
+  mask-image: radial-gradient(
+    60% calc(var(--plate-h) * 0.95) at var(--mark-x) var(--mark-y),
+    #000 0%,
+    rgb(0 0 0 / 0.85) 35%,
+    rgb(0 0 0 / 0.6) 80%
+  );
+}
+
+/* A few dots of the field light up in turn, on its grid (a dot sits at the
+   centre of every --field-step cell), counted in cells from the one under
+   the mark's centre. Three groups of three, each group one element whose
+   dots are copies of it (box-shadow), so only three elements animate: an
+   animated element is restyled in every frame the word's canvas draws.
+   The element itself sits under the mark; outer shadows never paint inside
+   their own box, so only the copies show. They are dark until the stage may
+   move (data-footer-motion="run", set by LiveGate), and hold still when it
+   may not. Opacity only, so the compositor runs them. */
+.twinkle {
+  --s: var(--field-step);
+  --dot: 3px 1px var(--field-twinkle);
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+  border-radius: 50%;
+  left: var(--mark-x);
+  top: var(--mark-y);
+  left: calc(round(down, var(--mark-x), var(--s)) + var(--s) / 2);
+  top: calc(round(down, var(--mark-y), var(--s)) + var(--s) / 2);
+  opacity: 0;
+  animation: twinkle var(--period) ease-in-out var(--delay) infinite both paused;
+}
+.twinkleA {
+  --period: 4.6s;
+  --delay: 0s;
+  box-shadow:
+    calc(-9 * var(--s)) calc(-4 * var(--s)) var(--dot),
+    calc(5 * var(--s)) calc(-5 * var(--s)) var(--dot),
+    calc(-13 * var(--s)) calc(2 * var(--s)) var(--dot);
+}
+.twinkleB {
+  --period: 5.4s;
+  --delay: 1.7s;
+  box-shadow:
+    calc(-6 * var(--s)) calc(3 * var(--s)) var(--dot),
+    calc(7 * var(--s)) calc(3 * var(--s)) var(--dot),
+    calc(-16 * var(--s)) calc(-3 * var(--s)) var(--dot);
+}
+.twinkleC {
+  --period: 5s;
+  --delay: 3.1s;
+  box-shadow:
+    calc(-3 * var(--s)) calc(-6 * var(--s)) var(--dot),
+    calc(3 * var(--s)) calc(5 * var(--s)) var(--dot),
+    calc(-11 * var(--s)) calc(-1 * var(--s)) var(--dot);
+}
+:global([data-footer-motion="run"]) .twinkle {
+  animation-play-state: running;
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@media (forced-colors: active) {
+  .field,
+  .glow,
+  .twinkle {
+    display: none;
+  }
+}
+/* No decoration on paper, so no band to clear either. */
+@media print {
+  .deco {
+    display: none;
+  }
+  .text {
+    padding-top: 20px;
+  }
+}

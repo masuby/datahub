@@ -1,5 +1,6 @@
 import { localePath, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { formExtra } from "@/i18n/extra/form";
 import {
   CONTACT_EMAIL,
   WHATSAPP_DISPLAY,
@@ -111,6 +112,7 @@ export async function Contact({
             <Reveal>
               <ContactForm
                 strings={t.form}
+                extra={formExtra[lang]}
                 successHeading={SubHeading}
                 prefillAnnouncement={t.estimator.added}
                 newTabLabel={t.a11y.opensNewTab}

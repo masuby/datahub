@@ -1,5 +1,6 @@
 import { MARK_D_REF, MARK_HAND_REF, MARK_VIEWBOX } from "./mark-paths";
 import { HeroComet } from "@/components/hero/HeroComet";
+import type { LiveScope } from "@/components/hero/HeroLive";
 import { cn } from "@/lib/utils";
 import styles from "./HeroMark.module.css";
 
@@ -9,11 +10,13 @@ import styles from "./HeroMark.module.css";
  * Entrance, once (CSS, no JavaScript): the D sweeps round from its top-left
  * terminal (1.1 s) and the hand rises into it (from 500 ms).
  *
- * Then, while the hero may move (`data-hero-motion="run"` on the section,
- * set by HeroLive): the hand waves about the wrist — two or three swings,
- * then a rest; a faint glow breathes around the D. And a soft comet of light
- * runs the D's spine from terminal to terminal (HeroComet, on the same
- * gates). With motion paused or the hero off screen, the loops hold still;
+ * Then, while its part of the page may move (`data-hero-motion="run"` on
+ * the hero section, `data-footer-motion="run"` on the footer's stage, set
+ * by LiveGate; `scope` says which part it is in): the hand waves about the
+ * wrist — two or three swings, then a rest; a faint glow breathes around
+ * the D. And a soft comet of light runs the D's spine from terminal to
+ * terminal (HeroComet, on the same gates). With motion paused or the part
+ * off screen, the loops hold still;
  * before they first run, without JavaScript, under reduced motion and on a
  * frugal device (Save-Data, low-end), the mark is plain.
  *
@@ -24,7 +27,7 @@ import styles from "./HeroMark.module.css";
  * comet; the hand. Everything that loops animates only transform and
  * opacity of its own box, so it all runs on the compositor.
  */
-export function HeroMark({ id, className }: { id: string; className?: string }) {
+export function HeroMark({ id, scope = "hero", className }: { id: string; scope?: LiveScope; className?: string }) {
   return (
     <div id={id} aria-hidden="true" className={cn("relative aspect-square", className)}>
       {/* Invisible until the loops run, so it needs no sweep mask: by then
@@ -45,7 +48,7 @@ export function HeroMark({ id, className }: { id: string; className?: string }) 
       >
         <use href={MARK_D_REF} style={{ fill: "var(--mark-d)" }} />
       </svg>
-      <HeroComet />
+      <HeroComet scope={scope} />
       <svg
         viewBox={MARK_VIEWBOX}
         className={cn("absolute inset-0 block size-full overflow-visible", styles.wave)}

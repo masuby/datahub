@@ -7,10 +7,11 @@
    The entrance animations live in the component's style attribute: CSS
    Modules would rename the global dh-* keyframe names. The loops below use
    this file's own keyframes, and play only while the hero section carries
-   data-hero-motion="run" (HeroLive; never on a frugal device). Until then
-   (and without JavaScript) they rest on their first frame, the plain mark;
-   paused, they hold still where they are. The light along the D is
-   HeroComet's (src/components/hero/). */
+   data-hero-motion="run", or the footer's stage data-footer-motion="run"
+   (LiveGate in src/components/hero/HeroLive.tsx; never on a frugal
+   device). Until then (and without JavaScript) they rest on their first
+   frame, the plain mark; paused, they hold still where they are. The light
+   along the D is HeroComet's (src/components/hero/). */
 .sweep {
   -webkit-mask-image: conic-gradient(from 302deg at 50% 50%, #000 var(--sweep), transparent 0);
   mask-image: conic-gradient(from 302deg at 50% 50%, #000 var(--sweep), transparent 0);
@@ -73,7 +74,9 @@
 }
 
 :global([data-hero-motion="run"]) .wave,
-:global([data-hero-motion="run"]) .halo {
+:global([data-hero-motion="run"]) .halo,
+:global([data-footer-motion="run"]) .wave,
+:global([data-footer-motion="run"]) .halo {
   animation-play-state: running;
 }
 

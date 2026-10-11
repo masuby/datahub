@@ -225,7 +225,14 @@ export function ThemeToggle({
       ref={ref}
       type="button"
       aria-label={dark ? labels.toLight : labels.toDark}
-      onClick={() => setTheme(dark ? "light" : "dark", { animate: motionAllowed, origin: centreOf(ref.current) })}
+      onClick={() => {
+        // Choosing the theme the device itself uses means "follow the device"
+        // again: with the footer's preferences gone, this toggle is the only
+        // way back to System, so it never pins a choice the OS already makes.
+        const next = dark ? "light" : "dark";
+        const os = window.matchMedia(DARK_MQ).matches ? "dark" : "light";
+        setTheme(next === os ? "system" : next, { animate: motionAllowed, origin: centreOf(ref.current) });
+      }}
       className={cn(
         "inline-grid size-11 shrink-0 place-items-center text-muted transition-colors duration-[160ms] hover:text-fg",
         className,

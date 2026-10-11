@@ -8,6 +8,8 @@ import { getDictionary } from "@/i18n/get-dictionary";
 import { SITE_URL, shareCard } from "@/lib/seo";
 import { ThemeScript } from "@/components/system/ThemeScript";
 import { MarkSprite } from "@/components/brand/MarkSprite";
+import { SocialSprite } from "@/components/brand/SocialSprite";
+import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
 import { RefKeeper } from "@/components/system/RefKeeper";
 import { RefScript } from "@/components/system/RefScript";
 
@@ -73,7 +75,10 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
       <body className="flex min-h-svh flex-col">
         <RefKeeper />
         <MarkSprite />
+        <SocialSprite />
         {children}
+        {/* Every page; the layout stays while pages change, and so does it. */}
+        <FloatingWhatsApp lang={lang} />
       </body>
     </html>
   );

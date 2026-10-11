@@ -9,7 +9,9 @@ import { defineDict } from "../dict";
  *   the "%s · DataHub" template.
  * - `home` — the short home page's teaser sections: the link lines under
  *   them and the three reasons, each pointing at the page that proves it
- *   (keyed by that page; HomeReasons sets their order and chapter numbers).
+ *   (keyed by that page; HomeReasons sets their order and chapter numbers),
+ *   and the credit of the tiles' 3D icons (ArtCredit; the licence itself is
+ *   quoted in English).
  * - `security` — the eyebrow of /security, which opens on "Your data stays
  *   yours" (the dictionary's old "Why DataHub" eyebrow was removed).
  * - `cta` — the one line of the closing band that ends the home page, the
@@ -64,6 +66,10 @@ export const pagesExtra = defineDict({
           security: { title: "Security first", body: "Access by role, encrypted credentials." },
           team: { title: "A team in Dar es Salaam", body: "The people you meet build your system." },
         },
+      },
+      credit: {
+        summary: "3D icons: Microsoft Fluent Emoji, MIT licence",
+        note: "The licence, as published with the icons:",
       },
     },
     security: {
@@ -127,6 +133,10 @@ export const pagesExtra = defineDict({
           },
           team: { title: "Timu iliyopo Dar es Salaam", body: "Watu unaokutana nao ndio wanaojenga mfumo wako." },
         },
+      },
+      credit: {
+        summary: "Aikoni za 3D: Microsoft Fluent Emoji, leseni ya MIT",
+        note: "Leseni kwa Kiingereza, kama ilivyochapishwa pamoja na aikoni:",
       },
     },
     security: {

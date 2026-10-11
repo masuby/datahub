@@ -84,7 +84,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 4) Validate against the schema (also checks the honeypot).
+  // 4) Validate against the schema (also checks the honeypot and puts the
+  // "Interested in" list in its canonical form).
   const parsed = contactSchema.safeParse(raw);
   if (!parsed.success) {
     return NextResponse.json(
@@ -112,6 +113,7 @@ export async function POST(req: NextRequest) {
         email: data.email,
         company: data.company || null,
         phone: data.phone || null,
+        // The normalised list ("dashboards,automation"); null for no choice.
         service: data.service || null,
         source: data.source || null,
         message: data.message,

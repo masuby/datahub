@@ -8,7 +8,6 @@ import { monthLabels } from "@/components/dash/Plate";
 import { overviewKpis } from "@/components/dash/views/Overview";
 import { LineArea } from "@/components/dash/kit/LineArea";
 import dashStyles from "@/components/dash/dash.module.css";
-import { Rule } from "@/components/ui/Rule";
 import { REVENUE, REVENUE_START_MONTH, REVENUE_TARGET } from "@/lib/sample-data";
 import { cn } from "@/lib/utils";
 
@@ -28,8 +27,9 @@ const CHART_H = 200;
 /**
  * The home page's dashboard teaser: View 1's KPI strip and its revenue chart
  * (Fig. 02.1, the same number it has on /dashboards), laid out like a plate:
- * header line with the SAMPLE stamp, R1, KPIs, R1, the figure, R1 and the
- * honesty footnote.
+ * header line with the SAMPLE stamp, KPIs, the figure and the honesty
+ * footnote — held apart by space, not rules, in the home page's rhythm of
+ * vertical hairlines (iteration-3 §C; the KPI strip keeps its own dividers).
  *
  * Shorter than a plate, because the home page has to stay about three
  * screens long on a phone: one credit line (the figure's; the plate's own
@@ -62,18 +62,16 @@ export function TeaserPlate({ ctx: base }: { ctx: TeaserCtx }) {
 
   return (
     <div>
-      <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 pb-4">
+      <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
         <p className="t-data text-muted">
           {v.entity} · {v.period} · TZS
         </p>
         <p className="t-eyebrow hidden border-b border-rule-strong pb-1.5 sm:block">{ctx.t.stamp}</p>
       </div>
-      <Rule />
-      <div className="hidden sm:block">
+      <div className="mt-2 hidden sm:block">
         <KpiStrip ctx={ctx} items={overviewKpis(ctx)} />
-        <Rule />
       </div>
-      <figure className={cn(dashStyles.fig, "min-w-0 py-6 sm:py-8")} aria-labelledby={`${id}-h`}>
+      <figure className={cn(dashStyles.fig, "min-w-0 pt-5 sm:pt-6")} aria-labelledby={`${id}-h`}>
         <figcaption>
           <p className="t-eyebrow">{figLabel(ctx, f.number)}</p>
           <FigureTitle ctx={ctx} id={`${id}-h`} className="mt-2">
@@ -118,8 +116,7 @@ export function TeaserPlate({ ctx: base }: { ctx: TeaserCtx }) {
           />
         </div>
       </figure>
-      <Rule />
-      <p className="t-small hidden max-w-[64ch] pt-5 font-normal text-muted sm:block">{ctx.t.footnote}</p>
+      <p className="t-small mt-5 hidden max-w-[64ch] font-normal text-muted sm:block">{ctx.t.footnote}</p>
     </div>
   );
 }

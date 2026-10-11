@@ -2,6 +2,7 @@ import Link from "next/link";
 import { localePath, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { BrandLockup } from "@/components/brand/BrandMark";
+import { SocialLinks } from "@/components/brand/SocialLinks";
 import { Container } from "@/components/ui/Container";
 import { LangSwitch } from "@/components/system/LangSwitch";
 import { ThemeToggle } from "@/components/system/ThemeToggle";
@@ -34,9 +35,15 @@ const MENU_PATHS = [
  * state, progress thread, current-page marking, theme and language controls
  * and the mobile menu are small client islands.
  *
- *   ≥1280  lockup · Services Dashboards Process Security Team FAQ · EN|SW ◐ [Start a conversation]
+ *   ≥1280  lockup · Services Dashboards Process Security Team FAQ · ig fb tt in | EN|SW ◐ [Start a conversation]
  *   ≥1024  as above without Process and Security (they stay in the menu and footer)
- *   <1024  lockup · EN|SW ◐ Menu
+ *   ≥640   lockup · ig fb tt in | EN|SW ◐ Menu
+ *   <640   lockup · EN|SW ◐ Menu (the social icons are in the menu, and the footer)
+ *
+ * "ig fb tt in" is DataHub's four social profiles (iteration-3 §A), in
+ * their brand colours; a hairline separates them from the language and
+ * theme controls. From 1024 to 1279px, where the header is fullest, its
+ * spacing tightens a little so everything fits inside the gutters.
  *
  * Every item is a page; the one showing carries aria-current="page" and the
  * thread underline on the header's bottom hairline (a service page lights
@@ -86,7 +93,7 @@ export async function Header({ lang }: { lang: Locale }) {
         </Link>
 
         <nav aria-label={t.nav.label} className="hidden h-full flex-1 justify-center lg:flex">
-          <ul className="flex h-full items-stretch gap-6 xl:gap-8">
+          <ul className="flex h-full items-stretch gap-5 xl:gap-8">
             {nav.map((item) => (
               <li key={item.path} className={item.wideOnly ? "hidden xl:flex" : "flex"}>
                 <NavLink
@@ -105,7 +112,9 @@ export async function Header({ lang }: { lang: Locale }) {
           </ul>
         </nav>
 
-        <div className="ml-auto flex shrink-0 items-center gap-0 min-[360px]:gap-1 sm:gap-2 lg:ml-0 lg:gap-3">
+        <div className="ml-auto flex shrink-0 items-center gap-0 min-[360px]:gap-1 sm:gap-2 lg:ml-0 xl:gap-3">
+          <SocialLinks lang={lang} size="header" className="hidden sm:flex" />
+          <span aria-hidden="true" className="mr-1 hidden h-5 w-px bg-rule sm:block lg:mr-0" />
           <LangSwitch lang={lang} labels={t.lang} variant="short" />
           <ThemeToggle labels={t.theme.toggle} />
           <PrimaryLink href={contact} size="compact" className="hidden lg:inline-flex">
@@ -125,6 +134,7 @@ export async function Header({ lang }: { lang: Locale }) {
             ctaHref={contact}
             whatsappHref={whatsappHref(lang)}
             newTabLabel={t.a11y.opensNewTab}
+            social={<SocialLinks lang={lang} size="menu" className="-ml-3 mt-2" />}
           >
             <LangSwitch lang={lang} labels={t.lang} variant="full" />
             <ThemeSettings labels={t.theme.settings} />

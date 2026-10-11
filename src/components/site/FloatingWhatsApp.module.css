@@ -1,0 +1,176 @@
+/* The floating WhatsApp button (FloatingWhatsApp, WhatsAppFab). A brand
+   mark, so the no-box law does not hold for it (iteration-3 §A): WhatsApp's
+   green circle (#25D366) with the white glyph, and on wide screens the label
+   on a pill of WhatsApp's teal green (#075E54), which white text clears at
+   7.6:1 (white on the bright green would be 2:1). Both are brand colours,
+   the same in either theme. A soft shadow lifts it off whatever it floats
+   over.
+
+   Phones (below 1024px, where the action rail lives): the circle is 48px,
+   16px above the bottom edge; while the rail is up (<html data-rail="shown">,
+   set by ActionRailBar) it settles 12px lower, into the free right end of
+   the rail, centred in its 56px height. It steps aside while a text field
+   has focus (the keyboard is up) and, everywhere, while the menu is open.
+
+   The hero's pause control passes where the button floats (data-clear,
+   set by WhatsAppFab while it is there): on wide screens the label folds
+   away and stops taking clicks, so the control under it can be pressed; on
+   phones the circle rises above it. */
+
+.fab {
+  position: fixed;
+  z-index: 48;
+  right: var(--gutter-x);
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  border-radius: 9999px;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--dur-ui) var(--ease-silk),
+    opacity var(--dur-micro) linear,
+    visibility 0s linear;
+  /* Backwards only: once in, the transform is the docking rule's again. */
+  animation: rise var(--dur-reveal) var(--ease-silk) 400ms backwards;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.circle {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: 9999px;
+  background: #25d366;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgb(3 10 28 / 0.22);
+  transition: transform var(--dur-micro) var(--ease-silk);
+}
+.circle svg {
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+}
+
+/* Wide screens only, tucked under the circle's left half. */
+.label {
+  display: none;
+  align-items: center;
+  height: 40px;
+  margin-right: -24px;
+  padding: 0 38px 0 18px;
+  border-radius: 9999px;
+  background: #075e54;
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgb(3 10 28 / 0.18);
+  transition:
+    opacity var(--dur-ui) var(--ease-silk),
+    transform var(--dur-ui) var(--ease-silk),
+    visibility 0s linear;
+}
+
+.fab:hover .circle {
+  transform: scale(1.06);
+}
+.fab:hover .label {
+  background: #0a6b60;
+}
+
+/* The ring goes round the circle, not round a box enclosing both parts. */
+.fab:focus-visible {
+  outline: none;
+}
+.fab:focus-visible .circle {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+@media (max-width: 1023.98px) {
+  /* Above the hero's pause row (the hero's last 44px) wherever WhatsAppFab
+     says it can meet the circle: its bottom edge from 68px above the bottom
+     of the screen to 34px below, so the circle clears the row's highest
+     point by 4px. The rail, when up, covers that row: docking wins. */
+  .fab[data-clear] {
+    transform: translateY(-100px);
+  }
+  :global(:root[data-rail="shown"]) .fab {
+    transform: translateY(12px);
+  }
+  .fab[data-typing] {
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      transform var(--dur-ui) var(--ease-silk),
+      opacity var(--dur-micro) linear,
+      visibility 0s linear var(--dur-micro);
+  }
+}
+
+@media (min-width: 1024px) {
+  .fab {
+    right: 24px;
+    bottom: 24px;
+  }
+  .circle {
+    width: 56px;
+    height: 56px;
+  }
+  .circle svg {
+    width: 30px;
+    height: 30px;
+  }
+  .label {
+    display: flex;
+    margin-right: -28px;
+    padding-right: 42px;
+  }
+  /* While the hero's pause control is under the label, only the circle
+     shows, and only the circle takes the pointer: the folded label keeps
+     its place in the link's box, which would otherwise still catch the
+     clicks meant for the control. A click on the circle is the link's. */
+  .fab[data-clear] {
+    pointer-events: none;
+  }
+  .fab[data-clear] .circle {
+    pointer-events: auto;
+  }
+  .fab[data-clear] .label {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(12px);
+    transition:
+      opacity var(--dur-micro) linear,
+      transform var(--dur-ui) var(--ease-silk),
+      visibility 0s linear var(--dur-ui);
+  }
+}
+
+:global(:root[data-menu="open"]) .fab {
+  visibility: hidden;
+}
+
+@media (forced-colors: active) {
+  .circle,
+  .label {
+    border: 2px solid ButtonText;
+  }
+  .circle svg {
+    fill: ButtonText;
+  }
+}
+
+@media print {
+  .fab {
+    display: none;
+  }
+}

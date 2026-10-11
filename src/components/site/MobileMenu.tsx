@@ -22,14 +22,18 @@ import { ButtonPrimary } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { cn } from "@/lib/utils";
+import { WHATSAPP_GLYPH } from "@/components/brand/social-glyphs";
 import styles from "./MobileMenu.module.css";
+import fabStyles from "./FloatingWhatsApp.module.css";
 
 /*
  * Client islands of the site chrome: the header shell (scroll state, progress
  * thread, page-change thread, links that keep the campaign tag), the page
- * links that know which page is showing, the mobile menu sheet, and the
- * mobile action rail. They share one signal — the menu being open —
- * published as <html data-menu="open"> plus an event.
+ * links that know which page is showing, the mobile menu sheet, the mobile
+ * action rail and the floating WhatsApp button. They share two signals —
+ * the menu being open, published as <html data-menu="open"> plus an event,
+ * and the rail being up, as <html data-rail="shown"> (the button settles
+ * into the rail then).
  */
 
 const MENU_EVENT = "dh-menu-change";
@@ -54,6 +58,34 @@ function fragmentTarget(fragment: string): HTMLElement | null {
 
 function menuIsOpen(): boolean {
   return document.documentElement.dataset.menu === "open";
+}
+
+/** A field that brings up the on-screen keyboard: the rail and the WhatsApp button step aside for it. */
+function isTextField(t: EventTarget | null): boolean {
+  return (
+    t instanceof Element &&
+    t.matches(
+      'textarea, select, input:not([type="radio"]):not([type="checkbox"]):not([type="range"]):not([type="button"]):not([type="submit"]):not([type="reset"])',
+    )
+  );
+}
+
+/** True while a text field has focus (the keyboard is up on a phone). */
+function useTyping(): boolean {
+  const [typing, setTyping] = useState(false);
+  useEffect(() => {
+    const onIn = (e: FocusEvent) => setTyping(isTextField(e.target));
+    const onOut = (e: FocusEvent) => {
+      if (!isTextField(e.relatedTarget)) setTyping(false);
+    };
+    document.addEventListener("focusin", onIn);
+    document.addEventListener("focusout", onOut);
+    return () => {
+      document.removeEventListener("focusin", onIn);
+      document.removeEventListener("focusout", onOut);
+    };
+  }, []);
+  return typing;
 }
 
 /**
@@ -409,8 +441,8 @@ export type MenuItem = {
  * "Menu" text button (below 1024px) that opens a full-screen sheet: links in
  * Outfit 2rem numbered 01–08 by chapter, separated by R1, each a full-row
  * 56px target, the current page underlined and announced; then the primary
- * action, WhatsApp, and the language and theme preferences (passed in as
- * `children`).
+ * action, WhatsApp, DataHub's social profiles (`social`, iteration 3) and
+ * the language and theme preferences (passed in as `children`).
  *
  * While open: focus is trapped in the sheet, everything else on the page is
  * `inert`, the page does not scroll, and Esc or Close returns focus to the
@@ -423,6 +455,7 @@ export function MobileMenu({
   ctaHref,
   whatsappHref,
   newTabLabel,
+  social,
   children,
 }: {
   labels: { open: string; close: string; dialog: string; nav: string; cta: string; whatsapp: string; preferences: string };
@@ -431,6 +464,8 @@ export function MobileMenu({
   /** Empty when no WhatsApp number is configured: the link is not rendered. */
   whatsappHref: string;
   newTabLabel: string;
+  /** The social icons (SocialLinks), under the WhatsApp link. */
+  social?: ReactNode;
   children?: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -579,6 +614,7 @@ export function MobileMenu({
               {labels.whatsapp}
             </LinkArrow>
           )}
+          {social}
         </div>
 
         {children && (
@@ -613,27 +649,29 @@ export function MobileMenu({
 /* ───────────────────────── Action rail ───────────────────────── */
 
 /**
- * Mobile-only fixed bottom rail: WhatsApp (glyph + word) and the primary
- * action, a link to the contact page. It slides in once the page's opening
- * (the hero's call to action, or a page's h1 marked data-rail-anchor) has
- * scrolled away and steps aside while the contact section is on screen,
- * while a text field has focus (the keyboard is up), and while the menu is
- * open. Hidden, it is `inert`, so it never takes focus. Without a WhatsApp
- * number the action takes the full width.
+ * Mobile-only fixed bottom rail: the primary action, a link to the contact
+ * page, and WhatsApp. It slides in once the page's opening (the hero's call
+ * to action, or a page's h1 marked data-rail-anchor) has scrolled away and
+ * steps aside while the contact section is on screen, while a text field has
+ * focus (the keyboard is up), and while the menu is open. Hidden, it is
+ * `inert`, so it never takes focus.
+ *
+ * WhatsApp is the floating button's (iteration 3): with `dock`, the rail
+ * keeps its right end free and, while it is up, says so on <html
+ * data-rail="shown">, and the button settles into that end — one green
+ * circle, never two WhatsApp links, never one over the other. Without a
+ * WhatsApp number there is no button and the action takes the full width.
  */
 export function ActionRailBar({
   label,
-  whatsappLabel,
-  whatsappHref,
-  newTabLabel,
+  dock,
   ctaLabel,
   ctaShortLabel,
   ctaHref,
 }: {
   label: string;
-  whatsappLabel: string;
-  whatsappHref: string;
-  newTabLabel: string;
+  /** Keep the right end free for the floating WhatsApp button. */
+  dock: boolean;
   ctaLabel: string;
   /** Shown instead of ctaLabel below 360px, where the full label cannot fit on one line. */
   ctaShortLabel: string;
@@ -641,7 +679,7 @@ export function ActionRailBar({
 }) {
   const [past, setPast] = useState(false);
   const [atContact, setAtContact] = useState(false);
-  const [typing, setTyping] = useState(false);
+  const typing = useTyping();
   const [menu, setMenu] = useState(false);
   const here = useHere();
 
@@ -667,29 +705,26 @@ export function ActionRailBar({
       observers.push(io);
     }
 
-    const isTextField = (t: EventTarget | null) =>
-      t instanceof Element &&
-      t.matches(
-        'textarea, select, input:not([type="radio"]):not([type="checkbox"]):not([type="range"]):not([type="button"]):not([type="submit"]):not([type="reset"])',
-      );
-    const onIn = (e: FocusEvent) => setTyping(isTextField(e.target));
-    const onOut = (e: FocusEvent) => {
-      if (!isTextField(e.relatedTarget)) setTyping(false);
-    };
     const onMenu = () => setMenu(menuIsOpen());
-    document.addEventListener("focusin", onIn);
-    document.addEventListener("focusout", onOut);
     window.addEventListener(MENU_EVENT, onMenu);
     return () => {
       clearTimeout(timer);
       observers.forEach((io) => io.disconnect());
-      document.removeEventListener("focusin", onIn);
-      document.removeEventListener("focusout", onOut);
       window.removeEventListener(MENU_EVENT, onMenu);
     };
   }, []);
 
   const shown = past && !atContact && !typing && !menu;
+
+  // Tell the WhatsApp button where to sit.
+  useEffect(() => {
+    if (!dock || !shown) return;
+    const root = document.documentElement;
+    root.dataset.rail = "shown";
+    return () => {
+      delete root.dataset.rail;
+    };
+  }, [dock, shown]);
 
   return (
     <div
@@ -700,19 +735,14 @@ export function ActionRailBar({
       style={{ transform: shown ? "translateY(0)" : "translateY(100%)" }}
     >
       <span aria-hidden="true" className="rule-hair absolute inset-x-0 top-0" />
-      <div className="flex h-14 items-center gap-3" style={{ paddingInline: "var(--gutter-x)" }}>
-        {whatsappHref && (
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="t-small inline-flex h-11 flex-none items-center justify-center gap-2 whitespace-nowrap px-1 font-semibold text-fg transition-colors duration-[160ms] hover:text-accent"
-          >
-            <WhatsAppGlyph className="size-5 text-accent" />
-            <span>{whatsappLabel}</span>
-            <span className="sr-only"> {newTabLabel}</span>
-          </a>
-        )}
+      <div
+        className="flex h-14 items-center gap-3"
+        // The free end: the button's 48px, and 12px between it and the action.
+        style={{
+          paddingLeft: "var(--gutter-x)",
+          paddingRight: dock ? "calc(var(--gutter-x) + 60px)" : "var(--gutter-x)",
+        }}
+      >
         <ButtonPrimary
           href={ctaHref}
           size="compact"
@@ -727,26 +757,118 @@ export function ActionRailBar({
   );
 }
 
+/* ───────────────────────── Floating WhatsApp ───────────────────────── */
+
+/**
+ * Where the hero's pause control can be under the floating button: the
+ * control sits just above the hero's bottom edge at every width (16px above
+ * the floor rule on desktop, the last row of the hero on phones), so while
+ * that edge is between HERO_CLEAR_ABOVE px above the bottom of the screen
+ * and HERO_CLEAR_BELOW px below it, the two would overlap — on desktop the
+ * label, on phones the circle (FloatingWhatsApp.module.css has the sizes).
+ */
+const HERO_CLEAR_ABOVE = 68;
+const HERO_CLEAR_BELOW = 34;
+
+/**
+ * The floating WhatsApp button's island (FloatingWhatsApp supplies the link
+ * and strings; its look, and where it sits beside the action rail, are in
+ * FloatingWhatsApp.module.css). Its accessible name is `name` — "Chat with
+ * us on WhatsApp (opens in a new tab)" — which holds the visible label, so
+ * speech input finds it by what it shows.
+ *
+ * Two things it watches: a text field having focus (on a phone it steps
+ * aside for the keyboard), and the hero's pause control passing where it
+ * floats (data-clear): then on wide screens the label folds away (and no
+ * longer takes clicks) and only the circle shows; on phones the circle
+ * rises above the control. The hero's bottom edge is read once a frame
+ * while the page scrolls, and only while the hero is on screen. Pages
+ * without a hero never need it; the footer's pause control sits at the
+ * left, clear of the button.
+ */
+export function WhatsAppFab({ href, label, name }: { href: string; label: string; name: string }) {
+  const typing = useTyping();
+  const pathname = usePathname();
+  // Which page it was measured on: a page change (the layout stays) starts afresh.
+  const [near, setNear] = useState<{ path: string | null; hero: boolean }>({ path: null, hero: false });
+  const clear = near.path === pathname && near.hero;
+
+  useEffect(() => {
+    const hero = document.getElementById("top");
+    if (!hero || typeof IntersectionObserver === "undefined") return;
+    let raf = 0;
+    let listening = false;
+    const measure = () => {
+      raf = 0;
+      const vh = window.innerHeight;
+      const bottom = hero.getBoundingClientRect().bottom;
+      setNear({ path: pathname, hero: bottom > vh - HERO_CLEAR_ABOVE && bottom < vh + HERO_CLEAR_BELOW });
+    };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(measure);
+    };
+    const listen = (on: boolean) => {
+      if (on === listening) return;
+      listening = on;
+      if (on) {
+        window.addEventListener("scroll", schedule, { passive: true });
+        window.addEventListener("resize", schedule, { passive: true });
+      } else {
+        window.removeEventListener("scroll", schedule);
+        window.removeEventListener("resize", schedule);
+      }
+    };
+    // On screen, or its bottom edge just below it.
+    const io = new IntersectionObserver(
+      ([e]) => {
+        listen(e.isIntersecting);
+        schedule();
+      },
+      { rootMargin: `0px 0px ${HERO_CLEAR_BELOW}px 0px` },
+    );
+    io.observe(hero);
+    return () => {
+      io.disconnect();
+      listen(false);
+      cancelAnimationFrame(raf);
+    };
+  }, [pathname]);
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={name}
+      data-fab=""
+      data-typing={typing ? "" : undefined}
+      data-clear={clear ? "" : undefined}
+      className={fabStyles.fab}
+    >
+      <span aria-hidden="true" className={fabStyles.label}>
+        {label}
+      </span>
+      <span aria-hidden="true" className={fabStyles.circle}>
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d={WHATSAPP_GLYPH} />
+        </svg>
+      </span>
+    </a>
+  );
+}
+
 /* ───────────────────────── Glyph ───────────────────────── */
 
 /**
- * A plain speech-bubble-and-handset glyph in currentColor. Always decorative:
- * the visible word "WhatsApp" names the link (status = glyph + word).
+ * WhatsApp's handset-in-a-bubble mark in currentColor: the same path as the
+ * floating button's (WHATSAPP_GLYPH), so the site shows one WhatsApp mark.
+ * Always decorative: the visible word "WhatsApp" names the link (status =
+ * glyph + word).
  */
 export function WhatsAppGlyph({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" className={className}>
-      <path
-        d="M12 3.25a8.75 8.75 0 0 0-7.6 13.08L3.25 20.75l4.53-1.12A8.75 8.75 0 1 0 12 3.25Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M9.1 7.9c.2-.35.45-.4.7-.4h.5c.2 0 .4.08.5.35l.65 1.55c.08.2.04.42-.1.58l-.55.62c.62 1.15 1.55 2.08 2.7 2.7l.62-.55c.16-.14.38-.18.58-.1l1.55.65c.27.1.35.3.35.5v.5c0 .25-.05.5-.4.7-.55.32-1.3.5-2.1.3-2.4-.62-4.28-2.5-4.9-4.9-.2-.8-.02-1.55.3-2.1Z"
-        fill="currentColor"
-      />
+      <path d={WHATSAPP_GLYPH} fill="currentColor" />
     </svg>
   );
 }
