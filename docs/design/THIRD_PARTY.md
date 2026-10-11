@@ -109,3 +109,27 @@ footer wordmark's word is written with the outlines of its capitals and
 lower case, generated from `Outfit-700.ttf` by `scripts/make-glyphs.mjs`
 into `src/components/hero/glyphs.ts` (a–z, as the hero's word already was)
 and `src/components/hero/glyphs-upper.ts` (A–Z, loaded only by the footer).
+
+
+## Liquid glass and liquid metal (iteration 4)
+
+**liquid-glass-react 1.1.1** — MIT, Copyright 2025 Max Rovensky
+(npm `liquid-glass-react`, github.com/rdev/liquid-glass-react). Used for the
+refraction layer of the primary and WhatsApp buttons
+(`src/components/ui/glass/GlassSurface.tsx`), client-only, on desktop
+Chromium while a pointer is near or the button has keyboard focus. Pinned
+exactly. The MIT notice is shown on the home page under "Credits and
+licences" (`ArtCredit`).
+
+**@paper-design/shaders 0.0.81** — Apache-2.0, Copyright 2026 Paper
+(npm `@paper-design/shaders`). Used for the hero's liquid-metal mark
+(LiquidMetal) and mesh gradient (MeshGradient) in
+`src/components/hero/hero-shaders.ts`. NOTICE: "Paper Shaders, Copyright
+2026 Paper. Powered by Paper Shaders: https://shaders.paper.design".
+Modified: the LiquidMetal fragment shader's two stripe colours are made
+uniforms (three exact string replacements, guarded — any mismatch keeps the
+flat mark) and the logo maps are precomputed at build time by
+`scripts/make-metal-maps.mjs` (a port of the library's own processing) into
+`src/assets/metal/`. The NOTICE text and the licence link are shown on the
+home page under "Credits and licences". Pinned exactly; an upgrade needs the
+shader patch re-checked.

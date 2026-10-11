@@ -65,10 +65,13 @@ export async function CtaBand({ lang }: { lang: Locale }) {
               {title}
             </h2>
             <div
+              data-glass-zone=""
               className="col-span-4 flex flex-col items-start gap-4 a-rise sm:col-span-8 lg:col-span-4 lg:col-start-9"
               style={{ animationDelay: "180ms" }}
             >
-              <ButtonPrimary href={localePath(lang, "/contact")}>{t.header.cta}</ButtonPrimary>
+              <ButtonPrimary href={localePath(lang, "/contact")} glass="zone">
+                {t.header.cta}
+              </ButtonPrimary>
               <p className="t-small text-muted">{alt}</p>
             </div>
           </Grid>

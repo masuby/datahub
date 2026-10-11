@@ -68,8 +68,8 @@ export const pagesExtra = defineDict({
         },
       },
       credit: {
-        summary: "3D icons: Microsoft Fluent Emoji, MIT licence",
-        note: "The licence, as published with the icons:",
+        summary: "Credits and licences",
+        note: "Open-source work this page uses, with each licence as published:",
       },
     },
     security: {
@@ -135,8 +135,8 @@ export const pagesExtra = defineDict({
         },
       },
       credit: {
-        summary: "Aikoni za 3D: Microsoft Fluent Emoji, leseni ya MIT",
-        note: "Leseni kwa Kiingereza, kama ilivyochapishwa pamoja na aikoni:",
+        summary: "Shukrani na leseni",
+        note: "Kazi huria ambazo ukurasa huu unatumia, na leseni zake kwa Kiingereza kama zilivyochapishwa:",
       },
     },
     security: {

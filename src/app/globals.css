@@ -111,6 +111,22 @@
   --word-sheen: #ffffff;
   --word-glow: 1;
   --word-blend: source-over;
+
+  /* Liquid-metal mark and mesh gradient (src/components/hero/hero-shaders.ts
+     reads these as hex, #rrggbbaa where alpha matters). The metal's light
+     and dark stripes per shape; the mesh's four colours, its opacity, and
+     how much of it the text zone keeps (contrast: spec §1.3 rows "mesh"). */
+  --metal-d-hi: #4fb4f8;
+  --metal-d-lo: #022970;
+  --metal-hand-hi: #5f86d6;
+  --metal-hand-lo: #010f2e;
+  --mesh-1: #f6f9fe00;
+  --mesh-2: #cfe0fb;
+  --mesh-3: #9cc7fa;
+  --mesh-4: #68d4fb99;
+  --mesh-opacity: 0.85;
+  --mesh-safe: 0.08;
+
   /* The footer's word is written with a pen nib (iteration 3): navy at the
      tip to royal at the heel, a sky light along its edge, the page showing
      through its slit. */
@@ -225,6 +241,18 @@
   --word-line: #e6f8ff;
   --word-spark: #ffffff;
   --word-blend: lighter;
+
+  --metal-d-hi: #68d4fb;
+  --metal-d-lo: #036bfb;
+  --metal-hand-hi: #ffffff;
+  --metal-hand-lo: #8292b4;
+  --mesh-1: #030a1c00;
+  --mesh-2: #022970;
+  --mesh-3: #036bfb99;
+  --mesh-4: #68d4fb40;
+  --mesh-opacity: 0.8;
+  --mesh-safe: 0.2;
+
   --word-nib: #eaf1ff;
   --word-nib-to: #68d4fb;
   --word-nib-edge: #ffffff;
@@ -291,6 +319,16 @@
     --word-line: #e6f8ff;
     --word-spark: #ffffff;
     --word-blend: lighter;
+    --metal-d-hi: #68d4fb;
+    --metal-d-lo: #036bfb;
+    --metal-hand-hi: #ffffff;
+    --metal-hand-lo: #8292b4;
+    --mesh-1: #030a1c00;
+    --mesh-2: #022970;
+    --mesh-3: #036bfb99;
+    --mesh-4: #68d4fb40;
+    --mesh-opacity: 0.8;
+    --mesh-safe: 0.2;
     --word-nib: #eaf1ff;
     --word-nib-to: #68d4fb;
     --word-nib-edge: #ffffff;

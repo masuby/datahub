@@ -9,6 +9,7 @@ import { LinkArrow } from "@/components/ui/LinkArrow";
 import { HeroMark } from "@/components/brand/HeroMark";
 import { SilkField } from "@/components/silk/SilkField";
 import { HeroLive } from "@/components/hero/HeroLive";
+import { HeroShaders } from "@/components/hero/HeroShaders";
 import { HeroWords } from "@/components/hero/HeroWords";
 import { OUTFIT_ADVANCE, OUTFIT_UPM } from "@/components/hero/outfit-metrics";
 import { PRESETS } from "@/lib/silk";
@@ -64,10 +65,20 @@ export async function Hero({ lang }: { lang: Locale }) {
   const fitEm = Math.max(lineEm(x.title.line1), ...x.title.words.map(lineEm)).toFixed(3);
 
   return (
-    <section id="top" aria-labelledby="hero-title" className={cn("relative isolate flex flex-col", styles.hero)}>
+    <section
+      id="top"
+      aria-labelledby="hero-title"
+      data-glass-zone=""
+      // While the hero moves, the buttons keep their CSS glass (GlassSurface).
+      data-glass-quiet=""
+      className={cn("relative isolate flex flex-col", styles.hero)}
+    >
       <HeroLive sectionId="top" />
+      <HeroShaders sectionId="top" />
       {/* Stage: everything above the floor rule. Its bottom is the rule. */}
       <div className={cn("relative flex flex-1 flex-col", styles.stage, styles.scope)}>
+        {/* Mesh gradient host (HeroShaders): empty, and stays so without WebGL. */}
+        <div aria-hidden="true" data-mesh-host="lg" className={cn("pointer-events-none absolute inset-0 hidden lg:block", styles.mesh)} />
         <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0 hidden lg:block", styles.field)} />
         <div
           aria-hidden="true"
@@ -96,7 +107,7 @@ export async function Hero({ lang }: { lang: Locale }) {
           <div className={cn("absolute", styles.glow, styles.markLg)} />
         </div>
         <div aria-hidden="true" className={cn("pointer-events-none absolute hidden lg:block", styles.markLg)}>
-          <HeroMark id="hero-mark-lg" className="size-full" />
+          <HeroMark id="hero-mark-lg" metal className="size-full" />
         </div>
 
         <Container className="relative z-10 flex-1">
@@ -119,7 +130,7 @@ export async function Hero({ lang }: { lang: Locale }) {
             </h1>
             <p className="t-lead col-span-4 mt-6 sm:col-span-7 lg:col-span-6">{x.lead}</p>
             <div className="col-span-4 mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 sm:col-span-8">
-              <ButtonPrimary href={localePath(lang, "/contact")} id="hero-cta">
+              <ButtonPrimary href={localePath(lang, "/contact")} id="hero-cta" glass="zone">
                 {h.ctaPrimary}
               </ButtonPrimary>
               <LinkArrow href={localePath(lang, "/dashboards")}>{h.ctaSecondary}</LinkArrow>
@@ -137,6 +148,7 @@ export async function Hero({ lang }: { lang: Locale }) {
       {/* Mobile and tablet: the band — field, silk and mark — with no text over it. */}
       <div className="lg:hidden">
         <div className={cn("relative h-[300px] overflow-hidden", styles.band, styles.scope)}>
+          <div aria-hidden="true" data-mesh-host="sm" className={cn("pointer-events-none absolute inset-0", styles.mesh, styles.meshBand)} />
           <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0", styles.field, styles.fieldBand)} />
           <div aria-hidden="true" className={cn("silk-layer pointer-events-none absolute inset-0", styles.still)}>
             <SilkField preset="hero-mobile" className="block size-full" />
@@ -149,7 +161,7 @@ export async function Hero({ lang }: { lang: Locale }) {
           />
           <div aria-hidden="true" className={cn("pointer-events-none absolute", styles.glow, styles.markSm)} />
           <div aria-hidden="true" className={cn("pointer-events-none absolute", styles.markSm)}>
-            <HeroMark id="hero-mark-sm" className="size-full" />
+            <HeroMark id="hero-mark-sm" metal className="size-full" />
           </div>
         </div>
         <Container className="flex min-h-11 justify-end">

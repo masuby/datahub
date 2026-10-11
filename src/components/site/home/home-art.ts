@@ -44,6 +44,28 @@ export const TEAM_AVATARS: readonly StaticImageData[] = [danielAvatar, kanudaAva
  * LICENSE at commit 1ffb34c, only its indent removed). MIT asks for it to go
  * with every copy, so the page that serves them carries it (ArtCredit).
  */
+/** liquid-glass-react 1.1.1 (the glass buttons' refraction), its LICENSE as shipped. */
+export const LIQUID_GLASS_LICENSE = `MIT License
+
+Copyright 2025 MAX ROVENSKY
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`;
+
+/**
+ * @paper-design/shaders 0.0.81 (the liquid-metal mark and the hero's mesh
+ * gradient): Apache-2.0, whose section 4(d) asks for the NOTICE file's text.
+ */
+export const PAPER_SHADERS_NOTICE = `Paper Shaders
+Copyright 2026 Paper
+
+Powered by Paper Shaders: https://shaders.paper.design
+
+Licensed under the Apache License, Version 2.0 (https://www.apache.org/licenses/LICENSE-2.0). Modified by DataHub: the LiquidMetal stripe colours are uniforms set to the brand blues, and the logo maps are precomputed by scripts/make-metal-maps.mjs.`;
+
 export const FLUENT_EMOJI_LICENSE = `MIT License
 
 Copyright (c) Microsoft Corporation.

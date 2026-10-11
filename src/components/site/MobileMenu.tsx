@@ -21,6 +21,8 @@ import { LINKS_READY_EVENT, isPagePath, refOf, tagHref } from "@/components/syst
 import { ButtonPrimary } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { LinkArrow } from "@/components/ui/LinkArrow";
+import { GlassSurface } from "@/components/ui/glass/GlassSurface";
+import { glassClasses } from "@/components/ui/glass/glass-classes";
 import { cn } from "@/lib/utils";
 import { WHATSAPP_GLYPH } from "@/components/brand/social-glyphs";
 import styles from "./MobileMenu.module.css";
@@ -845,10 +847,12 @@ export function WhatsAppFab({ href, label, name }: { href: string; label: string
       data-clear={clear ? "" : undefined}
       className={fabStyles.fab}
     >
-      <span aria-hidden="true" className={fabStyles.label}>
+      <span aria-hidden="true" className={cn(fabStyles.label, glassClasses.teal)}>
+        <GlassSurface />
         {label}
       </span>
-      <span aria-hidden="true" className={fabStyles.circle}>
+      <span aria-hidden="true" className={cn(fabStyles.circle, glassClasses.green)}>
+        <GlassSurface shape="circle" />
         <svg viewBox="0 0 24 24" focusable="false">
           <path d={WHATSAPP_GLYPH} />
         </svg>

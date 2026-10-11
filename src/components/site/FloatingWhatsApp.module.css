@@ -46,11 +46,7 @@
   width: 48px;
   height: 48px;
   flex: none;
-  border-radius: 9999px;
-  background: #25d366;
-  color: #ffffff;
-  box-shadow: 0 6px 18px rgb(3 10 28 / 0.22);
-  transition: transform var(--dur-micro) var(--ease-silk);
+  /* Colour, glass, rim and shadow: Glass.module.css (.glass.green). */
 }
 .circle svg {
   width: 26px;
@@ -65,15 +61,16 @@
   height: 40px;
   margin-right: -24px;
   padding: 0 38px 0 18px;
-  border-radius: 9999px;
-  background: #075e54;
-  color: #ffffff;
+  /* Colour, glass, rim and shadow: Glass.module.css (.glass.teal). */
   font-family: var(--font-sans);
   font-size: 0.9375rem;
   font-weight: 600;
   white-space: nowrap;
-  box-shadow: 0 6px 18px rgb(3 10 28 / 0.18);
+  /* Glass.module.css's tint transitions, plus this file's fades. */
   transition:
+    --g-top var(--dur-micro) linear,
+    --g-mid var(--dur-micro) linear,
+    --g-deep var(--dur-micro) linear,
     opacity var(--dur-ui) var(--ease-silk),
     transform var(--dur-ui) var(--ease-silk),
     visibility 0s linear;
@@ -81,9 +78,6 @@
 
 .fab:hover .circle {
   transform: scale(1.06);
-}
-.fab:hover .label {
-  background: #0a6b60;
 }
 
 /* The ring goes round the circle, not round a box enclosing both parts. */

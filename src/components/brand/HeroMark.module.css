@@ -21,11 +21,13 @@
   transform-box: fill-box;
 }
 
-/* The wave: the hand's whole <svg> turns about the wrist (the hand's
-   lower-left corner, (12, 97) of the 100×100 viewBox, which fills the box),
-   ±12°, two or three swings in ~1.7 s that settle, then a ~4 s rest. A
-   transform on the <svg> box runs on the compositor. */
+/* The wave: the hand's box — its flat <svg> and its metal canvas — turns
+   about the wrist (the hand's lower-left corner, (12, 97) of the 100×100
+   viewBox, which fills the box), ±12°, two or three swings in ~1.7 s that
+   settle, then a ~4 s rest. A transform on the box runs on the compositor. */
 .wave {
+  position: absolute;
+  inset: 0;
   transform-box: border-box;
   transform-origin: 12% 97%;
   animation: wave 5.8s ease-in-out 1.2s infinite both paused;
@@ -80,9 +82,47 @@
   animation-play-state: running;
 }
 
+/* Liquid metal (HeroShaders): each map's box, empty in the server HTML,
+   gets a canvas; once both have drawn, the root carries data-metal="live",
+   the metal fades in over 600 ms and the flat shapes fade out after it.
+   Without the attribute (no JavaScript, no WebGL, a lost context) the flat
+   mark is all there is. The boxes reach a little past the mark (the maps'
+   edge room): they are transparent there and take no pointer. */
+.metal {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 600ms var(--ease-silk);
+}
+/* The canvas (or, under reduced motion, its baked image) fills the box.
+   Paper Shaders injects an equivalent <style>; this keeps the layout
+   independent of it (a stricter style-src would block that injection). */
+.metal > canvas,
+.metal > img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.flat {
+  transition: opacity 300ms linear;
+}
+.root[data-metal="live"] .metal {
+  opacity: 1;
+}
+.root[data-metal="live"] .flat {
+  opacity: 0;
+  transition-delay: 600ms;
+}
+
 @media (forced-colors: active) {
-  .halo {
+  .halo,
+  .metal {
     display: none;
+  }
+  .root[data-metal="live"] .flat {
+    opacity: 1;
   }
 }
 
@@ -92,7 +132,11 @@
   .wave {
     --mark-hand: var(--navy);
   }
-  .halo {
+  .halo,
+  .metal {
     display: none;
+  }
+  .root[data-metal="live"] .flat {
+    opacity: 1;
   }
 }

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "@/components/system/motion-store";
 import { useLiveRunning, type LiveScope } from "./HeroLive";
 import { frugalDevice } from "./device";
+import { useMetalLive } from "./metal-store";
 import { COMET_DELAY, COMET_GLOWS, COMET_PASS, COMET_REST, cometKeyframes } from "./comet";
 import styles from "./HeroComet.module.css";
 
@@ -28,11 +29,14 @@ import styles from "./HeroComet.module.css";
  * one off screen would still be restyled in every canvas frame, so the comet
  * plays only while its own layer is on screen.
  */
-export function HeroComet({ scope = "hero" }: { scope?: LiveScope }) {
+export function HeroComet({ scope = "hero", yieldToMetal = false }: { scope?: LiveScope; yieldToMetal?: boolean }) {
   const ref = useRef<HTMLSpanElement>(null);
   const player = useRef<CometPlayer | null>(null);
   const running = useLiveRunning(scope);
   const reduced = useReducedMotion();
+  // The liquid-metal D carries its own moving light: the hero's comet rests
+  // while it shows (a mark without metal boxes keeps its comet).
+  const metal = useMetalLive() && yieldToMetal;
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
@@ -46,15 +50,15 @@ export function HeroComet({ scope = "hero" }: { scope?: LiveScope }) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const play = running && shown && !reduced;
+    const play = running && shown && !reduced && !metal;
     if (play && !player.current) {
       if (frugalDevice() || typeof el.animate !== "function") return;
       player.current = cometPlayer(Array.from(el.children));
     }
     if (play) player.current?.play();
-    else if (reduced) player.current?.reset();
+    else if (reduced || metal) player.current?.reset();
     else player.current?.pause();
-  }, [running, shown, reduced]);
+  }, [running, shown, reduced, metal]);
 
   useEffect(() => {
     const current = player;

@@ -1,0 +1,306 @@
+/* Liquid-glass surfaces for the primary button and the floating WhatsApp
+   button (owner's brief, 11 Oct 2026: "advance our logo and button to be
+   like Apple's glass buttons"). This relaxes spec §3.1/§13 ("no
+   backdrop-filter, no box-shadow") for these surfaces only.
+
+   Three tiers, one look:
+
+   1. Server HTML, Safari, Firefox, and Chromium until the browser is idle:
+      CSS frosted glass — a tinted fill with a top sheen, a specular rim, a
+      soft shadow, and backdrop blur + saturation.
+   2. Chromium with a fine pointer or keyboard, on a capable device, while
+      the button has the pointer near it or focus (GlassSurface):
+      liquid-glass-react draws the refracting layer (SVG displacement of the
+      backdrop) under the label; the host drops its own fill and blur
+      ([data-glass="live"]). At rest, and on touch screens, tier 1.
+   3. Save-Data / low-end ([data-glass="flat"]): no backdrop blur at all.
+      prefers-reduced-transparency: an opaque fill. Forced colours: the
+      system's button colours.
+
+   Contrast is carried by the tint alone, so it holds over ANY backdrop:
+   the label zone (24%..100% of the height) uses alphas at which the label
+   clears 4.5:1 even if the backdrop is pure white (white labels) or pure
+   black (dark labels). Worked numbers: tools/glass-contrast.mjs. The lighter
+   ends of the live layer and the top sheen never sit under the glyphs. */
+
+@property --g-top {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --g-mid {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --g-deep {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+/* Royal (the primary button). #0A5CE6 @ .90: a white label clears 4.77:1
+   over a white backdrop; the pill clears 3:1 against both page backgrounds. */
+.royal {
+  --g-top: rgb(46 124 246 / 0.84);
+  --g-mid: rgb(10 92 230 / 0.9);
+  --g-deep: rgb(10 77 184 / 0.92);
+  --g-label: #ffffff;
+  --g-shadow: 0 1px 1px rgb(2 41 112 / 0.18), 0 10px 22px -10px rgb(2 41 112 / 0.55);
+}
+/* Hover: navy glass with a white label (light), sky glass with an ink label
+   (dark) — the spec's --action-hover / --on-action-hover, as glass. */
+.royal:hover,
+a:hover > .royal {
+  --g-top: rgb(26 74 158 / 0.86);
+  --g-mid: rgb(2 41 112 / 0.88);
+  --g-deep: rgb(2 33 92 / 0.92);
+}
+:global(.dark) .royal:hover,
+:global(.dark) a:hover > .royal,
+:global(.surface-ink) .royal:hover,
+:global(.surface-ink) a:hover > .royal {
+  --g-top: rgb(164 230 253 / 0.86);
+  --g-mid: rgb(104 212 251 / 0.88);
+  --g-deep: rgb(78 190 240 / 0.9);
+  --g-label: #030a1c;
+}
+:global(.dark) .royal,
+:global(.surface-ink) .royal {
+  --g-shadow: 0 1px 1px rgb(0 0 0 / 0.4), 0 10px 26px -10px rgb(0 0 0 / 0.8), 0 0 22px -8px rgb(3 107 251 / 0.55);
+}
+
+.glass {
+  --g-rim: linear-gradient(
+    165deg,
+    rgb(255 255 255 / 0.62) 0%,
+    rgb(255 255 255 / 0.18) 28%,
+    rgb(255 255 255 / 0.05) 58%,
+    rgb(255 255 255 / 0.3) 100%
+  );
+  /* The sheen ends at 34%, above the label's ink (cap tops sit at ~38%). */
+  --g-sheen: linear-gradient(180deg, rgb(255 255 255 / 0.26) 0%, rgb(255 255 255 / 0) 34%);
+  --g-fill: linear-gradient(180deg, var(--g-top) 0%, var(--g-mid) 24%, var(--g-deep) 100%);
+
+  position: relative;
+  z-index: 0; /* stacking context: the live layer sits at z-index -1 inside it */
+  border-radius: 9999px;
+  color: var(--g-label);
+  background: var(--g-sheen), var(--g-fill);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(180%);
+  box-shadow: var(--g-shadow);
+  transition:
+    --g-top var(--dur-micro) linear,
+    --g-mid var(--dur-micro) linear,
+    --g-deep var(--dur-micro) linear,
+    color var(--dur-micro) linear,
+    transform var(--dur-micro) var(--ease-silk);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Specular rim: a 1px gradient ring (mask cut-out), brightest top-left. */
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--g-rim);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* The global :focus-visible rule rounds every outline to 2px, which would
+   square the pill while it has focus; keep the pill and its ring. */
+.glass:focus-visible {
+  border-radius: 9999px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .glass:active {
+    transform: scale(0.97);
+  }
+}
+
+/* WhatsApp: the circle is WhatsApp green with the white glyph (a brand
+   mark: iteration-3 §A); the label pill is WhatsApp's teal, which a white
+   label clears at >= 5.7:1 over any backdrop. */
+.green {
+  --g-label: #ffffff;
+  --g-top: rgb(96 228 146 / 0.9);
+  --g-mid: rgb(37 211 102 / 0.92);
+  --g-deep: rgb(28 186 90 / 0.94);
+  --g-shadow: 0 1px 1px rgb(3 10 28 / 0.18), 0 8px 20px -8px rgb(3 60 30 / 0.55);
+  /* A teal ring gives the circle a >= 3:1 edge on the light page (WCAG 1.4.11). */
+  --g-ring: inset 0 0 0 1px rgb(18 140 126 / 0.95);
+  box-shadow: var(--g-ring), var(--g-shadow);
+}
+.green:hover,
+a:hover > .green {
+  --g-top: rgb(110 236 160 / 0.92);
+  --g-mid: rgb(46 222 114 / 0.94);
+  --g-deep: rgb(30 196 96 / 0.95);
+}
+.teal {
+  --g-top: rgb(16 116 104 / 0.84);
+  --g-mid: rgb(7 94 84 / 0.88);
+  --g-deep: rgb(6 81 74 / 0.92);
+  --g-label: #ffffff;
+  --g-shadow: 0 1px 1px rgb(3 10 28 / 0.16), 0 8px 20px -8px rgb(3 10 28 / 0.45);
+}
+.teal:hover,
+a:hover > .teal {
+  --g-top: rgb(20 128 116 / 0.86);
+  --g-mid: rgb(10 107 96 / 0.9);
+  --g-deep: rgb(7 94 84 / 0.92);
+  --g-label: #ffffff;
+}
+:global(.dark) .green,
+:global(.dark) .teal {
+  --g-shadow: 0 1px 1px rgb(0 0 0 / 0.4), 0 10px 24px -10px rgb(0 0 0 / 0.8);
+}
+:global(.dark) .green {
+  box-shadow: var(--g-shadow);
+}
+
+/* ── Tier 2: the live layer (GlassSurface) ─────────────────────────────── */
+
+.glass[data-glass="live"] {
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.live {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  /* visibility (not opacity): opacity < 1 would make this a backdrop root
+     and the refraction would see nothing behind it while fading. */
+  visibility: hidden;
+}
+.live[data-on] {
+  visibility: visible;
+}
+/* liquid-glass-react's two "overLight" darkening layers (opacity 0 unless
+   overLight) — never used here; out of the render tree. */
+.live > div:nth-child(-n + 2) {
+  display: none;
+}
+/* The library's own drop shadow is heavier than ours; the host keeps ours. */
+.live :global(.glass) {
+  box-shadow: none !important;
+}
+/* Its overlay rim (the one whose light follows the pointer) is a little
+   strong beside ours on a small pill. */
+.live > span:last-of-type {
+  opacity: 0.7;
+}
+
+/* The tint inside the refracting layer: the same fill as tier 1, but its
+   ends and top/bottom edges are thinner (mask), so the refraction shows
+   there. The side ramp (--g-ramp, set by GlassSurface) stops 6px inside the
+   host's inline padding and the top/bottom ramp 8px in: never under the
+   label, whose ink starts at ~38% of the height. */
+.tint {
+  --g-end: rgb(0 0 0 / 0.38);
+  display: block;
+  border-radius: 9999px;
+  background: var(--g-sheen), var(--g-fill);
+  -webkit-mask:
+    linear-gradient(90deg, var(--g-end), #000 var(--g-ramp, 12px), #000 calc(100% - var(--g-ramp, 12px)), var(--g-end)),
+    linear-gradient(180deg, rgb(0 0 0 / 0.6), #000 8px, #000 calc(100% - 8px), rgb(0 0 0 / 0.6));
+  -webkit-mask-composite: source-in;
+  mask:
+    linear-gradient(90deg, var(--g-end), #000 var(--g-ramp, 12px), #000 calc(100% - var(--g-ramp, 12px)), var(--g-end)),
+    linear-gradient(180deg, rgb(0 0 0 / 0.6), #000 8px, #000 calc(100% - 8px), rgb(0 0 0 / 0.6));
+  mask-composite: intersect;
+}
+/* The circle has no label inside it: let more of the refraction through. */
+.green .tint {
+  -webkit-mask: radial-gradient(closest-side, #000 62%, rgb(0 0 0 / 0.55) 100%);
+  mask: radial-gradient(closest-side, #000 62%, rgb(0 0 0 / 0.55) 100%);
+}
+
+/* ── Tier 3 ─────────────────────────────────────────────────────────────── */
+
+/* Save-Data or a low-end device: no backdrop work at all. */
+.glass[data-glass="flat"] {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    --g-sheen: linear-gradient(transparent, transparent);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .royal {
+    --g-top: rgb(10 92 230);
+    --g-mid: rgb(10 92 230);
+    --g-deep: rgb(10 77 184);
+  }
+  .royal:hover,
+  a:hover > .royal {
+    --g-top: #022970;
+    --g-mid: #022970;
+    --g-deep: #022970;
+  }
+  :global(.dark) .royal:hover,
+  :global(.dark) a:hover > .royal {
+    --g-top: #68d4fb;
+    --g-mid: #68d4fb;
+    --g-deep: #68d4fb;
+  }
+  .green {
+    --g-top: #25d366;
+    --g-mid: #25d366;
+    --g-deep: #25d366;
+  }
+  .teal {
+    --g-top: #075e54;
+    --g-mid: #075e54;
+    --g-deep: #075e54;
+  }
+  .live {
+    display: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .glass {
+    background: ButtonFace;
+    color: ButtonText;
+    border: 2px solid ButtonText;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .glass::before,
+  .live {
+    display: none;
+  }
+}
+
+@media print {
+  .glass {
+    background: none;
+    color: #000;
+    border: 1px solid #000;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .live {
+    display: none;
+  }
+}
