@@ -11,13 +11,13 @@ const en = {
     "titleTemplate": "%s · DataHub",
     "home": {
       "title": "DataHub — Data Analytics & Dashboards in Tanzania",
-      "description": "Custom dashboards, reporting automation and AI agents for organisations in Tanzania. Built in Dar es Salaam by the DataHub team.",
+      "description": "Dashboards, reporting automation and AI agents for organisations in Tanzania, built in Dar es Salaam.",
       "ogTitle": "DataHub — Data Analytics & Dashboards in Tanzania",
-      "ogDescription": "Dashboards, reporting automation and AI agents for organisations in Tanzania. From Data to Decisions."
+      "ogDescription": "Dashboards, reporting automation and AI agents in Tanzania. From Data to Decisions."
     },
     "privacy": {
       "title": "Privacy notice",
-      "description": "What DataHub collects through this website, why, and how to ask for it to be deleted."
+      "description": "What this website collects, why, and how to have it deleted."
     },
     "notFound": {
       "title": "Page not found"
@@ -152,14 +152,14 @@ const en = {
         "index": "01.2",
         "title": "Reporting automation",
         "tagline": "Hours of manual work, done in seconds",
-        "description": "The Excel and PowerPoint reports your team rebuilds every week, generated for you.",
+        "description": "Your weekly Excel and PowerPoint reports, generated for you.",
         "glyphLabel": "Three lines merging into one"
       },
       "aiAgents": {
         "index": "01.3",
         "title": "AI agents",
-        "tagline": "Software that reads, then drafts the next step",
-        "description": "Agents that watch your data, summarise what changed and draft the next step for a person to approve.",
+        "tagline": "Reads your data, drafts the next step",
+        "description": "Agents that watch your data, summarise what changed and wait for a person to approve.",
         "glyphLabel": "Three connected points, one marked for approval"
       }
     }
@@ -256,14 +256,14 @@ const en = {
             "seriesActual": "Revenue",
             "seriesTarget": "Target",
             "readout": "{month} · TZS {value} bn · {pct}% of target",
-            "summary": "Revenue stayed below the TZS 2.18 bn monthly target until September, when it reached TZS 2.30 bn."
+            "summary": "Revenue was below the TZS 2.18 bn monthly target until September (TZS 2.30 bn)."
           },
           "branches": {
             "number": "02.2",
             "title": "Branches, % of revenue target",
             "axis": "% of target",
             "readout": "{branch} · {pct}% of target",
-            "summary": "Only Kariakoo is above target (104%); Dodoma (88%) and Mbeya (84%) are below 90%."
+            "summary": "Only Kariakoo is above target, at 104%."
           },
           "exceptions": {
             "number": "02.3",
@@ -274,7 +274,7 @@ const en = {
               "Dodoma disbursements 18% below plan",
               "Board pack generated 05:58, sent to 9 recipients"
             ],
-            "summary": "Two PAR30 breaches, one branch behind on disbursements, and the board pack on time."
+            "summary": "Two PAR30 breaches, one branch behind plan, and the board pack on time."
           }
         },
         "changed": {
@@ -282,8 +282,8 @@ const en = {
           "byline": "Written by the reporting agent · sample",
           "items": [
             "Mbeya PAR30 rose 0.8 points to 7.2%, mostly from two loan officers.",
-            "Dodoma disbursements are 18% below plan for September, mostly in group loans.",
-            "September revenue of TZS 2.30 bn is the first month above target this year."
+            "Dodoma disbursements are 18% below plan, mostly in group loans.",
+            "September’s TZS 2.30 bn is the year’s first month above target."
           ]
         },
         "read": [
@@ -296,14 +296,14 @@ const en = {
           {
             "figure": "branches",
             "anchor": "Mbeya",
-            "shows": "Mbeya is the lowest branch, at 84% of target.",
-            "decision": "Regional managers know which branch to visit first."
+            "shows": "Mbeya is lowest, at 84% of target.",
+            "decision": "Regional managers know where to go first."
           },
           {
             "figure": "exceptions",
             "anchor": "0",
             "shows": "Two branches are above the 5% PAR30 limit.",
-            "decision": "The Head of Credit sees a breach the morning it happens."
+            "decision": "The Head of Credit sees breaches the same morning."
           }
         ]
       },
@@ -339,7 +339,7 @@ const en = {
             "axis": "% of portfolio",
             "limit": "Limit 5.0%",
             "readout": "{month} · PAR30 {value}%",
-            "summary": "PAR30 was above the 5% limit from May to July, peaking at 5.4%, and was 4.6% in September."
+            "summary": "PAR30 was over the 5% limit from May to July."
           },
           "ageing": {
             "number": "02.5",
@@ -351,7 +351,7 @@ const en = {
               "61–90 days",
               "90+ days"
             ],
-            "summary": "91.2% of the portfolio is current; 4.6% is over 30 days overdue and 1.5% over 90."
+            "summary": "91.2% of the portfolio is current."
           },
           "mix": {
             "number": "02.6",
@@ -366,12 +366,12 @@ const en = {
           },
           "flows": {
             "number": "02.7",
-            "title": "Disbursed and repaid, April to September",
+            "title": "Disbursed and repaid, Apr–Sep",
             "axis": "TZS bn",
             "seriesDisbursed": "Disbursed",
             "seriesRepaid": "Repaid",
             "readout": "{month} · disbursed TZS {a} bn · repaid TZS {b} bn",
-            "summary": "Disbursements ran at TZS 5.2–5.9 bn a month; repayments were higher in July and August."
+            "summary": "Disbursements ran at TZS 5.2–5.9 bn a month."
           }
         },
         "officers": {
@@ -390,12 +390,12 @@ const en = {
             "figure": "par",
             "anchor": "Jul",
             "shows": "PAR30 peaked at 5.4% in July.",
-            "decision": "Crossing the limit is flagged the same day, so collections start before month-end."
+            "decision": "A breach is flagged the same day, so collections start early."
           },
           {
             "figure": "ageing",
             "anchor": "90+ days",
-            "shows": "1.5% of the portfolio is more than 90 days overdue.",
+            "shows": "1.5% is over 90 days overdue.",
             "decision": "Finance and credit discuss provisions from the same number."
           },
           {
@@ -426,7 +426,7 @@ const en = {
           },
           {
             "label": "Active outlets",
-            "context": "Ordered at least once in Q3"
+            "context": "Ordered in Q3"
           },
           {
             "label": "Average order",
@@ -451,7 +451,7 @@ const en = {
               "18% or more"
             ],
             "ringNote": "Circle size shows sales.",
-            "summary": "Dar es Salaam has the largest sales; Dodoma, Mwanza and Arusha grew fastest. No borders are drawn."
+            "summary": "Dar es Salaam sells most; Dodoma, Mwanza and Arusha grew fastest."
           },
           "ranked": {
             "number": "02.9",
@@ -464,15 +464,15 @@ const en = {
             },
             "other": "Other regions",
             "readout": "{region} · TZS {value} bn · {share}% of sales · {growth}% growth",
-            "summary": "Dar es Salaam is 30.6% of sales; Dodoma grew fastest (21%), Tanga slowest (4%)."
+            "summary": "Dar es Salaam is 30.6% of sales."
           }
         },
         "read": [
           {
             "figure": "map",
             "anchor": "Dodoma",
-            "shows": "Dodoma grew fastest, 21% on the same quarter last year.",
-            "decision": "Test moving stock and field staff towards the central corridor."
+            "shows": "Dodoma grew fastest: 21% year on year.",
+            "decision": "Test moving stock and staff to the central corridor."
           },
           {
             "figure": "ranked",
@@ -484,14 +484,14 @@ const en = {
             "figure": "ranked",
             "anchor": "Tanga",
             "shows": "Tanga grew 4%, the slowest region.",
-            "decision": "Check outlet coverage before next quarter’s targets are set."
+            "decision": "Check outlet coverage before setting next quarter’s targets."
           }
         ]
       },
       "operations": {
         "index": "02.4",
         "tab": "Automation & operations",
-        "tabDescription": "The reports that run themselves, and what the agent did.",
+        "tabDescription": "Reports that run themselves, and the agent’s log.",
         "entity": "Sample lender’s reporting system",
         "period": "September 2026 · schedule for a sample Monday",
         "creditPeriod": "Sep 2026",
@@ -506,7 +506,7 @@ const en = {
           },
           {
             "label": "Staff hours returned",
-            "context": "Estimate, against doing it by hand"
+            "context": "Estimate, against manual work"
           },
           {
             "label": "Failed runs",
@@ -530,7 +530,7 @@ const en = {
               "18:30 Daily close"
             ],
             "timeAxis": "East Africa Time",
-            "summary": "Five jobs run between 05:30 and 18:30, starting with the daily PAR report."
+            "summary": "Five jobs run from 05:30 to 18:30."
           },
           "runs": {
             "number": "02.11",
@@ -538,7 +538,7 @@ const en = {
             "axis": "seconds",
             "readout": "Run {n} · {value} s",
             "slowLabel": "Slow run",
-            "summary": "Runs took 35–41 seconds (median 38), except run 7 at 61."
+            "summary": "Most runs took 35–41 seconds."
           },
           "pack": {
             "number": "02.12",
@@ -556,27 +556,27 @@ const en = {
           "items": [
             {
               "time": "05:30",
-              "text": "Daily PAR report generated and sent to 14 branch managers.",
+              "text": "Daily PAR report sent to 14 branch managers.",
               "status": "sent"
             },
             {
               "time": "05:58",
-              "text": "Monday board pack generated and sent to 9 recipients.",
+              "text": "Monday board pack sent to 9 recipients.",
               "status": "sent"
             },
             {
               "time": "07:02",
-              "text": "PAR30 is above the 5.0% limit in 2 branches: Mbeya 7.2%, Dodoma 5.4%. Follow-up note drafted for the Head of Credit.",
+              "text": "PAR30 above the 5.0% limit in Mbeya (7.2%) and Dodoma (5.4%). Note drafted for the Head of Credit.",
               "status": "awaiting"
             },
             {
               "time": "07:09",
-              "text": "Note approved by the Head of Credit and sent to both branch managers.",
+              "text": "The Head of Credit approved the note; sent to both branch managers.",
               "status": "sent"
             },
             {
               "time": "07:15",
-              "text": "41 reminders drafted for borrowers in arrears, waiting for loan officers to review.",
+              "text": "41 arrears reminders drafted for loan officers to review.",
               "status": "queued"
             }
           ]
@@ -592,19 +592,19 @@ const en = {
             "figure": "runs",
             "anchor": "7",
             "shows": "One run took 61 seconds against a median of 38.",
-            "decision": "A slow run is visible before it becomes a late report."
+            "decision": "A slow run shows before it becomes a late report."
           },
           {
             "figure": "log",
             "anchor": "07:02",
-            "shows": "The agent drafted the note. A person approved it seven minutes later.",
+            "shows": "The agent drafted the note; a person approved it seven minutes later.",
             "decision": "You choose which steps stay with a person."
           },
           {
             "figure": "pack",
             "anchor": "after",
             "shows": "From 14 hours to 4 minutes.",
-            "decision": "The analyst’s time goes to explaining the numbers, not copying them."
+            "decision": "Analysts explain the numbers instead of copying them."
           }
         ]
       }
@@ -613,7 +613,7 @@ const en = {
   "estimator": {
     "eyebrow": "03 — Your numbers",
     "title": "Where do the hours go?",
-    "lead": "Enter your numbers for one report to see what it costs your team.",
+    "lead": "Enter one report’s numbers to see what it costs your team.",
     "sentence": [
       "We prepare ",
       "{count}",
@@ -685,31 +685,31 @@ const en = {
   "process": {
     "eyebrow": "04 — How we work",
     "title": "How a project runs.",
-    "lead": "Every system is different. The way we get there is not.",
+    "lead": "Every system differs; the way we build it does not.",
     "receivePrefix": "You receive:",
     "steps": [
       {
         "index": "04.1",
         "title": "Discover",
         "description": "We learn your workflow and find the manual work.",
-        "receive": "a list of the figures that matter, and an honest view on whether to build."
+        "receive": "the figures that matter, and an honest view on whether to build."
       },
       {
         "index": "04.2",
         "title": "Design",
-        "description": "We plan the dashboards, automations and data flow around how you work.",
+        "description": "We plan the system around how you work.",
         "receive": "a plan you approve before we build."
       },
       {
         "index": "04.3",
         "title": "Build",
-        "description": "We build it securely, in the formats your team already uses.",
+        "description": "We build it securely, in formats your team already uses.",
         "receive": "a working system, ready to use."
       },
       {
         "index": "04.4",
         "title": "Support",
-        "description": "We train your team and adapt the system as your needs change.",
+        "description": "We train your team and adapt the system as needs change.",
         "receive": "training, and changes when you need them."
       }
     ],
@@ -722,7 +722,7 @@ const en = {
       "withHeading": "With DataHub",
       "rows": [
         {
-          "today": "Reports take hours or days to prepare",
+          "today": "Reports take hours or days",
           "with": "Reports generated in seconds"
         },
         {
@@ -757,11 +757,11 @@ const en = {
         },
         {
           "term": "Validated inputs",
-          "definition": "The server checks every input before it is used."
+          "definition": "The server checks every input before use."
         },
         {
           "term": "Hardened endpoints",
-          "definition": "Interfaces accept only what they need and refuse the rest."
+          "definition": "Interfaces accept only what they need."
         },
         {
           "term": "Agents with limits",
@@ -797,21 +797,21 @@ const en = {
         "index": "06.1",
         "name": "Daniel C. Masubi",
         "role": "Chief Technology Officer",
-        "bio": "Designs and builds the systems: pipelines, dashboards, report automation and agents. Owns how your data is secured.",
+        "bio": "Builds the systems, from pipelines to agents, and owns your data’s security.",
         "alt": "Daniel C. Masubi, Chief Technology Officer, DataHub"
       },
       "operations": {
         "index": "06.2",
         "name": "Kanuda L. Sasi",
         "role": "Head of Operations",
-        "bio": "Runs delivery: scoping, timelines, training and support. Makes sure what was agreed is what arrives.",
+        "bio": "Runs delivery, from scoping to support, so what was agreed is what arrives.",
         "alt": "Kanuda L. Sasi, Head of Operations, DataHub"
       },
       "marketing": {
         "index": "06.3",
         "name": "Yohana K. Mussa",
         "role": "Head of Marketing",
-        "bio": "Usually your first conversation with DataHub. Makes sure we scope the problem you actually have, and keeps you informed.",
+        "bio": "Usually your first contact: scopes the problem you actually have and keeps you informed.",
         "alt": "Yohana K. Mussa, Head of Marketing, DataHub"
       }
     }
@@ -829,12 +829,12 @@ const en = {
         "a": "We build dashboards, automated reports and AI agents for organisations in Tanzania."
       },
       {
-        "q": "Where are you based, and do you work outside Dar es Salaam?",
-        "a": "Dar es Salaam. We work across Tanzania and beyond, mostly remotely, and on site when needed."
+        "q": "Where are you based?",
+        "a": "Dar es Salaam. We work across Tanzania and beyond, mostly remotely, on site when needed."
       },
       {
         "q": "How much does a dashboard cost?",
-        "a": "It depends on the work, so we scope it with you before quoting. The first conversation costs nothing."
+        "a": "It depends on the work, so we scope it before quoting. The first conversation is free."
       },
       {
         "q": "Is our data safe?",
@@ -842,14 +842,14 @@ const en = {
       },
       {
         "q": "How long does a project take?",
-        "a": "Usually weeks for one dashboard or report, longer for a platform across several departments."
+        "a": "Weeks for one dashboard or report; longer for several departments."
       }
     ]
   },
   "contact": {
     "eyebrow": "08 — Contact",
     "title": "Start with one report.",
-    "lead": "Tell us what you work with today and what you would like to see instead.",
+    "lead": "Tell us what you work with today and what you want instead.",
     "lines": {
       "whatsapp": {
         "label": "WhatsApp",
@@ -868,7 +868,7 @@ const en = {
       "title": "What happens next",
       "steps": [
         "We reply to set up a short conversation.",
-        "We look at the work with you and agree what is worth building.",
+        "Together we agree what is worth building.",
         "You get a written scope before any work starts."
       ]
     },

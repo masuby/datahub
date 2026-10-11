@@ -77,7 +77,8 @@ export function alternatesFor(lang: Locale, path: string) {
  * Everything a standalone page's metadata needs: its title (run through the
  * layout's "%s · DataHub" template), description, canonical, hreflang and
  * the full share card, whose title carries the brand since it is read away
- * from the site.
+ * from the site. Every page but the home page (whose title is the brand
+ * line itself) builds its metadata here, the service pages as `article`.
  */
 export function pageMetadata(o: {
   lang: Locale;
@@ -87,6 +88,7 @@ export function pageMetadata(o: {
   siteName: string;
   titleTemplate: string;
   imageAlt: string;
+  type?: "website" | "article";
 }): Metadata {
   return {
     title: o.title,
@@ -95,6 +97,7 @@ export function pageMetadata(o: {
     ...shareCard({
       lang: o.lang,
       path: o.path,
+      type: o.type,
       title: o.titleTemplate.replace("%s", o.title),
       description: o.description,
       siteName: o.siteName,

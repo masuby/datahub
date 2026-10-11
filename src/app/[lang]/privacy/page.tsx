@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { hasLocale, LANG_TAG, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { CONTACT_EMAIL } from "@/lib/contact-info";
-import { alternatesFor, shareCard } from "@/lib/seo";
+import { pageMetadata } from "@/lib/seo";
 import { Container } from "@/components/ui/Container";
 import { Grid } from "@/components/ui/Grid";
 import { Reveal } from "@/components/ui/Reveal";
@@ -29,7 +29,7 @@ import { LangHint } from "@/components/system/LangHint";
 export const dynamic = "force-dynamic";
 
 /** The date this notice last changed. Update it whenever the copy changes. */
-const UPDATED = "2026-10-10";
+const UPDATED = "2026-10-11";
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -38,19 +38,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!hasLocale(lang)) return {};
   const dict = await getDictionary(lang);
   const t = dict.meta.privacy;
-  return {
+  return pageMetadata({
+    lang,
+    path: "/privacy",
     title: t.title,
     description: t.description,
-    alternates: alternatesFor(lang, "/privacy"),
-    ...shareCard({
-      lang,
-      path: "/privacy",
-      title: t.title,
-      description: t.description,
-      siteName: dict.meta.siteName,
-      imageAlt: dict.alt.og,
-    }),
-  };
+    siteName: dict.meta.siteName,
+    titleTemplate: dict.meta.titleTemplate,
+    imageAlt: dict.alt.og,
+  });
 }
 
 /** "10 October 2026" / "10 Oktoba 2026". Server-rendered only, so no hydration drift. */

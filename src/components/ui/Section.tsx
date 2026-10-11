@@ -7,7 +7,9 @@ import { cn } from "@/lib/utils";
  * (dark tokens in either theme — the footer).
  *
  * `compact` halves the rhythm for the short home page, whose sections are
- * one-screen teasers of the pages they link to.
+ * teasers of the pages they link to, and for the closing band. Below 640px
+ * it is a flat 24px instead: there the home page has to stay about three
+ * screens long.
  *
  * No content-visibility: a section can be a link target (/services#estimator,
  * a service page's #faq…), and sections standing in at a placeholder height
@@ -33,8 +35,8 @@ export function Section({
     <section
       id={id}
       aria-labelledby={labelledBy}
-      className={cn("relative", ink && "surface-ink", className)}
-      style={{ paddingBlock: compact ? "calc(var(--section-y) / 2)" : "var(--section-y)" }}
+      className={cn("relative", ink && "surface-ink", compact && "py-6 sm:py-[calc(var(--section-y)/2)]", className)}
+      style={compact ? undefined : { paddingBlock: "var(--section-y)" }}
     >
       {children}
     </section>

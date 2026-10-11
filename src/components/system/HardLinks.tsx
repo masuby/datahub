@@ -1,3 +1,5 @@
+import { CAMPAIGN_JS } from "./campaign";
+
 /**
  * For a page drawn outside the site's root layout — the global 404, which
  * renders its own <html>. next/link cannot cross from there into the site:
@@ -11,8 +13,14 @@
  * which sees defaultPrevented and stands down. Same-page fragments (the skip
  * link) and the language already showing (aria-current, which LangSwitch
  * turns into a no-op) are left alone. Carries the request's CSP nonce.
+ *
+ * HeaderShell stands down here too (defaultPrevented), so the campaign tag
+ * is carried by this script instead: a dead poster link still carries
+ * `?ref=`, and a page link without a query of its own opens with it, the
+ * same rule as withCampaign — where sessionStorage is blocked, the URL is
+ * the only place the tag survives.
  */
-const SCRIPT = `document.addEventListener("click",function(e){if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(!a||a.hasAttribute("download")||a.hasAttribute("aria-current")||(a.target&&a.target!=="_self")||a.origin!==location.origin)return;if(a.pathname===location.pathname&&a.search===location.search&&a.hash)return;e.preventDefault();location.assign(a.href)},true)`;
+const SCRIPT = `(function(){${CAMPAIGN_JS}document.addEventListener("click",function(e){var a=lk(e);if(!a||a.hasAttribute("aria-current"))return;if(a.pathname===location.pathname&&a.search===location.search&&a.hash)return;e.preventDefault();location.assign(tg(a)||a.href)},true)})()`;
 
 export function HardLinks({ nonce }: { nonce?: string }) {
   return (

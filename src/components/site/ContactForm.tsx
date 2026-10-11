@@ -15,14 +15,10 @@ import {
   type ReactNode,
 } from "react";
 import type { Dictionary } from "@/i18n/get-dictionary";
-import {
-  CONTACT_EMAIL,
-  WHATSAPP_DISPLAY,
-  WHATSAPP_HREF,
-  WHATSAPP_NUMBER,
-} from "@/lib/contact-info";
+import { CONTACT_EMAIL, WHATSAPP_DISPLAY } from "@/lib/contact-info";
 import { formatNumber } from "@/lib/format";
 import { readRef } from "@/components/system/RefKeeper";
+import { takePrefill } from "@/components/system/prefill";
 import { ButtonPrimary, ButtonText } from "@/components/ui/Button";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { Rule } from "@/components/ui/Rule";
@@ -40,9 +36,9 @@ import styles from "./ContactForm.module.css";
  * checks below mirror its limits only to choose a localised message and to
  * spare a round trip (and a rate-limit slot) for an obviously empty field.
  *
- * Takes the hours estimator's sentence two ways: from
- * sessionStorage["dh-prefill"] on mount, where the estimator left it before
- * opening this page, and through a `dh:prefill` window event
+ * Takes the hours estimator's sentence two ways: on mount, where the
+ * estimator left it before opening this page (system/prefill: sessionStorage,
+ * else the in-memory copy), and through a `dh:prefill` window event
  * ({ detail: { message } }) when both sit on one page. Either way it is
  * appended to the message, Name takes focus, and a line above the fields
  * (also announced politely) says so.
@@ -51,20 +47,6 @@ import styles from "./ContactForm.module.css";
 export type FormStrings = Dictionary["form"];
 
 const subscribeNothing = () => () => {};
-
-/** Where the estimator leaves its sentence for this form. Same key in HoursEstimatorClient.tsx. */
-const PREFILL_STORAGE_KEY = "dh-prefill";
-
-/** The sentence the estimator left for this page, once: it is removed as it is read. */
-function takePendingPrefill(): string {
-  try {
-    const text = sessionStorage.getItem(PREFILL_STORAGE_KEY) ?? "";
-    sessionStorage.removeItem(PREFILL_STORAGE_KEY);
-    return text.trim();
-  } catch {
-    return ""; // storage blocked: the estimator could not have left anything either
-  }
-}
 
 const SERVICE_VALUES = [
   "dashboards",
@@ -215,6 +197,7 @@ export function ContactForm({
   prefillAnnouncement,
   privacy,
   newTabLabel,
+  whatsappHref,
   successHeading: SuccessHeading = "h3",
 }: {
   strings: FormStrings;
@@ -222,6 +205,8 @@ export function ContactForm({
   prefillAnnouncement: string;
   privacy: { text: string; linkLabel: string; href: string };
   newTabLabel: string;
+  /** WhatsApp link in the page's language (whatsappHref); "" with no number. */
+  whatsappHref: string;
   /** One level below the heading of the section the form sits in. */
   successHeading?: "h2" | "h3";
 }) {
@@ -329,10 +314,10 @@ export function ContactForm({
     [prefillAnnouncement],
   );
 
-  // Arriving from the estimator on another page: its sentence waits in
-  // sessionStorage, read once on mount (the external-system case).
+  // Arriving from the estimator on another page: its sentence waits outside
+  // React, read once on mount (the external-system case).
   useEffect(() => {
-    const text = takePendingPrefill();
+    const text = takePrefill();
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (text) adopt(text);
   }, [adopt]);
@@ -462,9 +447,9 @@ export function ContactForm({
     </p>
   );
 
-  const numberLink = WHATSAPP_NUMBER ? (
+  const numberLink = whatsappHref ? (
     <a
-      href={WHATSAPP_HREF}
+      href={whatsappHref}
       target="_blank"
       rel="noopener noreferrer"
       className="link-thread font-semibold text-fg transition-colors duration-[160ms] hover:text-accent"

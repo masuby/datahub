@@ -75,8 +75,16 @@
     display: none;
   }
 }
+
+/* Print shows the word the writer is on (it keeps data-shown current) as
+   plain ink: the canvas is not printed, and neither, by default, are
+   backgrounds, which would leave the gradient text transparent. Repeats
+   [data-live] to outrank the hand-over rule above. */
 @media print {
-  .slot > .word {
+  .word,
+  .slot[data-live="true"] > .word {
+    background: none;
+    color: var(--accent-display);
     opacity: 1;
   }
   .canvas {

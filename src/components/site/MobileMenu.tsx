@@ -17,7 +17,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { stripLocale } from "@/i18n/config";
 import { BrandLockup } from "@/components/brand/BrandMark";
 import { useMotionAllowed } from "@/components/system/motion-store";
-import { sanitizeRef } from "@/components/system/RefKeeper";
+import { LINKS_READY_EVENT, isPagePath, refOf, tagHref } from "@/components/system/campaign";
 import { ButtonPrimary } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { LinkArrow } from "@/components/ui/LinkArrow";
@@ -57,6 +57,32 @@ function menuIsOpen(): boolean {
 }
 
 /**
+ * The tab stops inside `root`, in order. A radio group is one stop, as the
+ * browser tabs it: the member with focus, else the checked one, else the
+ * first. Counting every radio made the theme choice's last option the
+ * trap's "last" stop, which focus never reaches while System or Light is
+ * chosen, so Tab walked out of the menu.
+ */
+function tabStops(root: HTMLElement): HTMLElement[] {
+  const all = Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+    (el) => el.offsetParent !== null || el === document.activeElement,
+  );
+  const groupOf = (el: HTMLElement) => (el instanceof HTMLInputElement && el.type === "radio" && el.name ? el.name : "");
+  const rank = (el: HTMLElement) => (el === document.activeElement ? 2 : (el as HTMLInputElement).checked ? 1 : 0);
+  const stop = new Map<string, HTMLElement>();
+  for (const el of all) {
+    const group = groupOf(el);
+    if (!group) continue;
+    const held = stop.get(group);
+    if (!held || rank(el) > rank(held)) stop.set(group, el);
+  }
+  return all.filter((el) => {
+    const group = groupOf(el);
+    return !group || stop.get(group) === el;
+  });
+}
+
+/**
  * Moves keyboard focus to a section reached by an in-page link, so the next
  * Tab continues inside it and screen readers land there too. The section's
  * heading (its aria-labelledby target, else its first h1/h2) takes focus
@@ -78,9 +104,6 @@ function focusSection(section: HTMLElement) {
 
 /* ───────────────────────── Campaign tag ───────────────────────── */
 
-/** A path that is a page of the site, not an API route, build asset or file. */
-const isPagePath = (path: string) => !/^\/(api|_next)\//.test(path) && !/\.[^/]*$/.test(path);
-
 /**
  * `href` (a path, optionally with a #fragment) carrying the campaign tag of
  * the address bar — `?ref=`, else `?utm_source=`, sanitised as RefKeeper
@@ -89,15 +112,11 @@ const isPagePath = (path: string) => !/^\/(api|_next)\//.test(path) && !/\.[^/]*
  * When the site was one page, every menu link scrolled within it and the
  * tag stayed in the address bar. Now they are pages, so the tag travels with
  * the visitor instead: the contact form still reads it from the URL even
- * where sessionStorage (RefKeeper's copy) is blocked.
+ * where sessionStorage (RefKeeper's copy) is blocked. Before hydration,
+ * RefScript applies the same rule (src/components/system/campaign.ts).
  */
 export function withCampaign(href: string): string {
-  const params = new URLSearchParams(window.location.search);
-  const ref = sanitizeRef(params.get("ref") ?? params.get("utm_source"));
-  const hashAt = href.indexOf("#");
-  const path = hashAt < 0 ? href : href.slice(0, hashAt);
-  if (!ref || path.includes("?")) return href;
-  return `${path}?ref=${ref}${hashAt < 0 ? "" : href.slice(hashAt)}`;
+  return tagHref(href, refOf(window.location.search));
 }
 
 /* ───────────────────────── Where am I ───────────────────────── */
@@ -197,8 +216,10 @@ export function PrimaryLink({
  * takes the place of the reading-progress one (MobileMenu.module.css). It
  * covers both ways of leaving: the campaign push above, run as a transition
  * (isPending), and a plain click on a link to another page, which next/link
- * then carries out. That one ends when the path changes — or, after a full
- * page load, when the browser brings this page back from its cache.
+ * then carries out. That one ends when the path changes; when a newer
+ * navigation that keeps the path replaces it (a tap on the page showing, or
+ * Back/Forward to an entry the router owns); or, after a full page load,
+ * when the browser brings this page back from its cache.
  */
 export function HeaderShell({ children, progressLabel }: { children: ReactNode; progressLabel: string }) {
   const barRef = useRef<HTMLSpanElement>(null);
@@ -290,28 +311,50 @@ export function HeaderShell({ children, progressLabel }: { children: ReactNode; 
       ) {
         return;
       }
-      // Keep the campaign tag.
+      // Keep the campaign tag. The transition shows the change from here, so
+      // an earlier click's mark goes: this navigation replaces that one.
       if (!a.search) {
         const plain = `${a.pathname}${a.hash}`;
         const tagged = withCampaign(plain);
         if (tagged !== plain) {
           e.preventDefault();
+          setLeaving(false);
           startTransition(() => router.push(tagged));
           return;
         }
       }
-      // next/link (or, for a plain <a>, the browser) takes it from here;
-      // mark the header until the page changes.
+      // next/link (or, for a plain <a>, the browser) takes it from here.
+      // Another page: mark the header until the page changes. This page: the
+      // router replaces any change still on its way, so the mark goes. A jump
+      // to a part of this page depends on who makes it: the browser's own
+      // (a plain <a href="#…">, such as the skip link) leaves that change
+      // running, next/link's replaces it. next/link claims the click
+      // (preventDefault) in a later handler, so look once it has been handled.
       if (a.pathname !== window.location.pathname) setLeaving(true);
+      else if (!(a.hash && a.search === window.location.search)) setLeaving(false);
+      else
+        setTimeout(() => {
+          if (e.defaultPrevented) setLeaving(false);
+        }, 0);
+    };
+    // Back or Forward to an entry the router owns (it carries state) replaces
+    // a change on its way; between fragments of one page (no state) it does not.
+    const onPop = (e: PopStateEvent) => {
+      if (e.state) setLeaving(false);
     };
     // Back from the browser's page cache after a full page load: nothing is on its way.
     const onShow = (e: PageTransitionEvent) => {
       if (e.persisted) setLeaving(false);
     };
     document.addEventListener("click", onClick, true);
+    window.addEventListener("popstate", onPop);
     window.addEventListener("pageshow", onShow);
+    // RefScript's before-hydration fallback (storage blocked) stands down
+    // now that this handler carries the tag, so no click is tagged twice.
+    window.dispatchEvent(new Event(LINKS_READY_EVENT));
     return () => {
       document.removeEventListener("click", onClick, true);
+      window.removeEventListener("popstate", onPop);
       window.removeEventListener("pageshow", onShow);
     };
   }, [router]);
@@ -445,9 +488,7 @@ export function MobileMenu({
         return;
       }
       if (e.key !== "Tab" || !sheetRef.current) return;
-      const f = Array.from(sheetRef.current.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
-        (el) => el.offsetParent !== null || el === document.activeElement,
-      );
+      const f = tabStops(sheetRef.current);
       if (!f.length) return;
       const first = f[0];
       const last = f[f.length - 1];

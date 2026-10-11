@@ -1,22 +1,25 @@
 /* 00 Hero — spec §6.1, iteration-2 §B. Only geometry, masks, the field and
-   the crossfade live here; colours are tokens. The global dh-* keyframes are
-   used inline (CSS Modules would rename them); the hero's own loops are
-   keyframes of this file and play only while the section carries
-   data-hero-motion="run" (HeroLive) — until then they rest on their first
-   frame, and paused they hold still. */
+   the crossfade live here; colours are tokens. Nothing here loops: the
+   hero's life is the mark's (HeroMark), the word's (HeroWords) and the
+   canvas's (SilkCanvas: the drift, its lights, the field's twinkling dots). */
 
 .hero {
   --mark-size: clamp(240px, 26vw, 380px);
   --field-step: 22px;
-  /* The glow behind the mark is wider than the room right of it: cut it at
-     the viewport's edge rather than let the page scroll sideways. clip (not
-     hidden) leaves the other axis alone, so the glow still rises behind the
-     header. */
+}
+
+/* The glow behind the mark is wider than the room right of it: its own
+   layer cuts it at the viewport's edge rather than let the page scroll
+   sideways. clip (not hidden) leaves the other axis alone, so the glow
+   still rises behind the header. Only the decoration is clipped: the text
+   must never be (a reader's own letter spacing can widen the headline,
+   WCAG 1.4.12; then the page may scroll, but nothing is cut off). */
+.glowClip {
   overflow-x: clip;
 }
 @supports not (overflow-x: clip) {
-  .hero {
-    overflow-x: hidden;
+  .glowClip {
+    overflow: hidden;
   }
 }
 
@@ -27,8 +30,8 @@
 }
 
 /* The headline sizes itself to its column: its widest line (--fit-em, from
-   the font's advances, set by Hero.tsx) always fits, so the word line never
-   wraps, down to a 320px phone. The H1 is the size container. */
+   the font's advances, set by Hero.tsx) fits, so neither line wraps, down
+   to a 320px phone. The H1 is the size container. */
 .title {
   container-type: inline-size;
 }
@@ -108,17 +111,21 @@
   transform: translate(-50%, -50%);
 }
 
-/* A soft royal/sky light behind the mark, breathing with the D's glow. */
+/* A soft royal/sky light behind the mark. Still: the D's own glow breathes
+   (HeroMark), and every animated element is restyled in each frame the
+   hero's canvases draw, which on a slow phone costs more than this light
+   is worth moving. */
 .glow {
   width: calc(var(--mark-size) * 1.9);
   background: radial-gradient(closest-side, var(--hero-glow-a), var(--hero-glow-b) 45%, transparent 100%);
   opacity: 0.6;
-  animation: breathe 4.2s ease-in-out 1.2s infinite both paused;
 }
 
 /* The dot field (the old site's dot matrix, in the new palette): a fine
    grid, strongest round the mark, faded towards the edges and kept quiet
-   behind the text. The mask colours are alpha sources, not design colours. */
+   behind the text. The mask colours are alpha sources, not design colours.
+   A few of its dots twinkle in the silk canvas, which repeats this mask
+   (fieldAlpha in src/lib/silk.ts) and this grid (--field-step). */
 .field {
   background-image: radial-gradient(circle at center, var(--field-dot) 0 1px, transparent 1.5px);
   background-size: var(--field-step) var(--field-step);
@@ -135,59 +142,6 @@
   background-position: center;
   -webkit-mask-image: radial-gradient(closest-side, #000 20%, transparent 100%);
   mask-image: radial-gradient(closest-side, #000 20%, transparent 100%);
-}
-
-/* A twinkling dot sits exactly on a grid dot (where round() is supported). */
-.twinkle {
-  position: absolute;
-  left: calc(var(--x) * 100%);
-  top: calc(var(--y) * 100%);
-  width: 10px;
-  height: 10px;
-  margin: -5px 0 0 -5px;
-  background: radial-gradient(
-    circle,
-    var(--field-twinkle) 0 1.3px,
-    color-mix(in srgb, var(--field-twinkle) 35%, transparent) 2px,
-    transparent 5px
-  );
-  opacity: 0;
-  animation: twinkle var(--period) ease-in-out var(--delay) infinite both paused;
-}
-@supports (left: round(down, 50%, 1px)) {
-  .twinkle {
-    left: calc(round(down, var(--x) * 100%, var(--field-step)) + var(--field-step) / 2);
-    top: calc(round(down, var(--y) * 100%, var(--field-step)) + var(--field-step) / 2);
-  }
-}
-
-@keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-  45% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  60% {
-    opacity: 0.9;
-  }
-}
-@keyframes breathe {
-  0%,
-  100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-:global([data-hero-motion="run"]) .glow,
-:global([data-hero-motion="run"]) .twinkle {
-  animation-play-state: running;
 }
 
 /* Text-safe zone: inside x < 64%, y < 74% of the layer, filaments render at

@@ -7,9 +7,10 @@
    The entrance animations live in the component's style attribute: CSS
    Modules would rename the global dh-* keyframe names. The loops below use
    this file's own keyframes, and play only while the hero section carries
-   data-hero-motion="run" (HeroLive). Until then (and without JavaScript)
-   they rest on their first frame, the plain mark; paused, they hold still
-   where they are. */
+   data-hero-motion="run" (HeroLive; never on a frugal device). Until then
+   (and without JavaScript) they rest on their first frame, the plain mark;
+   paused, they hold still where they are. The light along the D is
+   HeroComet's (src/components/hero/). */
 .sweep {
   -webkit-mask-image: conic-gradient(from 302deg at 50% 50%, #000 var(--sweep), transparent 0);
   mask-image: conic-gradient(from 302deg at 50% 50%, #000 var(--sweep), transparent 0);
@@ -71,51 +72,24 @@
   }
 }
 
-/* The comet: every dash's head travels the same 0 → 1.1 of the spine (its
-   offset runs from --len to --to = --len − 1.1, set by HeroMark.tsx), so
-   they run as one light, core in front: it rises out of the top terminal,
-   runs round the bowl and fades as it reaches the bottom one (from 63%,
-   head at ~0.95 of the spine, to 72%, head just past the end): ~2.6 s a
-   pass, then a ~1 s rest. pathLength="1"; the gap (2) keeps one dash on
-   the path. */
-.comet path {
-  fill: none;
-  stroke-linecap: round;
-  stroke-dasharray: var(--len) 2;
-  stroke-dashoffset: var(--len);
-  opacity: 0;
-  animation: comet 3.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) 1.6s infinite both paused;
-}
-@keyframes comet {
-  0% {
-    stroke-dashoffset: var(--len);
-    opacity: 0;
-  }
-  8% {
-    opacity: 1;
-  }
-  63% {
-    opacity: 1;
-  }
-  72% {
-    opacity: 0;
-  }
-  84%,
-  100% {
-    stroke-dashoffset: var(--to);
-    opacity: 0;
-  }
-}
-
 :global([data-hero-motion="run"]) .wave,
-:global([data-hero-motion="run"]) .halo,
-:global([data-hero-motion="run"]) .comet path {
+:global([data-hero-motion="run"]) .halo {
   animation-play-state: running;
 }
 
 @media (forced-colors: active) {
-  .halo,
-  .comet {
+  .halo {
+    display: none;
+  }
+}
+
+/* Paper is white in either theme: the hand prints in its light-theme ink
+   (navy), not the dark theme's near-white, and the glow is left out. */
+@media print {
+  .wave {
+    --mark-hand: var(--navy);
+  }
+  .halo {
     display: none;
   }
 }

@@ -59,7 +59,13 @@ site's chapter numbers stay as they are) but no "/ 08" total.
 2. What we do: the three services, one short line each, each linking to its
    service page; "All services →" to /services.
 3. A dashboard teaser: the View 1 KPI strip and the revenue chart, with
-   "Explore the sample dashboards →" to /dashboards.
+   "Explore the sample dashboards →" to /dashboards. It carries one credit
+   line (the figure's, not the plate's second one). On phones (below 640px)
+   it is the revenue chart and its credit line only: the KPI strip, the
+   figure summary, "View as table", the stamp line and the footnote stay on
+   /dashboards, so the home stays about three screens long. The section's
+   notice, the entity line and the stamp inside the chart still mark it as
+   sample data.
 4. Three short reasons in one row (security first → /security, a team in
    Dar es Salaam → /team, a clear process → /process).
 5. A closing call to action: one line, "Start a conversation" → /contact,

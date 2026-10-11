@@ -2,8 +2,8 @@ import type { Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import {
   CONTACT_EMAIL,
-  WHATSAPP_HREF,
   WHATSAPP_NUMBER,
+  whatsappHref,
 } from "@/lib/contact-info";
 import { Container } from "@/components/ui/Container";
 import { Grid } from "@/components/ui/Grid";
@@ -70,7 +70,7 @@ export async function Faq({ lang, headingLevel = 2 }: { lang: Locale; headingLev
                 <div className="mt-1 flex flex-wrap gap-x-8">
                   {WHATSAPP_NUMBER && (
                     <LinkArrow
-                      href={WHATSAPP_HREF}
+                      href={whatsappHref(lang)}
                       external
                       arrow="↗"
                       newTabLabel={t.a11y.opensNewTab}

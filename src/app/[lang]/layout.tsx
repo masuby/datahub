@@ -9,6 +9,7 @@ import { SITE_URL, shareCard } from "@/lib/seo";
 import { ThemeScript } from "@/components/system/ThemeScript";
 import { MarkSprite } from "@/components/brand/MarkSprite";
 import { RefKeeper } from "@/components/system/RefKeeper";
+import { RefScript } from "@/components/system/RefScript";
 
 export function generateStaticParams() {
   return LOCALES.map((lang) => ({ lang }));
@@ -53,8 +54,9 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
 export default async function RootLayout({ children, params }: LayoutProps<"/[lang]">) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
-  // Same nonce src/proxy.ts put in the CSP header; the theme bootstrap is an
-  // inline script, so without it a strict script-src would refuse to run it.
+  // Same nonce src/proxy.ts put in the CSP header; the theme bootstrap and the
+  // campaign-tag keeper are inline scripts, so without it a strict
+  // script-src would refuse to run them.
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
@@ -66,6 +68,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
     >
       <head>
         <ThemeScript nonce={nonce} />
+        <RefScript nonce={nonce} />
       </head>
       <body className="flex min-h-svh flex-col">
         <RefKeeper />

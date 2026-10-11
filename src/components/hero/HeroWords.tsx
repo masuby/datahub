@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useHeroRunning } from "./HeroLive";
 import { lowEndDevice, saveDataOn } from "./device";
 import type { Writer, WriterTier } from "./word-writer";
@@ -15,32 +15,44 @@ import styles from "./HeroWords.module.css";
  * longest word's width so nothing ever shifts. The H1 around it carries the
  * constant accessible name; all of this is aria-hidden.
  *
- * Client: the first time the hero may move (HeroLive), after an idle moment
- * and once the display font is in, the writer (word-writer.ts, its own lazy
- * chunk with the glyph outlines) takes over on a canvas laid over the slot.
- * It pauses whenever the hero may not move and the slot shows the current
- * word as text again. Never in forced-colors mode, where the canvas would be
- * hidden anyway, nor under Save-Data (the chunk is not even fetched). Touch
- * devices and low-end ones (spec §4.4: deviceMemory or cores < 4) get the
- * writer's lite tier: 30 fps and half the sparks.
+ * Client: the first time the word may move — the hero may (HeroLive) and
+ * the word's own line is on screen — after an idle moment and once the
+ * display font is in, the writer (word-writer.ts, its own lazy chunk with
+ * the glyph outlines) takes over on a canvas laid over the slot. It pauses
+ * whenever the word may not move, and the slot shows the current word as
+ * text again: off screen (on a phone the line scrolls away long before the
+ * rest of the hero), and in forced-colors mode, where the canvas is hidden —
+ * also when High Contrast is turned on mid-visit. Never under Save-Data (the
+ * chunk is not even fetched). Touch devices and low-end ones (spec §4.4:
+ * deviceMemory or cores < 4) get the writer's lite tier: 30 fps and half the
+ * sparks; a desktop that turns out too slow for the full tier steps down to
+ * it (the writer's kill switch).
  */
 export function HeroWords({ words }: { words: readonly string[] }) {
   const slotRef = useRef<HTMLSpanElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const writerRef = useRef<Writer | null>(null);
   const running = useHeroRunning();
+  const forced = useSyncExternalStore(subscribeForced, forcedColors, () => false);
+  const [onScreen, setOnScreen] = useState(false);
   const [armed, setArmed] = useState(false);
   const [ready, setReady] = useState(false);
+  const live = running && onScreen && !forced;
 
-  // Arm once, the first time the hero runs, when the browser is idle: the
-  // first paint (the LCP is server text) must not compete with anything here.
+  // The word's own line, not the whole hero: on a phone the line scrolls
+  // away while the mark band below it is still in view.
   useEffect(() => {
-    if (!running || armed) return;
-    try {
-      if (window.matchMedia("(forced-colors: active)").matches) return;
-    } catch {
-      return;
-    }
+    const slot = slotRef.current;
+    if (!slot) return;
+    const io = new IntersectionObserver((entries) => setOnScreen(entries.some((e) => e.isIntersecting)));
+    io.observe(slot);
+    return () => io.disconnect();
+  }, []);
+
+  // Arm once, the first time the word may move, when the browser is idle:
+  // the first paint (the LCP is server text) must not compete with this.
+  useEffect(() => {
+    if (!live || armed) return;
     if (saveDataOn()) return;
     let cancelled = false;
     const go = () => {
@@ -58,7 +70,7 @@ export function HeroWords({ words }: { words: readonly string[] }) {
       cancelled = true;
       window.clearTimeout(id);
     };
-  }, [running, armed]);
+  }, [live, armed]);
 
   // Build the writer once the canvas exists and the font has loaded.
   useEffect(() => {
@@ -93,8 +105,8 @@ export function HeroWords({ words }: { words: readonly string[] }) {
   }, [armed, words]);
 
   useEffect(() => {
-    if (ready) writerRef.current?.setRunning(running);
-  }, [ready, running]);
+    if (ready) writerRef.current?.setRunning(live);
+  }, [ready, live]);
 
   return (
     <span ref={slotRef} className={styles.slot}>
@@ -106,6 +118,26 @@ export function HeroWords({ words }: { words: readonly string[] }) {
       {armed && <canvas ref={canvasRef} aria-hidden="true" className={styles.canvas} />}
     </span>
   );
+}
+
+const FORCED = "(forced-colors: active)";
+
+function forcedColors(): boolean {
+  try {
+    return window.matchMedia(FORCED).matches;
+  } catch {
+    return false;
+  }
+}
+
+function subscribeForced(onChange: () => void) {
+  try {
+    const mq = window.matchMedia(FORCED);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  } catch {
+    return () => {};
+  }
 }
 
 /**

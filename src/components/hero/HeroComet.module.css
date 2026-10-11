@@ -1,0 +1,43 @@
+/* The light along the D (comet.ts, HeroComet.tsx): a layer the size of the
+   mark. Each glow is a small ellipse centred on the layer's top-left corner
+   — the viewBox origin — until its keyframes carry it along the spine. It
+   rests invisible: without JavaScript, under reduced motion, on a frugal
+   device and before the first run the mark is plain. The colours are the
+   --comet-* tokens; the mixes with transparent only fade them. */
+.comet {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+.comet > span {
+  position: absolute;
+  display: block;
+  opacity: 0;
+}
+
+/* Sky glow: brightest on the spine, gone at the ellipse's edge. */
+.glow {
+  background: radial-gradient(
+    closest-side,
+    var(--comet-glow),
+    color-mix(in srgb, var(--comet-glow) 55%, transparent) 45%,
+    transparent
+  );
+}
+
+/* The white core and the short streak behind it. */
+.core {
+  background: radial-gradient(
+    closest-side,
+    var(--comet-core) 35%,
+    color-mix(in srgb, var(--comet-core) 50%, transparent) 65%,
+    transparent
+  );
+}
+
+@media (forced-colors: active), print {
+  .comet {
+    display: none;
+  }
+}

@@ -12,10 +12,11 @@ import { TeaserPlate, type TeaserCtx } from "./TeaserPlate";
 
 /**
  * Home · 02 — Sample dashboards, short: the section header with the honesty
- * notice, one plate (View 1's KPI strip and revenue chart, see TeaserPlate)
- * in the title's columns, and "Explore the sample dashboards →" to
- * /dashboards, where all four views can be explored. In the visitor's own
- * theme, like the dashboards page.
+ * notice, one plate (View 1's KPI strip and revenue chart; on phones the
+ * chart and its credit line, see TeaserPlate) in the title's columns, and
+ * "Explore the sample dashboards →" to /dashboards, where all four views can
+ * be explored.
+ * In the visitor's own theme, like the dashboards page.
  */
 export async function HomeDashboards({ lang }: { lang: Locale }) {
   const full = await makeDashCtx(lang, "home", false);
@@ -26,7 +27,7 @@ export async function HomeDashboards({ lang }: { lang: Locale }) {
   return (
     <Section id="dashboards" labelledBy="dashboards-title" compact>
       <Container>
-        <SectionHeader index="02" eyebrow={t.eyebrow} title={t.title} titleId="dashboards-title">
+        <SectionHeader index="02" eyebrow={t.eyebrow} title={t.title} titleId="dashboards-title" compact>
           <p className="t-eyebrow text-accent">{t.notice}</p>
         </SectionHeader>
         <Grid>

@@ -12,13 +12,13 @@ const sw = {
     "titleTemplate": "%s · DataHub",
     "home": {
       "title": "DataHub — Uchambuzi wa Data na Dashibodi Tanzania",
-      "description": "Dashibodi maalum, otomatiki ya ripoti na mawakala wa AI kwa taasisi za Tanzania. Vyote vinajengwa Dar es Salaam na timu ya DataHub.",
+      "description": "Dashibodi, otomatiki ya ripoti na mawakala wa AI kwa taasisi za Tanzania, vinavyojengwa Dar es Salaam.",
       "ogTitle": "DataHub — Uchambuzi wa Data na Dashibodi Tanzania",
-      "ogDescription": "Dashibodi, otomatiki ya ripoti na mawakala wa AI kwa taasisi za Tanzania. Kutoka Data hadi Maamuzi."
+      "ogDescription": "Dashibodi, otomatiki ya ripoti na mawakala wa AI Tanzania. Kutoka Data hadi Maamuzi."
     },
     "privacy": {
       "title": "Taarifa ya faragha",
-      "description": "DataHub inakusanya nini kupitia tovuti hii, kwa nini, na jinsi ya kuomba taarifa zako zifutwe."
+      "description": "Kile tovuti hii inachokusanya, kwa nini, na jinsi ya kuomba kifutwe."
     },
     "notFound": {
       "title": "Ukurasa haupatikani"
@@ -152,22 +152,22 @@ const sw = {
       "automation": {
         "index": "01.2",
         "title": "Otomatiki ya ripoti",
-        "tagline": "Kazi ya saa nyingi, sasa kwa sekunde chache",
-        "description": "Ripoti za Excel na PowerPoint ambazo timu yako huziandaa upya kila wiki, sasa zinajitengeneza zenyewe.",
+        "tagline": "Kazi ya saa nyingi, kwa sekunde",
+        "description": "Ripoti zako za kila wiki za Excel na PowerPoint, zinajitengeneza zenyewe.",
         "glyphLabel": "Mistari mitatu inayoungana kuwa mmoja"
       },
       "aiAgents": {
         "index": "01.3",
         "title": "Mawakala wa AI",
-        "tagline": "Programu inayosoma, kisha inaandaa rasimu ya hatua inayofuata",
-        "description": "Mawakala wanaofuatilia data yako, kufupisha kilichobadilika na kuandaa rasimu ya hatua inayofuata ili mtu aiidhinishe.",
+        "tagline": "Husoma data, huandaa hatua ijayo",
+        "description": "Mawakala wanaofuatilia data yako, kufupisha kilichobadilika na kusubiri mtu aidhinishe.",
         "glyphLabel": "Nukta tatu zilizounganishwa, moja ikiwa na alama ya kuidhinishwa"
       }
     }
   },
   "dash": {
     "eyebrow": "02 — Dashibodi za mfano",
-    "title": "Tazama Jumatatu asubuhi yako inavyoweza kuwa.",
+    "title": "Jumatatu yako inaweza kuonekana hivi.",
     "lead": "Mionekano minne, iliyojengwa kama tunavyojenga kwa wateja.",
     "notice": "Data ya mfano — hatuchapishi dashibodi za wateja",
     "stamp": "DATA YA MFANO",
@@ -257,14 +257,14 @@ const sw = {
             "seriesActual": "Mapato",
             "seriesTarget": "Lengo",
             "readout": "{month} · TZS bilioni {value} · {pct}% ya lengo",
-            "summary": "Mapato yalibaki chini ya lengo la mwezi la TZS bilioni 2.18 hadi Septemba, yalipofikia TZS bilioni 2.30."
+            "summary": "Mapato yalikuwa chini ya lengo la mwezi la TZS bilioni 2.18 hadi Septemba (TZS bilioni 2.30)."
           },
           "branches": {
             "number": "02.2",
             "title": "Matawi, % ya lengo la mapato",
             "axis": "% ya lengo",
             "readout": "{branch} · {pct}% ya lengo",
-            "summary": "Kariakoo pekee iko juu ya lengo (104%); Dodoma (88%) na Mbeya (84%) ziko chini ya 90%."
+            "summary": "Kariakoo pekee iko juu ya lengo, kwa 104%."
           },
           "exceptions": {
             "number": "02.3",
@@ -275,7 +275,7 @@ const sw = {
               "Mikopo iliyotolewa Dodoma iko 18% chini ya mpango",
               "Ripoti ya bodi imetengenezwa saa 05:58, imetumwa kwa wapokeaji 9"
             ],
-            "summary": "Matawi mawili yamevuka kikomo cha PAR30, tawi moja liko nyuma kwenye utoaji mikopo, na ripoti ya bodi ilitumwa kwa wakati."
+            "summary": "Matawi mawili yamevuka kikomo cha PAR30, moja liko nyuma ya mpango, na ripoti ya bodi ilitumwa kwa wakati."
           }
         },
         "changed": {
@@ -283,8 +283,8 @@ const sw = {
           "byline": "Imeandikwa na wakala wa ripoti · mfano",
           "items": [
             "PAR30 ya Mbeya imepanda kwa pointi 0.8 hadi 7.2%, hasa kutokana na maafisa mikopo wawili.",
-            "Mikopo iliyotolewa Dodoma iko 18% chini ya mpango wa Septemba, hasa kwenye mikopo ya vikundi.",
-            "Septemba, kwa mapato ya TZS bilioni 2.30, ni mwezi wa kwanza mwaka huu kuvuka lengo."
+            "Mikopo iliyotolewa Dodoma iko 18% chini ya mpango, hasa mikopo ya vikundi.",
+            "Septemba, kwa TZS bilioni 2.30, ni mwezi wa kwanza mwaka huu kuvuka lengo."
           ]
         },
         "read": [
@@ -297,14 +297,14 @@ const sw = {
           {
             "figure": "branches",
             "anchor": "Mbeya",
-            "shows": "Mbeya ndilo tawi la chini zaidi, kwa 84% ya lengo.",
-            "decision": "Mameneja wa kanda wanajua tawi la kutembelea kwanza."
+            "shows": "Mbeya iko chini zaidi, kwa 84% ya lengo.",
+            "decision": "Mameneja wa kanda wanajua waanzie wapi."
           },
           {
             "figure": "exceptions",
             "anchor": "0",
             "shows": "Matawi mawili yamevuka kikomo cha PAR30 cha 5%.",
-            "decision": "Mkuu wa Mikopo anaona ukiukaji asubuhi ileile unapotokea."
+            "decision": "Mkuu wa Mikopo anaona ukiukaji asubuhi ileile."
           }
         ]
       },
@@ -340,7 +340,7 @@ const sw = {
             "axis": "% ya jalada",
             "limit": "Kikomo 5.0%",
             "readout": "{month} · PAR30 {value}%",
-            "summary": "PAR30 ilikuwa juu ya kikomo cha 5% kuanzia Mei hadi Julai, ikafikia kilele cha 5.4%, na ilikuwa 4.6% Septemba."
+            "summary": "PAR30 ilizidi kikomo cha 5% kuanzia Mei hadi Julai."
           },
           "ageing": {
             "number": "02.5",
@@ -352,7 +352,7 @@ const sw = {
               "Siku 61–90",
               "Siku 90+"
             ],
-            "summary": "91.2% ya jalada haijachelewa; 4.6% imechelewa zaidi ya siku 30, na 1.5% zaidi ya siku 90."
+            "summary": "91.2% ya jalada haijachelewa."
           },
           "mix": {
             "number": "02.6",
@@ -367,12 +367,12 @@ const sw = {
           },
           "flows": {
             "number": "02.7",
-            "title": "Mikopo iliyotolewa na marejesho, Aprili hadi Septemba",
+            "title": "Mikopo iliyotolewa na marejesho, Apr–Sep",
             "axis": "TZS bilioni",
             "seriesDisbursed": "Mikopo iliyotolewa",
             "seriesRepaid": "Marejesho",
             "readout": "{month} · mikopo iliyotolewa TZS bilioni {a} · marejesho TZS bilioni {b}",
-            "summary": "Mikopo iliyotolewa ilikuwa TZS bilioni 5.2–5.9 kwa mwezi; marejesho yalizidi mikopo iliyotolewa Julai na Agosti."
+            "summary": "Mikopo iliyotolewa ilikuwa TZS bilioni 5.2–5.9 kwa mwezi."
           }
         },
         "officers": {
@@ -391,12 +391,12 @@ const sw = {
             "figure": "par",
             "anchor": "Jul",
             "shows": "PAR30 ilifikia kilele cha 5.4% Julai.",
-            "decision": "Kuvuka kikomo kunaripotiwa siku ileile, kwa hiyo makusanyo yanaanza kabla ya mwisho wa mwezi."
+            "decision": "Ukiukaji unaripotiwa siku ileile, hivyo makusanyo yanaanza mapema."
           },
           {
             "figure": "ageing",
             "anchor": "90+ days",
-            "shows": "1.5% ya jalada imechelewa zaidi ya siku 90.",
+            "shows": "1.5% imechelewa zaidi ya siku 90.",
             "decision": "Idara za fedha na mikopo zinajadili tengo la hasara kwa namba ileile."
           },
           {
@@ -427,7 +427,7 @@ const sw = {
           },
           {
             "label": "Maduka hai",
-            "context": "Yaliyoagiza angalau mara moja katika robo ya 3"
+            "context": "Yaliyoagiza katika robo ya 3"
           },
           {
             "label": "Wastani wa oda",
@@ -452,7 +452,7 @@ const sw = {
               "18% au zaidi"
             ],
             "ringNote": "Ukubwa wa duara unaonyesha mauzo.",
-            "summary": "Dar es Salaam ina mauzo makubwa zaidi; Dodoma, Mwanza na Arusha zilikua kwa kasi zaidi. Mipaka haijachorwa."
+            "summary": "Dar es Salaam ina mauzo makubwa zaidi; Dodoma, Mwanza na Arusha zilikua kwa kasi zaidi."
           },
           "ranked": {
             "number": "02.9",
@@ -465,15 +465,15 @@ const sw = {
             },
             "other": "Mikoa mingine",
             "readout": "{region} · TZS bilioni {value} · {share}% ya mauzo · ukuaji {growth}%",
-            "summary": "Dar es Salaam ni 30.6% ya mauzo; Dodoma ilikua kwa kasi zaidi (21%), Tanga polepole zaidi (4%)."
+            "summary": "Dar es Salaam ni 30.6% ya mauzo."
           }
         },
         "read": [
           {
             "figure": "map",
             "anchor": "Dodoma",
-            "shows": "Dodoma ilikua kwa kasi zaidi, 21% ukilinganisha na robo hiyohiyo mwaka jana.",
-            "decision": "Jaribu kuhamishia bidhaa na wauzaji wa nyanjani kwenye ukanda wa kati."
+            "shows": "Dodoma ilikua kwa kasi zaidi: 21% ukilinganisha na mwaka jana.",
+            "decision": "Jaribu kuhamishia bidhaa na wauzaji kwenye ukanda wa kati."
           },
           {
             "figure": "ranked",
@@ -485,14 +485,14 @@ const sw = {
             "figure": "ranked",
             "anchor": "Tanga",
             "shows": "Tanga ilikua kwa 4%, mkoa uliokua polepole zaidi.",
-            "decision": "Kagua ufikiaji wa maduka kabla malengo ya robo ijayo hayajawekwa."
+            "decision": "Kagua ufikiaji wa maduka kabla ya kuweka malengo ya robo ijayo."
           }
         ]
       },
       "operations": {
         "index": "02.4",
         "tab": "Otomatiki na uendeshaji",
-        "tabDescription": "Ripoti zinazojiendesha zenyewe, na kile wakala alichofanya.",
+        "tabDescription": "Ripoti zinazojiendesha zenyewe, na kumbukumbu za wakala.",
         "entity": "Mfumo wa ripoti wa mkopeshaji wa mfano",
         "period": "Septemba 2026 · ratiba ya Jumatatu ya mfano",
         "creditPeriod": "Sep 2026",
@@ -507,7 +507,7 @@ const sw = {
           },
           {
             "label": "Saa za wafanyakazi zilizookolewa",
-            "context": "Makadirio, ukilinganisha na kazi ya mkono"
+            "context": "Makadirio, dhidi ya kazi ya mkono"
           },
           {
             "label": "Mizunguko iliyoshindwa",
@@ -531,7 +531,7 @@ const sw = {
               "18:30 Kufunga hesabu za siku"
             ],
             "timeAxis": "Saa za Afrika Mashariki",
-            "summary": "Kazi tano zinaendeshwa kati ya 05:30 na 18:30, zikianza na ripoti ya PAR ya kila siku."
+            "summary": "Kazi tano zinaendeshwa kuanzia 05:30 hadi 18:30."
           },
           "runs": {
             "number": "02.11",
@@ -539,7 +539,7 @@ const sw = {
             "axis": "sekunde",
             "readout": "Mzunguko {n} · sekunde {value}",
             "slowLabel": "Mzunguko wa polepole",
-            "summary": "Mizunguko ilichukua sekunde 35–41 (muda wa kati 38), isipokuwa mzunguko wa 7 (sekunde 61)."
+            "summary": "Mizunguko mingi ilichukua sekunde 35–41."
           },
           "pack": {
             "number": "02.12",
@@ -557,27 +557,27 @@ const sw = {
           "items": [
             {
               "time": "05:30",
-              "text": "Ripoti ya PAR ya kila siku imetengenezwa na kutumwa kwa mameneja 14 wa matawi.",
+              "text": "Ripoti ya PAR ya kila siku imetumwa kwa mameneja 14 wa matawi.",
               "status": "sent"
             },
             {
               "time": "05:58",
-              "text": "Ripoti ya bodi ya Jumatatu imetengenezwa na kutumwa kwa wapokeaji 9.",
+              "text": "Ripoti ya bodi ya Jumatatu imetumwa kwa wapokeaji 9.",
               "status": "sent"
             },
             {
               "time": "07:02",
-              "text": "PAR30 imevuka kikomo cha 5.0% katika matawi 2: Mbeya 7.2%, Dodoma 5.4%. Rasimu ya ujumbe wa ufuatiliaji imeandaliwa kwa ajili ya Mkuu wa Mikopo.",
+              "text": "PAR30 imevuka kikomo cha 5.0% Mbeya (7.2%) na Dodoma (5.4%). Rasimu ya ujumbe imeandaliwa kwa Mkuu wa Mikopo.",
               "status": "awaiting"
             },
             {
               "time": "07:09",
-              "text": "Ujumbe umeidhinishwa na Mkuu wa Mikopo na kutumwa kwa mameneja wa matawi yote mawili.",
+              "text": "Mkuu wa Mikopo ameidhinisha ujumbe; umetumwa kwa mameneja wa matawi yote mawili.",
               "status": "sent"
             },
             {
               "time": "07:15",
-              "text": "Rasimu za vikumbusho 41 kwa wakopaji wenye malimbikizo zimeandaliwa, zikisubiri kukaguliwa na maafisa mikopo.",
+              "text": "Rasimu za vikumbusho 41 vya malimbikizo zinasubiri kukaguliwa na maafisa mikopo.",
               "status": "queued"
             }
           ]
@@ -593,19 +593,19 @@ const sw = {
             "figure": "runs",
             "anchor": "7",
             "shows": "Mzunguko mmoja ulichukua sekunde 61, wakati muda wa kati ni sekunde 38.",
-            "decision": "Mzunguko wa polepole unaonekana kabla haujageuka kuwa ripoti iliyochelewa."
+            "decision": "Mzunguko wa polepole unaonekana kabla haujawa ripoti iliyochelewa."
           },
           {
             "figure": "log",
             "anchor": "07:02",
-            "shows": "Wakala aliandaa rasimu ya ujumbe. Mtu aliuidhinisha dakika saba baadaye.",
+            "shows": "Wakala aliandaa rasimu ya ujumbe; mtu aliuidhinisha dakika saba baadaye.",
             "decision": "Unachagua hatua zipi zibaki mikononi mwa mtu."
           },
           {
             "figure": "pack",
             "anchor": "after",
             "shows": "Kutoka saa 14 hadi dakika 4.",
-            "decision": "Muda wa mchambuzi unatumika kufafanua namba, si kuzinakili."
+            "decision": "Wachambuzi wanafafanua namba badala ya kuzinakili."
           }
         ]
       }
@@ -686,31 +686,31 @@ const sw = {
   "process": {
     "eyebrow": "04 — Tunavyofanya kazi",
     "title": "Jinsi mradi unavyoendeshwa.",
-    "lead": "Kila mfumo ni tofauti. Njia ya kuufikia haibadiliki.",
+    "lead": "Kila mfumo ni tofauti; njia yetu ya kuujenga haibadiliki.",
     "receivePrefix": "Unapokea:",
     "steps": [
       {
         "index": "04.1",
         "title": "Kuchunguza",
         "description": "Tunaelewa mtiririko wako wa kazi na kubaini kazi ya mkono.",
-        "receive": "orodha ya takwimu muhimu, na tathmini ya wazi kama mfumo unastahili kujengwa."
+        "receive": "takwimu muhimu, na tathmini ya wazi kama mfumo unastahili kujengwa."
       },
       {
         "index": "04.2",
         "title": "Kusanifu",
-        "description": "Tunapanga dashibodi, otomatiki na mtiririko wa data kulingana na jinsi unavyofanya kazi.",
+        "description": "Tunapanga mfumo kulingana na jinsi unavyofanya kazi.",
         "receive": "mpango unaouidhinisha kabla hatujaanza kujenga."
       },
       {
         "index": "04.3",
         "title": "Kujenga",
-        "description": "Tunajenga mfumo kwa usalama, katika miundo ambayo timu yako tayari inaitumia.",
+        "description": "Tunaujenga kwa usalama, katika miundo ambayo timu yako tayari inaitumia.",
         "receive": "mfumo unaofanya kazi, tayari kutumika."
       },
       {
         "index": "04.4",
         "title": "Kusaidia",
-        "description": "Tunaifundisha timu yako na kurekebisha mfumo kadri mahitaji yako yanavyobadilika.",
+        "description": "Tunaifundisha timu yako na kurekebisha mfumo kadri mahitaji yanavyobadilika.",
         "receive": "mafunzo, na mabadiliko unapoyahitaji."
       }
     ],
@@ -723,7 +723,7 @@ const sw = {
       "withHeading": "Ukiwa na DataHub",
       "rows": [
         {
-          "today": "Ripoti huchukua saa au siku kuandaliwa",
+          "today": "Ripoti huchukua saa au siku",
           "with": "Ripoti zinatengenezwa kwa sekunde"
         },
         {
@@ -758,11 +758,11 @@ const sw = {
         },
         {
           "term": "Maingizo yanayohakikiwa",
-          "definition": "Seva inakagua kila kinachoingizwa kabla hakijatumika."
+          "definition": "Seva inakagua kila kinachoingizwa kabla ya kutumika."
         },
         {
           "term": "Miingiliano iliyoimarishwa",
-          "definition": "Miingiliano inakubali tu inachohitaji na kukataa kingine chote."
+          "definition": "Miingiliano inakubali tu kile inachohitaji."
         },
         {
           "term": "Mawakala wenye mipaka",
@@ -798,21 +798,21 @@ const sw = {
         "index": "06.1",
         "name": "Daniel C. Masubi",
         "role": "Afisa Mkuu wa Teknolojia",
-        "bio": "Anasanifu na kujenga mifumo: mitiririko ya data, dashibodi, otomatiki ya ripoti na mawakala. Anawajibika kwa usalama wa data yako.",
+        "bio": "Anajenga mifumo, kuanzia mitiririko ya data hadi mawakala, na anawajibika kwa usalama wa data yako.",
         "alt": "Daniel C. Masubi, Afisa Mkuu wa Teknolojia, DataHub"
       },
       "operations": {
         "index": "06.2",
         "name": "Kanuda L. Sasi",
         "role": "Mkuu wa Uendeshaji",
-        "bio": "Anasimamia utekelezaji: wigo wa kazi, ratiba, mafunzo na msaada. Anahakikisha kilichokubaliwa ndicho kinachowasilishwa.",
+        "bio": "Anasimamia utekelezaji, kuanzia wigo wa kazi hadi msaada, ili kilichokubaliwa ndicho kifike.",
         "alt": "Kanuda L. Sasi, Mkuu wa Uendeshaji, DataHub"
       },
       "marketing": {
         "index": "06.3",
         "name": "Yohana K. Mussa",
         "role": "Mkuu wa Masoko",
-        "bio": "Mara nyingi ndiye mtu wa kwanza utakayezungumza naye. Anahakikisha wigo wa kazi unalenga tatizo lako halisi, na anakujulisha maendeleo.",
+        "bio": "Mara nyingi ndiye utakayezungumza naye kwanza: anabainisha tatizo lako halisi na anakujulisha maendeleo.",
         "alt": "Yohana K. Mussa, Mkuu wa Masoko, DataHub"
       }
     }
@@ -830,12 +830,12 @@ const sw = {
         "a": "Tunajenga dashibodi, ripoti za kiotomatiki na mawakala wa AI kwa taasisi za Tanzania."
       },
       {
-        "q": "Mko wapi, na mnafanya kazi nje ya Dar es Salaam?",
-        "a": "Tupo Dar es Salaam. Tunafanya kazi kote Tanzania na nje ya nchi, mara nyingi kwa mbali, na tunafika ofisini kwako inapohitajika."
+        "q": "Mnapatikana wapi?",
+        "a": "Dar es Salaam. Tunafanya kazi kote Tanzania na nje ya nchi, mara nyingi kwa mbali, na ofisini kwako inapohitajika."
       },
       {
         "q": "Dashibodi inagharimu kiasi gani?",
-        "a": "Inategemea kazi, kwa hiyo tunapanga wigo pamoja nawe kabla ya kutaja bei. Mazungumzo ya kwanza ni bure."
+        "a": "Inategemea kazi, kwa hiyo tunapanga wigo kabla ya kutaja bei. Mazungumzo ya kwanza ni bure."
       },
       {
         "q": "Je, data yetu iko salama?",
@@ -843,14 +843,14 @@ const sw = {
       },
       {
         "q": "Mradi unachukua muda gani?",
-        "a": "Kwa kawaida wiki kadhaa kwa dashibodi au ripoti moja, na zaidi kwa mfumo unaohusisha idara kadhaa."
+        "a": "Wiki kadhaa kwa dashibodi au ripoti moja; zaidi kwa mfumo wa idara kadhaa."
       }
     ]
   },
   "contact": {
     "eyebrow": "08 — Mawasiliano",
     "title": "Anza na ripoti moja.",
-    "lead": "Tueleze unachotumia sasa na ungependa kuona nini badala yake.",
+    "lead": "Tueleze unachotumia sasa na unachotaka badala yake.",
     "lines": {
       "whatsapp": {
         "label": "WhatsApp",
@@ -869,7 +869,7 @@ const sw = {
       "title": "Kinachofuata",
       "steps": [
         "Tunakujibu ili kupanga mazungumzo mafupi.",
-        "Tunaangalia kazi pamoja nawe na kukubaliana kinachostahili kujengwa.",
+        "Tunakubaliana pamoja kinachostahili kujengwa.",
         "Unapokea wigo wa kazi kwa maandishi kabla kazi yoyote haijaanza."
       ]
     },

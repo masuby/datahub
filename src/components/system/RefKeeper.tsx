@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { REF_STORAGE_KEY, refOf, sanitizeRef } from "./campaign";
 
 /**
  * Keeps campaign attribution alive across in-site navigation.
@@ -10,17 +11,16 @@ import { useEffect } from "react";
  * load the sanitised tag is copied to sessionStorage["dh-ref"], and the
  * contact form falls back to it. sessionStorage, not a cookie: nothing about
  * the visitor leaves their browser except inside the form they choose to send.
+ *
+ * RefScript already makes that copy while <head> is parsed, so a tap that
+ * lands before hydration keeps the tag; this effect is the after-hydration
+ * path, for a page where the script did not run. The rules themselves (what
+ * a tag may contain, where it is read from) live in ./campaign; import them
+ * from there.
  */
-export const REF_STORAGE_KEY = "dh-ref";
-
-export function sanitizeRef(raw: string | null | undefined): string {
-  return (raw ?? "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40);
-}
-
 export function readRef(): string {
   if (typeof window === "undefined") return "";
-  const params = new URLSearchParams(window.location.search);
-  const fromUrl = sanitizeRef(params.get("ref") ?? params.get("utm_source"));
+  const fromUrl = refOf(window.location.search);
   if (fromUrl) return fromUrl;
   try {
     return sanitizeRef(sessionStorage.getItem(REF_STORAGE_KEY));
@@ -31,8 +31,7 @@ export function readRef(): string {
 
 export function RefKeeper() {
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const ref = sanitizeRef(params.get("ref") ?? params.get("utm_source"));
+    const ref = refOf(window.location.search);
     if (!ref) return;
     try {
       // First touch wins: the channel that brought them is the one to credit.

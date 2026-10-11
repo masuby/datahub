@@ -13,43 +13,40 @@ export const SERVICES_SW: Service[] = [
     "navLabel": "Dashibodi",
     "title": "Dashibodi na Uchambuzi wa Takwimu za Biashara Tanzania",
     "metaTitle": "Dashibodi za Biashara na Takwimu Tanzania",
-    "metaDescription": "Dashibodi maalum na uchambuzi wa takwimu za biashara kwa taasisi za Tanzania. KPI za moja kwa moja kwa kila tawi na idara, zilizoundwa kulingana na jinsi timu yako inavyofanya maamuzi. Dar es Salaam.",
+    "metaDescription": "Dashibodi maalum na uchambuzi wa takwimu za biashara kwa taasisi za Tanzania: KPI za moja kwa moja kwa kila tawi na idara, zilizoundwa kulingana na jinsi timu yako inavyoamua. Dar es Salaam.",
     "tagline": "Sehemu moja ya kufanyia maamuzi",
-    "intro": [
-      "Taasisi nyingi nchini Tanzania zina data, lakini hazina sehemu moja ya kuiangalia ambayo kila mtu anaiamini.",
-      "Leo swali rahisi linahitaji watu watatu kukagua mafaili matatu. Dashibodi inalijibu kwenye simu, kabla kikao hakijaanza."
-    ],
+    "intro": "Badala ya watu watatu kukagua mafaili matatu, dashibodi moja ambayo kila mtu anaiamini inajibu swali kwenye simu, kabla kikao hakijaanza.",
     "signals": [
       "Swali moja linajibiwa kwa namba mbili tofauti",
-      "Ripoti ya uongozi inafika ikiwa imeshapitwa na wakati",
-      "Maamuzi yanasubiri faili la Excel ambalo mtu mmoja tu anaweza kulisasisha"
+      "Ripoti ya uongozi inafika ikiwa imepitwa na wakati",
+      "Maamuzi yanasubiri faili la Excel la mtu mmoja"
     ],
     "deliverables": [
       {
         "title": "Mwonekano wa uongozi na wa idara",
-        "desc": "Muhtasari kwa uongozi, na undani kwa wanaochukua hatua."
+        "desc": "Muhtasari kwa viongozi, na undani kwa wanaochukua hatua."
       },
       {
         "title": "KPI zinazopimwa kiotomatiki",
-        "desc": "Malengo, matokeo halisi na pengo, kwa rangi ili matatizo yaonekane haraka."
+        "desc": "Lengo, matokeo na pengo, kwa rangi."
       },
       {
         "title": "Kufuatilia hadi kwenye rekodi husika",
-        "desc": "Kuanzia jumla kuu hadi tawi, afisa na muamala wenyewe."
+        "desc": "Kuanzia jumla hadi tawi, afisa na muamala."
       },
       {
         "title": "Mfumo mmoja, jibu moja",
-        "desc": "Kila mwonekano unatumia mantiki ileile, hivyo idara za fedha na uendeshaji zinaona namba ileile."
+        "desc": "Mantiki ileile kila mahali, hivyo idara za fedha na uendeshaji zinaona namba moja."
       }
     ],
     "faq": [
       {
         "q": "Mnatengeneza dashibodi maalum au mnatumia Power BI?",
-        "a": "Vyote viwili. Power BI inafaa pale data iko safi na maswali ni ya kawaida; pale mantiki ya ripoti zako au muundo wa matawi ni wa kipekee, dashibodi maalum ni nafuu zaidi kuiendesha kwa muda mrefu."
+        "a": "Vyote viwili. Power BI inafaa data safi na maswali ya kawaida; dashibodi maalum inafaa mantiki iliyo ya kwako pekee."
       },
       {
         "q": "Data inatoka wapi?",
-        "a": "Popote ilipo sasa: mfumo wako wa core banking au ERP, database au mafaili ya Excel. Tunajenga mtiririko wa data unaoiunganisha yote."
+        "a": "Popote ilipo sasa: core banking, ERP, database au mafaili ya Excel. Tunaiunganisha yote."
       },
       {
         "q": "Timu yetu inaweza kuitumia bila mafunzo?",
@@ -62,15 +59,12 @@ export const SERVICES_SW: Service[] = [
     "navLabel": "Ripoti Kiotomatiki",
     "title": "Ripoti Kiotomatiki kwa Biashara na Taasisi za Tanzania",
     "metaTitle": "Ripoti za Excel Kiotomatiki Tanzania",
-    "metaDescription": "Ripoti za Excel na PowerPoint mnazoandaa kila wiki zijitengeneze kiotomatiki: kwa ratiba, zikiwa zimepangiliwa na kutumwa kwa wahusika. Dar es Salaam, Tanzania.",
-    "tagline": "Kazi ya saa nyingi, sasa kwa sekunde chache",
-    "intro": [
-      "Kila wiki mtu ananakili namba zilezile kwenye slaidi zilezile na kuzituma kwa barua pepe. Inachukua saa kadhaa, na makosa hujipenyeza.",
-      "Tunaigeuza kazi hiyo kuwa mfumo unaotengeneza ripoti na kuituma kwa ratiba, hata kama hakuna mtu ofisini."
-    ],
+    "metaDescription": "Ripoti za Excel na PowerPoint ambazo timu yako huandaa kila wiki zijitengeneze kiotomatiki: kwa ratiba, zimepangiliwa na kutumwa. Dar es Salaam, Tanzania.",
+    "tagline": "Kazi ya saa nyingi, kwa sekunde",
+    "intro": "Ripoti ambayo mtu huiandaa kwa mkono kila wiki inakuwa mfumo unaoitengeneza na kuituma kwa ratiba.",
     "signals": [
       "Ripoti zinachelewa mtu mmoja akiwa hayupo",
-      "Namba moja inaandikwa kwenye mafaili kadhaa, na hayalingani",
+      "Namba ileile inatofautiana kati ya faili na faili",
       "Mwisho wa mwezi ni kukesha ukitengeneza upya faili lilelile la Excel"
     ],
     "deliverables": [
@@ -80,21 +74,21 @@ export const SERVICES_SW: Service[] = [
       },
       {
         "title": "Ripoti za Excel na PowerPoint",
-        "desc": "Ripoti zilizopangiliwa, katika mafaili ambayo taasisi yako tayari inayasambaza."
+        "desc": "Zimepangiliwa, katika mafaili ambayo tayari unayasambaza."
       },
       {
         "title": "Kutuma kiotomatiki",
-        "desc": "Kila mpokeaji anapata kile tu ambacho nafasi yake inaruhusu kuona."
+        "desc": "Kila mpokeaji anapata toleo linalolingana na nafasi yake."
       },
       {
         "title": "Matokeo yaleyale kila mara",
-        "desc": "Mantiki ileile kila ripoti inapotengenezwa, hivyo namba zinaweza kuthibitishwa tena."
+        "desc": "Mantiki ileile kila mara, hivyo namba zinaweza kuthibitishwa tena."
       }
     ],
     "faq": [
       {
         "q": "Mnaweza kufanya ripoti tunazoandaa sasa kwenye Excel zijitengeneze kiotomatiki?",
-        "a": "Ndiyo. Tunaielewa mantiki iliyo ndani ya faili lako la Excel na kuijenga upya kama mfumo, na ripoti inabaki na muonekano ambao watu wameuzoea."
+        "a": "Ndiyo. Tunajenga upya mantiki ya faili lako la Excel kama mfumo, na ripoti inabaki na muonekano ambao watu wameuzoea."
       },
       {
         "q": "Je, timu yetu itapoteza udhibiti wa ripoti?",
@@ -111,29 +105,26 @@ export const SERVICES_SW: Service[] = [
     "navLabel": "Mawakala wa AI",
     "title": "Kubuni Mawakala wa AI na Uendeshaji wa Kiotomatiki Tanzania",
     "metaTitle": "Mawakala wa AI (AI Agents) kwa Biashara Tanzania",
-    "metaDescription": "Mawakala wa AI kwa biashara Tanzania: wanasoma data za uendeshaji, wanafupisha kilichobadilika, wanaandaa ripoti na kufuatilia kazi zilizosalia. Dar es Salaam.",
-    "tagline": "Programu inayosoma, kisha inaandaa rasimu ya hatua inayofuata",
-    "intro": [
-      "Miradi mingi ya AI huanza na teknolojia, kisha hukwama. Wakala anastahili kujengwa pale ambapo kazi ya mtu ni kusoma data na kuchukua hatua.",
-      "Mawakala wetu hufuatilia data zako za uendeshaji, hugundua kilichobadilika na kuchukua hatua inayofuata, kama kuonyesha jambo lisilo la kawaida au kuandaa rasimu ya ufuatiliaji."
-    ],
+    "metaDescription": "Mawakala wa AI kwa taasisi za Tanzania wanaosoma data za uendeshaji, kufupisha kilichobadilika na kuandaa ripoti na ufuatiliaji. Dar es Salaam.",
+    "tagline": "Husoma data, huandaa hatua ijayo",
+    "intro": "Wakala anastahili kujengwa pale ambapo kazi ya mtu ni kusoma data na kuchukua hatua: kuonyesha yasiyo ya kawaida, kuandaa rasimu za ufuatiliaji.",
     "signals": [
       "Kila asubuhi mtu anapitia data zilezile akitafuta yasiyo ya kawaida",
       "Ufuatiliaji unasahaulika kwa sababu si jukumu la mtu yeyote",
-      "Kila wiki mtu anaandika muhtasari uleule kutoka kwenye namba zilezile"
+      "Kila wiki mtu anaandika kwa mkono muhtasari uleule"
     ],
     "deliverables": [
       {
         "title": "Mawakala wanaolenga kazi halisi",
-        "desc": "Tunaanzia kwenye kazi ambayo mtu anaifanya leo, si kwenye maonyesho. Kama haistahili wakala, tunakuambia."
+        "desc": "Tunaanzia kwenye kazi ambayo mtu anaifanya leo. Kama haihitaji wakala, tunakuambia."
       },
       {
         "title": "Wanategemea data zako mwenyewe",
-        "desc": "Wanafanya kazi kwa kutumia mifumo yako, hivyo kazi yao inaweza kuhakikiwa kwenye chanzo."
+        "desc": "Kila matokeo yanaweza kuhakikiwa kwenye mifumo yako mwenyewe."
       },
       {
         "title": "Mtu anakagua pale inapohitajika",
-        "desc": "Jambo lolote lenye uzito huandaliwa kama rasimu ili liidhinishwe. Wewe ndiye unayeamua mpaka huo uwe wapi."
+        "desc": "Jambo lolote lenye uzito linasubiri idhini; wewe unaamua mpaka huo uwe wapi."
       },
       {
         "title": "Wamejengwa juu ya msingi uleule wa usalama",
@@ -143,15 +134,15 @@ export const SERVICES_SW: Service[] = [
     "faq": [
       {
         "q": "Je, huduma hii inafaa kwa biashara ya Kitanzania, au ni kwa makampuni makubwa tu?",
-        "a": "Inategemea kazi, si ukubwa wa kampuni. Ikiwa mtu anatumia saa moja kila siku kusoma data na kuchukua hatua, kazi hiyo inastahili kufanywa kiotomatiki."
+        "a": "Inategemea kazi, si ukubwa wa kampuni: kazi ya saa moja kila siku ya kusoma data na kuchukua hatua inastahili kufanywa kiotomatiki."
       },
       {
         "q": "Je, wakala wa AI atafanya maamuzi bila sisi?",
-        "a": "Pale tu utakapoamua iwe hivyo. Mawakala wetu wengi huandaa rasimu na mtu anaidhinisha; hatua za kiotomatiki kabisa ni kwa kazi zenye hatari ndogo tu."
+        "a": "Pale tu utakapoamua. Mawakala wetu wengi huandaa rasimu na mtu anaidhinisha; otomatiki kamili ni kwa hatua zenye hatari ndogo."
       },
       {
         "q": "Gharama ya kuendesha wakala wa AI ni kiasi gani hasa?",
-        "a": "Kuna gharama ya kumjenga, kisha gharama ya uendeshaji inayotegemea kiasi cha data anachochakata. Tunazikadiria zote mbili kabla hujaamua."
+        "a": "Gharama ya kumjenga, kisha gharama ya uendeshaji inayotegemea data anayochakata. Tunazikadiria zote mbili kabla hujaamua."
       }
     ]
   }

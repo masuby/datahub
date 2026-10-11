@@ -34,37 +34,18 @@ function lineEm(text: string): number {
 }
 
 /**
- * A few dots of the field that twinkle, around the mark and the silk:
- * [x, y] as fractions of the stage (snapped to the dot grid in CSS), delay
- * and period in seconds. Desktop only; phones keep the field still.
- */
-const TWINKLES: [number, number, number, number][] = [
-  [0.58, 0.16, 0, 4.2],
-  [0.66, 0.8, 1.3, 5.1],
-  [0.71, 0.09, 2.2, 3.8],
-  [0.88, 0.2, 0.6, 4.6],
-  [0.94, 0.62, 3.1, 5.4],
-  [0.61, 0.44, 1.9, 4.9],
-  [0.97, 0.36, 2.7, 3.9],
-  [0.84, 0.86, 0.3, 4.4],
-  [0.53, 0.66, 3.6, 5.6],
-  [0.76, 0.28, 4.2, 4.1],
-  [0.45, 0.07, 2.5, 5.2],
-  [0.9, 0.08, 1.1, 4.7],
-];
-
-/**
  * 00 Hero (spec §6.1, iteration-2 §B): what DataHub is, in five seconds,
  * with the brand board alive — data arrives as silk and points of light,
  * flows into the waving hand of the mark, and leaves as the straight
  * hairline the hero stands on.
  *
- * Back to front on desktop: the wash (CSS), the dot field with a few
- * twinkling dots, the silk layer (static SVG, then the Canvas2D drift with
- * its travelling lights when the device can afford it), a soft glow behind
- * the mark, the mark at the silk's sink, the text, the pause control, the
- * floor rule the decision filament lands on. Phones stack the text on plain
- * background, then a 300px band with the field, the silk and the mark.
+ * Back to front on desktop: the wash (CSS), the dot field, the silk layer
+ * (static SVG, then the Canvas2D drift — with its travelling lights and a
+ * few twinkling dots of the field — when the device can afford it), a soft
+ * glow behind the mark, the mark at the silk's sink, the text, the pause
+ * control, the floor rule the decision filament lands on. Phones stack the
+ * text on plain background, then a 300px band with the field, the silk and
+ * the mark.
  *
  * The services are not listed here: the home page's next section does that
  * (iteration-2 §D, no claim twice).
@@ -87,15 +68,7 @@ export async function Hero({ lang }: { lang: Locale }) {
       <HeroLive sectionId="top" />
       {/* Stage: everything above the floor rule. Its bottom is the rule. */}
       <div className={cn("relative flex flex-1 flex-col", styles.stage, styles.scope)}>
-        <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0 hidden lg:block", styles.field)}>
-          {TWINKLES.map(([left, top, delay, period]) => (
-            <span
-              key={`${left}-${top}`}
-              className={styles.twinkle}
-              style={{ "--x": left, "--y": top, "--delay": `${delay}s`, "--period": `${period}s` } as CSSProperties}
-            />
-          ))}
-        </div>
+        <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0 hidden lg:block", styles.field)} />
         <div
           aria-hidden="true"
           className={cn("silk-layer pointer-events-none absolute inset-0 hidden lg:block", styles.safe, styles.still)}
@@ -119,7 +92,9 @@ export async function Hero({ lang }: { lang: Locale }) {
           lights
           className={cn("silk-layer pointer-events-none absolute inset-0 hidden lg:block", styles.safe, styles.live)}
         />
-        <div aria-hidden="true" className={cn("pointer-events-none absolute hidden lg:block", styles.glow, styles.markLg)} />
+        <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0 hidden lg:block", styles.glowClip)}>
+          <div className={cn("absolute", styles.glow, styles.markLg)} />
+        </div>
         <div aria-hidden="true" className={cn("pointer-events-none absolute hidden lg:block", styles.markLg)}>
           <HeroMark id="hero-mark-lg" className="size-full" />
         </div>
@@ -132,9 +107,12 @@ export async function Hero({ lang }: { lang: Locale }) {
               style={{ "--fit-em": fitEm } as CSSProperties}
             >
               <span className="sr-only">{x.title.name}</span>
+              {/* The first line may wrap (it fits as sized, but not always under
+                  a reader's own letter and word spacing, WCAG 1.4.12); the
+                  word line cannot, so the slot alone is nowrap. */}
               <span aria-hidden="true" className={cn("t-display block", styles.display)}>
-                <span className="block whitespace-nowrap">{x.title.line1}</span>
-                <span className="block whitespace-nowrap">
+                <span className="block">{x.title.line1}</span>
+                <span className="block">
                   <HeroWords words={x.title.words} />
                 </span>
               </span>

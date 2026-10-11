@@ -2,6 +2,7 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 import { useMotionAllowed } from "@/components/system/motion-store";
+import { frugalDevice } from "./device";
 
 /**
  * "May the hero move right now?" — one answer for everything alive in it.
@@ -10,11 +11,13 @@ import { useMotionAllowed } from "@/components/system/motion-store";
  * motion"), the hero is on screen and the tab is visible. HeroLive works it
  * out and publishes it twice:
  *
- *   - as `data-hero-motion="run"` on the hero section, which the CSS loops
- *     (the waving hand, the light along the D, the breathing glows, the
- *     twinkling dots) need to play — without it they hold still; before
- *     the first run (and without JavaScript) that is their first frame;
- *   - through `useHeroRunning()`, for the word that writes itself.
+ *   - as `data-hero-motion="run"` on the hero section, which the mark's CSS
+ *     loops (the waving hand, the D's breathing glow) need to play —
+ *     without it they hold still; before the first run (and without
+ *     JavaScript) that is their first frame. Never on a frugal device
+ *     (Save-Data, low-end: where the silk canvas never mounts either);
+ *   - through `useHeroRunning()`, for the word that writes itself and the
+ *     light along the D (which keeps the same device gate itself).
  *
  * The silk canvas keeps its own gates (spec §4.5); it already stops on the
  * same conditions.
@@ -44,11 +47,12 @@ export function HeroLive({ sectionId }: { sectionId: string }) {
   useEffect(() => {
     const section = document.getElementById(sectionId);
     if (!section) return;
+    const frugal = frugalDevice();
     let onscreen = false;
     let visible = !document.hidden;
     const sync = () => {
       const run = allowed && onscreen && visible;
-      if (run) section.dataset.heroMotion = "run";
+      if (run && !frugal) section.dataset.heroMotion = "run";
       else delete section.dataset.heroMotion;
       setRunning(run);
     };

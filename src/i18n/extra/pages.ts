@@ -23,21 +23,21 @@ export const pagesExtra = defineDict({
       services: {
         title: "Dashboards, reporting automation and AI agents",
         description:
-          "Dashboards your team decides from, reports that build themselves and AI agents a person approves, for organisations in Tanzania. Estimate the hours you could save.",
+          "Dashboards, reports that build themselves and AI agents for organisations in Tanzania. Estimate the hours you could save.",
       },
       dashboards: {
         title: "Sample dashboards",
         description:
-          "Four sample dashboards, built the way we build for clients: executive overview, loan portfolio, sales by region, automation and operations. Every name and number is invented.",
+          "Four sample dashboards, built the way we build for clients. Every name and number is invented.",
       },
       process: {
         title: "How we work",
-        description: "Discover, design, build, support: how a DataHub project runs, and what you receive at each step.",
+        description: "Discover, design, build, support: how a DataHub project runs.",
       },
       security: {
         title: "Security",
         description:
-          "How DataHub keeps your data yours, and the claims about this website you can check yourself: no cookies, no trackers, a strict security policy.",
+          "How DataHub keeps your data yours, and claims about this site you can check: no cookies, no trackers.",
       },
       team: {
         title: "Team",
@@ -51,7 +51,7 @@ export const pagesExtra = defineDict({
       contact: {
         title: "Contact",
         description:
-          "Tell DataHub which report or process costs your team the most time. The first conversation costs nothing.",
+          "Tell us which report takes your team longest. The first conversation is free.",
       },
     },
     home: {
@@ -60,8 +60,8 @@ export const pagesExtra = defineDict({
       reasons: {
         title: "Why DataHub",
         items: {
-          process: { title: "A clear process", body: "Four steps, from the first conversation to support." },
-          security: { title: "Security first", body: "Access by role and encrypted credentials, as standard." },
+          process: { title: "A clear process", body: "Four steps, from first call to support." },
+          security: { title: "Security first", body: "Access by role, encrypted credentials." },
           team: { title: "A team in Dar es Salaam", body: "The people you meet build your system." },
         },
       },
@@ -70,7 +70,7 @@ export const pagesExtra = defineDict({
       eyebrow: "05 — Security",
     },
     cta: {
-      title: "Which report costs your team the most time?",
+      title: "Which report takes your team longest?",
     },
   },
   sw: {
@@ -78,22 +78,22 @@ export const pagesExtra = defineDict({
       services: {
         title: "Dashibodi, otomatiki ya ripoti na mawakala wa AI",
         description:
-          "Dashibodi za kufanyia maamuzi, ripoti zinazojitengeneza zenyewe na mawakala wa AI ambao kazi yao huidhinishwa na mtu, kwa taasisi za Tanzania. Kadiria saa ambazo timu yako inaweza kuokoa.",
+          "Dashibodi, ripoti zinazojitengeneza zenyewe na mawakala wa AI kwa taasisi za Tanzania. Kadiria saa ambazo timu yako inaweza kuokoa.",
       },
       dashboards: {
         title: "Dashibodi za mfano",
         description:
-          "Dashibodi nne za mfano, zilizojengwa kama tunavyojenga kwa wateja: muhtasari kwa uongozi, jalada la mikopo, mauzo kwa mkoa, otomatiki na uendeshaji. Majina na namba zote ni za kubuni.",
+          "Dashibodi nne za mfano, zilizojengwa kama tunavyojenga kwa wateja. Majina na namba zote ni za kubuni.",
       },
       process: {
         title: "Jinsi tunavyofanya kazi",
         description:
-          "Kuchunguza, kusanifu, kujenga na kusaidia: jinsi mradi wa DataHub unavyoendeshwa, na unachopokea katika kila hatua.",
+          "Kuchunguza, kusanifu, kujenga na kusaidia: jinsi mradi wa DataHub unavyoendeshwa.",
       },
       security: {
         title: "Usalama",
         description:
-          "Jinsi DataHub inavyohakikisha data yako inabaki kuwa yako, na madai kuhusu tovuti hii unayoweza kuhakiki mwenyewe: hakuna vidakuzi, hakuna vifuatiliaji, sera kali ya usalama.",
+          "Jinsi DataHub inavyohakikisha data yako inabaki kuwa yako, na madai kuhusu tovuti hii unayoweza kuhakiki: hakuna vidakuzi, hakuna vifuatiliaji.",
       },
       team: {
         title: "Timu",
@@ -108,7 +108,7 @@ export const pagesExtra = defineDict({
       contact: {
         title: "Mawasiliano",
         description:
-          "Iambie DataHub ni ripoti au mchakato gani unaogharimu timu yako muda mwingi zaidi. Mazungumzo ya kwanza ni bure.",
+          "Tuambie ni ripoti gani inayochukua muda mwingi wa timu yako. Mazungumzo ya kwanza ni bure.",
       },
     },
     home: {
@@ -119,11 +119,11 @@ export const pagesExtra = defineDict({
         items: {
           process: {
             title: "Mchakato ulio wazi",
-            body: "Hatua nne, kuanzia mazungumzo ya kwanza hadi msaada.",
+            body: "Hatua nne, kuanzia mwanzo hadi msaada.",
           },
           security: {
             title: "Usalama kwanza",
-            body: "Ufikiaji kwa nafasi ya kazi na taarifa za kuingia zilizosimbwa, kila mara.",
+            body: "Ufikiaji kwa nafasi ya kazi, taarifa za kuingia zilizosimbwa.",
           },
           team: { title: "Timu iliyopo Dar es Salaam", body: "Watu unaokutana nao ndio wanaojenga mfumo wako." },
         },
@@ -133,7 +133,7 @@ export const pagesExtra = defineDict({
       eyebrow: "05 — Usalama",
     },
     cta: {
-      title: "Ni ripoti gani inayogharimu timu yako muda mwingi zaidi?",
+      title: "Ripoti ipi inachukua muda mwingi zaidi?",
     },
   },
 });

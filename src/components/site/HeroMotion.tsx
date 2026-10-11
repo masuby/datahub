@@ -4,7 +4,8 @@ import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { MotionToggle } from "@/components/system/MotionToggle";
 import { useMotionPaused, useReducedMotion } from "@/components/system/motion-store";
-import { lowEndDevice, saveDataOn } from "@/components/hero/device";
+import { frugalDevice } from "@/components/hero/device";
+import type { SilkCanvasProps } from "@/components/silk/SilkCanvas";
 import type { SilkPresetName } from "@/lib/silk";
 
 /**
@@ -20,10 +21,27 @@ import type { SilkPresetName } from "@/lib/silk";
  *               already reduced by the system.
  *
  * The rest of the hero's life is in src/components/hero/ (HeroLive,
- * HeroWords) and in the mark's own CSS.
+ * HeroWords, HeroComet) and in the mark's own CSS.
  */
 
-const SilkCanvas = dynamic(() => import("@/components/silk/SilkCanvas"), { ssr: false });
+/**
+ * The silk is decoration loaded after the page is readable: if its chunk
+ * fails to arrive (a flaky connection), nothing may break. next/dynamic is
+ * React.lazy, so a rejected import would reach the nearest error boundary
+ * and replace the page; instead the import settles on a stand-in that
+ * reports the failure (HeroSilk then gives up and the static SVG stays).
+ */
+function SilkUnavailable({ onError }: SilkCanvasProps) {
+  useEffect(() => {
+    onError?.();
+  }, [onError]);
+  return null;
+}
+
+const SilkCanvas = dynamic(
+  () => import("@/components/silk/SilkCanvas").catch(() => ({ default: SilkUnavailable })),
+  { ssr: false },
+);
 
 const REDUCED = "(prefers-reduced-motion: reduce)";
 /** High Contrast hides every .silk-layer (globals.css): nothing to draw. */
@@ -38,7 +56,7 @@ function deviceCanAffordSilk(): boolean {
   try {
     if (window.matchMedia(REDUCED).matches) return false;
     if (window.matchMedia(FORCED).matches) return false;
-    if (saveDataOn() || lowEndDevice()) return false;
+    if (frugalDevice()) return false;
     return typeof HTMLCanvasElement !== "undefined";
   } catch {
     return false;

@@ -10,6 +10,7 @@ import { Footer } from "@/components/site/Footer";
 import { SilkField } from "@/components/silk/SilkField";
 import { HardLinks } from "@/components/system/HardLinks";
 import { RefKeeper } from "@/components/system/RefKeeper";
+import { RefScript } from "@/components/system/RefScript";
 import { ThemeScript } from "@/components/system/ThemeScript";
 import { Container } from "@/components/ui/Container";
 import { Grid } from "@/components/ui/Grid";
@@ -72,10 +73,11 @@ export default async function GlobalNotFound() {
     <html lang={LANG_TAG[lang]} suppressHydrationWarning className={fontVariables}>
       <head>
         <ThemeScript nonce={nonce} />
+        {/* A dead link from a poster or QR code still carries ?ref=: keep it. */}
+        <RefScript nonce={nonce} />
         <HardLinks nonce={nonce} />
       </head>
       <body className="flex min-h-svh flex-col">
-        {/* A dead link from a poster or QR code still carries ?ref=: keep it. */}
         <RefKeeper />
         <MarkSprite />
         <Header lang={lang} />

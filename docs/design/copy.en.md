@@ -17,11 +17,11 @@ Conventions:
 - `meta.siteName` → DataHub
 - `meta.titleTemplate` → %s · DataHub
 - `meta.home.title` → DataHub — Data Analytics & Dashboards in Tanzania
-- `meta.home.description` → Custom dashboards, reporting automation and AI agents for organisations in Tanzania. Built in Dar es Salaam by the DataHub team.
+- `meta.home.description` → Dashboards, reporting automation and AI agents for organisations in Tanzania, built in Dar es Salaam.
 - `meta.home.ogTitle` → DataHub — Data Analytics & Dashboards in Tanzania
-- `meta.home.ogDescription` → Dashboards, reporting automation and AI agents for organisations in Tanzania. From Data to Decisions.
+- `meta.home.ogDescription` → Dashboards, reporting automation and AI agents in Tanzania. From Data to Decisions.
 - `meta.privacy.title` → Privacy notice
-- `meta.privacy.description` → What DataHub collects through this website, why, and how to ask for it to be deleted.
+- `meta.privacy.description` → What this website collects, why, and how to have it deleted.
 - `meta.notFound.title` → Page not found
 - `meta.keywords[0]` → data analytics Tanzania
 - `meta.keywords[1]` → business dashboards
@@ -147,12 +147,12 @@ The suggestion is shown in the target language on purpose.
 - `services.items.automation.index` → 01.2
 - `services.items.automation.title` → Reporting automation
 - `services.items.automation.tagline` → Hours of manual work, done in seconds
-- `services.items.automation.description` → The Excel and PowerPoint reports your team rebuilds every week, generated for you.
+- `services.items.automation.description` → Your weekly Excel and PowerPoint reports, generated for you.
 - `services.items.automation.glyphLabel` → Three lines merging into one
 - `services.items.aiAgents.index` → 01.3
 - `services.items.aiAgents.title` → AI agents
-- `services.items.aiAgents.tagline` → Software that reads, then drafts the next step
-- `services.items.aiAgents.description` → Agents that watch your data, summarise what changed and draft the next step for a person to approve.
+- `services.items.aiAgents.tagline` → Reads your data, drafts the next step
+- `services.items.aiAgents.description` → Agents that watch your data, summarise what changed and wait for a person to approve.
 - `services.items.aiAgents.glyphLabel` → Three connected points, one marked for approval
 
 Deliverable labels under each row are read from `services.ts` (`deliverables[].title`) and are not repeated here.
@@ -231,36 +231,36 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.overview.figures.revenue.seriesActual` → Revenue
 - `dash.views.overview.figures.revenue.seriesTarget` → Target
 - `dash.views.overview.figures.revenue.readout` → {month} · TZS {value} bn · {pct}% of target
-- `dash.views.overview.figures.revenue.summary` → Revenue stayed below the TZS 2.18 bn monthly target until September, when it reached TZS 2.30 bn.
+- `dash.views.overview.figures.revenue.summary` → Revenue was below the TZS 2.18 bn monthly target until September (TZS 2.30 bn).
 - `dash.views.overview.figures.branches.number` → 02.2
 - `dash.views.overview.figures.branches.title` → Branches, % of revenue target
 - `dash.views.overview.figures.branches.axis` → % of target
 - `dash.views.overview.figures.branches.readout` → {branch} · {pct}% of target
-- `dash.views.overview.figures.branches.summary` → Only Kariakoo is above target (104%); Dodoma (88%) and Mbeya (84%) are below 90%.
+- `dash.views.overview.figures.branches.summary` → Only Kariakoo is above target, at 104%.
 - `dash.views.overview.figures.exceptions.number` → 02.3
 - `dash.views.overview.figures.exceptions.title` → Exceptions
 - `dash.views.overview.figures.exceptions.items[0]` → Mbeya PAR30 7.2% (limit 5.0%)
 - `dash.views.overview.figures.exceptions.items[1]` → Dodoma PAR30 5.4% (limit 5.0%)
 - `dash.views.overview.figures.exceptions.items[2]` → Dodoma disbursements 18% below plan
 - `dash.views.overview.figures.exceptions.items[3]` → Board pack generated 05:58, sent to 9 recipients
-- `dash.views.overview.figures.exceptions.summary` → Two PAR30 breaches, one branch behind on disbursements, and the board pack on time.
+- `dash.views.overview.figures.exceptions.summary` → Two PAR30 breaches, one branch behind plan, and the board pack on time.
 - `dash.views.overview.changed.label` → What changed this week
 - `dash.views.overview.changed.byline` → Written by the reporting agent · sample
 - `dash.views.overview.changed.items[0]` → Mbeya PAR30 rose 0.8 points to 7.2%, mostly from two loan officers.
-- `dash.views.overview.changed.items[1]` → Dodoma disbursements are 18% below plan for September, mostly in group loans.
-- `dash.views.overview.changed.items[2]` → September revenue of TZS 2.30 bn is the first month above target this year.
+- `dash.views.overview.changed.items[1]` → Dodoma disbursements are 18% below plan, mostly in group loans.
+- `dash.views.overview.changed.items[2]` → September’s TZS 2.30 bn is the year’s first month above target.
 - `dash.views.overview.read[0].figure` → revenue
 - `dash.views.overview.read[0].anchor` → Sep
 - `dash.views.overview.read[0].shows` → September is the first month above target.
 - `dash.views.overview.read[0].decision` → Leadership can adjust the fourth-quarter plan now.
 - `dash.views.overview.read[1].figure` → branches
 - `dash.views.overview.read[1].anchor` → Mbeya
-- `dash.views.overview.read[1].shows` → Mbeya is the lowest branch, at 84% of target.
-- `dash.views.overview.read[1].decision` → Regional managers know which branch to visit first.
+- `dash.views.overview.read[1].shows` → Mbeya is lowest, at 84% of target.
+- `dash.views.overview.read[1].decision` → Regional managers know where to go first.
 - `dash.views.overview.read[2].figure` → exceptions
 - `dash.views.overview.read[2].anchor` → 0
 - `dash.views.overview.read[2].shows` → Two branches are above the 5% PAR30 limit.
-- `dash.views.overview.read[2].decision` → The Head of Credit sees a breach the morning it happens.
+- `dash.views.overview.read[2].decision` → The Head of Credit sees breaches the same morning.
 
 ### View 2: loans
 
@@ -283,7 +283,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.loans.figures.par.axis` → % of portfolio
 - `dash.views.loans.figures.par.limit` → Limit 5.0%
 - `dash.views.loans.figures.par.readout` → {month} · PAR30 {value}%
-- `dash.views.loans.figures.par.summary` → PAR30 was above the 5% limit from May to July, peaking at 5.4%, and was 4.6% in September.
+- `dash.views.loans.figures.par.summary` → PAR30 was over the 5% limit from May to July.
 - `dash.views.loans.figures.ageing.number` → 02.5
 - `dash.views.loans.figures.ageing.title` → Ageing of the portfolio
 - `dash.views.loans.figures.ageing.buckets[0]` → Current
@@ -291,7 +291,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.loans.figures.ageing.buckets[2]` → 31–60 days
 - `dash.views.loans.figures.ageing.buckets[3]` → 61–90 days
 - `dash.views.loans.figures.ageing.buckets[4]` → 90+ days
-- `dash.views.loans.figures.ageing.summary` → 91.2% of the portfolio is current; 4.6% is over 30 days overdue and 1.5% over 90.
+- `dash.views.loans.figures.ageing.summary` → 91.2% of the portfolio is current.
 - `dash.views.loans.figures.mix.number` → 02.6
 - `dash.views.loans.figures.mix.title` → Portfolio by product
 - `dash.views.loans.figures.mix.products[0]` → Group loans
@@ -300,12 +300,12 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.loans.figures.mix.products[3]` → Agriculture
 - `dash.views.loans.figures.mix.summary` → Group loans are the largest product: TZS 21.8 bn of TZS 64.2 bn.
 - `dash.views.loans.figures.flows.number` → 02.7
-- `dash.views.loans.figures.flows.title` → Disbursed and repaid, April to September
+- `dash.views.loans.figures.flows.title` → Disbursed and repaid, Apr–Sep
 - `dash.views.loans.figures.flows.axis` → TZS bn
 - `dash.views.loans.figures.flows.seriesDisbursed` → Disbursed
 - `dash.views.loans.figures.flows.seriesRepaid` → Repaid
 - `dash.views.loans.figures.flows.readout` → {month} · disbursed TZS {a} bn · repaid TZS {b} bn
-- `dash.views.loans.figures.flows.summary` → Disbursements ran at TZS 5.2–5.9 bn a month; repayments were higher in July and August.
+- `dash.views.loans.figures.flows.summary` → Disbursements ran at TZS 5.2–5.9 bn a month.
 - `dash.views.loans.officers.title` → Loan officers
 - `dash.views.loans.officers.caption` → Officers are shown by code only.
 - `dash.views.loans.officers.columns.code` → Officer
@@ -316,10 +316,10 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.loans.read[0].figure` → par
 - `dash.views.loans.read[0].anchor` → Jul
 - `dash.views.loans.read[0].shows` → PAR30 peaked at 5.4% in July.
-- `dash.views.loans.read[0].decision` → Crossing the limit is flagged the same day, so collections start before month-end.
+- `dash.views.loans.read[0].decision` → A breach is flagged the same day, so collections start early.
 - `dash.views.loans.read[1].figure` → ageing
 - `dash.views.loans.read[1].anchor` → 90+ days
-- `dash.views.loans.read[1].shows` → 1.5% of the portfolio is more than 90 days overdue.
+- `dash.views.loans.read[1].shows` → 1.5% is over 90 days overdue.
 - `dash.views.loans.read[1].decision` → Finance and credit discuss provisions from the same number.
 - `dash.views.loans.read[2].figure` → officers
 - `dash.views.loans.read[2].anchor` → LO-047
@@ -341,7 +341,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.sales.kpis[0].label` → Sales, Q3
 - `dash.views.sales.kpis[0].context` → +11.3% on Q3 2025
 - `dash.views.sales.kpis[1].label` → Active outlets
-- `dash.views.sales.kpis[1].context` → Ordered at least once in Q3
+- `dash.views.sales.kpis[1].context` → Ordered in Q3
 - `dash.views.sales.kpis[2].label` → Average order
 - `dash.views.sales.kpis[2].context` → Per outlet order
 - `dash.views.sales.kpis[3].label` → Regions above plan
@@ -356,7 +356,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.sales.figures.map.legend[3]` → 14–17%
 - `dash.views.sales.figures.map.legend[4]` → 18% or more
 - `dash.views.sales.figures.map.ringNote` → Circle size shows sales.
-- `dash.views.sales.figures.map.summary` → Dar es Salaam has the largest sales; Dodoma, Mwanza and Arusha grew fastest. No borders are drawn.
+- `dash.views.sales.figures.map.summary` → Dar es Salaam sells most; Dodoma, Mwanza and Arusha grew fastest.
 - `dash.views.sales.figures.ranked.number` → 02.9
 - `dash.views.sales.figures.ranked.title` → Regions ranked by sales
 - `dash.views.sales.figures.ranked.columns.region` → Region
@@ -365,11 +365,11 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.sales.figures.ranked.columns.growth` → Growth
 - `dash.views.sales.figures.ranked.other` → Other regions
 - `dash.views.sales.figures.ranked.readout` → {region} · TZS {value} bn · {share}% of sales · {growth}% growth
-- `dash.views.sales.figures.ranked.summary` → Dar es Salaam is 30.6% of sales; Dodoma grew fastest (21%), Tanga slowest (4%).
+- `dash.views.sales.figures.ranked.summary` → Dar es Salaam is 30.6% of sales.
 - `dash.views.sales.read[0].figure` → map
 - `dash.views.sales.read[0].anchor` → Dodoma
-- `dash.views.sales.read[0].shows` → Dodoma grew fastest, 21% on the same quarter last year.
-- `dash.views.sales.read[0].decision` → Test moving stock and field staff towards the central corridor.
+- `dash.views.sales.read[0].shows` → Dodoma grew fastest: 21% year on year.
+- `dash.views.sales.read[0].decision` → Test moving stock and staff to the central corridor.
 - `dash.views.sales.read[1].figure` → ranked
 - `dash.views.sales.read[1].anchor` → Dar es Salaam
 - `dash.views.sales.read[1].shows` → Dar es Salaam grew 8%, below the overall 11.3%.
@@ -377,13 +377,13 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.sales.read[2].figure` → ranked
 - `dash.views.sales.read[2].anchor` → Tanga
 - `dash.views.sales.read[2].shows` → Tanga grew 4%, the slowest region.
-- `dash.views.sales.read[2].decision` → Check outlet coverage before next quarter’s targets are set.
+- `dash.views.sales.read[2].decision` → Check outlet coverage before setting next quarter’s targets.
 
 ### View 4: operations
 
 - `dash.views.operations.index` → 02.4
 - `dash.views.operations.tab` → Automation & operations
-- `dash.views.operations.tabDescription` → The reports that run themselves, and what the agent did.
+- `dash.views.operations.tabDescription` → Reports that run themselves, and the agent’s log.
 - `dash.views.operations.entity` → Sample lender’s reporting system
 - `dash.views.operations.period` → September 2026 · schedule for a sample Monday
 - `dash.views.operations.creditPeriod` → Sep 2026
@@ -392,7 +392,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.operations.kpis[1].label` → Median generation time
 - `dash.views.operations.kpis[1].context` → Last 14 runs
 - `dash.views.operations.kpis[2].label` → Staff hours returned
-- `dash.views.operations.kpis[2].context` → Estimate, against doing it by hand
+- `dash.views.operations.kpis[2].context` → Estimate, against manual work
 - `dash.views.operations.kpis[3].label` → Failed runs
 - `dash.views.operations.kpis[3].context` → Both re-run the same morning
 - `dash.views.operations.figures.schedule.number` → 02.10
@@ -406,13 +406,13 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.operations.figures.schedule.items[3]` → 12:00 Cash position
 - `dash.views.operations.figures.schedule.items[4]` → 18:30 Daily close
 - `dash.views.operations.figures.schedule.timeAxis` → East Africa Time
-- `dash.views.operations.figures.schedule.summary` → Five jobs run between 05:30 and 18:30, starting with the daily PAR report.
+- `dash.views.operations.figures.schedule.summary` → Five jobs run from 05:30 to 18:30.
 - `dash.views.operations.figures.runs.number` → 02.11
 - `dash.views.operations.figures.runs.title` → Generation time, last 14 runs
 - `dash.views.operations.figures.runs.axis` → seconds
 - `dash.views.operations.figures.runs.readout` → Run {n} · {value} s
 - `dash.views.operations.figures.runs.slowLabel` → Slow run
-- `dash.views.operations.figures.runs.summary` → Runs took 35–41 seconds (median 38), except run 7 at 61.
+- `dash.views.operations.figures.runs.summary` → Most runs took 35–41 seconds.
 - `dash.views.operations.figures.pack.number` → 02.12
 - `dash.views.operations.figures.pack.title` → Monthly management pack
 - `dash.views.operations.figures.pack.before` → By hand
@@ -423,19 +423,19 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.operations.log.title` → Agent log
 - `dash.views.operations.log.caption` → The agent drafts. A person approves anything that leaves the building.
 - `dash.views.operations.log.items[0].time` → 05:30
-- `dash.views.operations.log.items[0].text` → Daily PAR report generated and sent to 14 branch managers.
+- `dash.views.operations.log.items[0].text` → Daily PAR report sent to 14 branch managers.
 - `dash.views.operations.log.items[0].status` → sent
 - `dash.views.operations.log.items[1].time` → 05:58
-- `dash.views.operations.log.items[1].text` → Monday board pack generated and sent to 9 recipients.
+- `dash.views.operations.log.items[1].text` → Monday board pack sent to 9 recipients.
 - `dash.views.operations.log.items[1].status` → sent
 - `dash.views.operations.log.items[2].time` → 07:02
-- `dash.views.operations.log.items[2].text` → PAR30 is above the 5.0% limit in 2 branches: Mbeya 7.2%, Dodoma 5.4%. Follow-up note drafted for the Head of Credit.
+- `dash.views.operations.log.items[2].text` → PAR30 above the 5.0% limit in Mbeya (7.2%) and Dodoma (5.4%). Note drafted for the Head of Credit.
 - `dash.views.operations.log.items[2].status` → awaiting
 - `dash.views.operations.log.items[3].time` → 07:09
-- `dash.views.operations.log.items[3].text` → Note approved by the Head of Credit and sent to both branch managers.
+- `dash.views.operations.log.items[3].text` → The Head of Credit approved the note; sent to both branch managers.
 - `dash.views.operations.log.items[3].status` → sent
 - `dash.views.operations.log.items[4].time` → 07:15
-- `dash.views.operations.log.items[4].text` → 41 reminders drafted for borrowers in arrears, waiting for loan officers to review.
+- `dash.views.operations.log.items[4].text` → 41 arrears reminders drafted for loan officers to review.
 - `dash.views.operations.log.items[4].status` → queued
 - `dash.views.operations.read[0].figure` → schedule
 - `dash.views.operations.read[0].anchor` → 05:30
@@ -444,15 +444,15 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.operations.read[1].figure` → runs
 - `dash.views.operations.read[1].anchor` → 7
 - `dash.views.operations.read[1].shows` → One run took 61 seconds against a median of 38.
-- `dash.views.operations.read[1].decision` → A slow run is visible before it becomes a late report.
+- `dash.views.operations.read[1].decision` → A slow run shows before it becomes a late report.
 - `dash.views.operations.read[2].figure` → log
 - `dash.views.operations.read[2].anchor` → 07:02
-- `dash.views.operations.read[2].shows` → The agent drafted the note. A person approved it seven minutes later.
+- `dash.views.operations.read[2].shows` → The agent drafted the note; a person approved it seven minutes later.
 - `dash.views.operations.read[2].decision` → You choose which steps stay with a person.
 - `dash.views.operations.read[3].figure` → pack
 - `dash.views.operations.read[3].anchor` → after
 - `dash.views.operations.read[3].shows` → From 14 hours to 4 minutes.
-- `dash.views.operations.read[3].decision` → The analyst’s time goes to explaining the numbers, not copying them.
+- `dash.views.operations.read[3].decision` → Analysts explain the numbers instead of copying them.
 
 ---
 
@@ -460,7 +460,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 
 - `estimator.eyebrow` → 03 — Your numbers
 - `estimator.title` → Where do the hours go?
-- `estimator.lead` → Enter your numbers for one report to see what it costs your team.
+- `estimator.lead` → Enter one report’s numbers to see what it costs your team.
 - `estimator.sentence[0]` → We prepare␠
 - `estimator.sentence[1]` → {count}
 - `estimator.sentence[2]` → ␠{reportWord} every␠
@@ -511,23 +511,23 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 
 - `process.eyebrow` → 04 — How we work
 - `process.title` → How a project runs.
-- `process.lead` → Every system is different. The way we get there is not.
+- `process.lead` → Every system differs; the way we build it does not.
 - `process.receivePrefix` → You receive:
 - `process.steps[0].index` → 04.1
 - `process.steps[0].title` → Discover
 - `process.steps[0].description` → We learn your workflow and find the manual work.
-- `process.steps[0].receive` → a list of the figures that matter, and an honest view on whether to build.
+- `process.steps[0].receive` → the figures that matter, and an honest view on whether to build.
 - `process.steps[1].index` → 04.2
 - `process.steps[1].title` → Design
-- `process.steps[1].description` → We plan the dashboards, automations and data flow around how you work.
+- `process.steps[1].description` → We plan the system around how you work.
 - `process.steps[1].receive` → a plan you approve before we build.
 - `process.steps[2].index` → 04.3
 - `process.steps[2].title` → Build
-- `process.steps[2].description` → We build it securely, in the formats your team already uses.
+- `process.steps[2].description` → We build it securely, in formats your team already uses.
 - `process.steps[2].receive` → a working system, ready to use.
 - `process.steps[3].index` → 04.4
 - `process.steps[3].title` → Support
-- `process.steps[3].description` → We train your team and adapt the system as your needs change.
+- `process.steps[3].description` → We train your team and adapt the system as needs change.
 - `process.steps[3].receive` → training, and changes when you need them.
 - `process.closing` → Something useful reaches your team early, not all at the end.
 
@@ -538,7 +538,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `security.title` → From manual and scattered to automated and clear.
 - `security.ledger.todayHeading` → Today
 - `security.ledger.withHeading` → With DataHub
-- `security.ledger.rows[0].today` → Reports take hours or days to prepare
+- `security.ledger.rows[0].today` → Reports take hours or days
 - `security.ledger.rows[0].with` → Reports generated in seconds
 - `security.ledger.rows[1].today` → Different people get different numbers
 - `security.ledger.rows[1].with` → One answer for everyone
@@ -555,9 +555,9 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `security.data.items[1].term` → Encrypted credentials
 - `security.data.items[1].definition` → Passwords and connection secrets are stored encrypted.
 - `security.data.items[2].term` → Validated inputs
-- `security.data.items[2].definition` → The server checks every input before it is used.
+- `security.data.items[2].definition` → The server checks every input before use.
 - `security.data.items[3].term` → Hardened endpoints
-- `security.data.items[3].definition` → Interfaces accept only what they need and refuse the rest.
+- `security.data.items[3].definition` → Interfaces accept only what they need.
 - `security.data.items[4].term` → Agents with limits
 - `security.data.items[4].definition` → An AI agent gets no more access than the person it works for.
 - `security.data.items[5].term` → Never shared
@@ -583,17 +583,17 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `team.members.cto.index` → 06.1
 - `team.members.cto.name` → Daniel C. Masubi
 - `team.members.cto.role` → Chief Technology Officer
-- `team.members.cto.bio` → Designs and builds the systems: pipelines, dashboards, report automation and agents. Owns how your data is secured.
+- `team.members.cto.bio` → Builds the systems, from pipelines to agents, and owns your data’s security.
 - `team.members.cto.alt` → Daniel C. Masubi, Chief Technology Officer, DataHub
 - `team.members.operations.index` → 06.2
 - `team.members.operations.name` → Kanuda L. Sasi
 - `team.members.operations.role` → Head of Operations
-- `team.members.operations.bio` → Runs delivery: scoping, timelines, training and support. Makes sure what was agreed is what arrives.
+- `team.members.operations.bio` → Runs delivery, from scoping to support, so what was agreed is what arrives.
 - `team.members.operations.alt` → Kanuda L. Sasi, Head of Operations, DataHub
 - `team.members.marketing.index` → 06.3
 - `team.members.marketing.name` → Yohana K. Mussa
 - `team.members.marketing.role` → Head of Marketing
-- `team.members.marketing.bio` → Usually your first conversation with DataHub. Makes sure we scope the problem you actually have, and keeps you informed.
+- `team.members.marketing.bio` → Usually your first contact: scopes the problem you actually have and keeps you informed.
 - `team.members.marketing.alt` → Yohana K. Mussa, Head of Marketing, DataHub
 
 ---
@@ -608,14 +608,14 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `faq.indexPrefix` → Q
 - `faq.items[0].q` → What does DataHub do?
 - `faq.items[0].a` → We build dashboards, automated reports and AI agents for organisations in Tanzania.
-- `faq.items[1].q` → Where are you based, and do you work outside Dar es Salaam?
-- `faq.items[1].a` → Dar es Salaam. We work across Tanzania and beyond, mostly remotely, and on site when needed.
+- `faq.items[1].q` → Where are you based?
+- `faq.items[1].a` → Dar es Salaam. We work across Tanzania and beyond, mostly remotely, on site when needed.
 - `faq.items[2].q` → How much does a dashboard cost?
-- `faq.items[2].a` → It depends on the work, so we scope it with you before quoting. The first conversation costs nothing.
+- `faq.items[2].a` → It depends on the work, so we scope it before quoting. The first conversation is free.
 - `faq.items[3].q` → Is our data safe?
 - `faq.items[3].a` → Yes. Each person sees only what their role allows, and your data is never shared or resold.
 - `faq.items[4].q` → How long does a project take?
-- `faq.items[4].a` → Usually weeks for one dashboard or report, longer for a platform across several departments.
+- `faq.items[4].a` → Weeks for one dashboard or report; longer for several departments.
 
 ---
 
@@ -623,7 +623,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 
 - `contact.eyebrow` → 08 — Contact
 - `contact.title` → Start with one report.
-- `contact.lead` → Tell us what you work with today and what you would like to see instead.
+- `contact.lead` → Tell us what you work with today and what you want instead.
 - `contact.lines.whatsapp.label` → WhatsApp
 - `contact.lines.whatsapp.action` → Message us on WhatsApp
 - `contact.lines.email.label` → Email
@@ -632,7 +632,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `contact.lines.location.note` → Working with organisations across Tanzania
 - `contact.next.title` → What happens next
 - `contact.next.steps[0]` → We reply to set up a short conversation.
-- `contact.next.steps[1]` → We look at the work with you and agree what is worth building.
+- `contact.next.steps[1]` → Together we agree what is worth building.
 - `contact.next.steps[2]` → You get a written scope before any work starts.
 - `contact.privacy` → We use your details only to reply to you.
 - `contact.privacyLink` → Read our privacy notice

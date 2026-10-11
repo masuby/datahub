@@ -11,7 +11,7 @@ import { Rule } from "@/components/ui/Rule";
 import { LangSwitch } from "@/components/system/LangSwitch";
 import { ThemeSettings } from "@/components/system/ThemeSettings";
 import { MotionToggle } from "@/components/system/MotionToggle";
-import { CONTACT_EMAIL, WHATSAPP_DISPLAY, WHATSAPP_HREF, WHATSAPP_NUMBER } from "@/lib/contact-info";
+import { CONTACT_EMAIL, WHATSAPP_DISPLAY, WHATSAPP_NUMBER, whatsappHref } from "@/lib/contact-info";
 import { servicesFor } from "@/lib/services";
 import { NavLink, WhatsAppGlyph } from "./MobileMenu";
 
@@ -129,7 +129,7 @@ export async function Footer({ lang }: { lang: Locale }) {
           <Column title={f.columns.contact} className="lg:col-span-3">
             {WHATSAPP_NUMBER && (
               <li>
-                <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                <a href={whatsappHref(lang)} target="_blank" rel="noopener noreferrer" className={linkClass}>
                   <WhatsAppGlyph className="size-4 shrink-0 text-accent" />
                   <span className="link-thread pb-0.5 tnum">{fill(f.contact.whatsapp, { number: WHATSAPP_DISPLAY })}</span>
                   <span className="sr-only"> {t.a11y.opensNewTab}</span>

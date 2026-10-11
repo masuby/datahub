@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { LangSwitch } from "@/components/system/LangSwitch";
 import { ThemeToggle } from "@/components/system/ThemeToggle";
 import { ThemeSettings } from "@/components/system/ThemeSettings";
-import { WHATSAPP_HREF, WHATSAPP_NUMBER } from "@/lib/contact-info";
+import { whatsappHref } from "@/lib/contact-info";
 import { SERVICE_SLUGS } from "@/lib/service-slugs";
 import { HeaderShell, MobileMenu, NavLink, PrimaryLink, type MenuItem } from "./MobileMenu";
 
@@ -123,7 +123,7 @@ export async function Header({ lang }: { lang: Locale }) {
             }}
             items={menuItems}
             ctaHref={contact}
-            whatsappHref={WHATSAPP_NUMBER ? WHATSAPP_HREF : ""}
+            whatsappHref={whatsappHref(lang)}
             newTabLabel={t.a11y.opensNewTab}
           >
             <LangSwitch lang={lang} labels={t.lang} variant="full" />

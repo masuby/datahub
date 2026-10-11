@@ -1,7 +1,7 @@
 import { localePath, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { chromeExtra } from "@/i18n/extra/chrome";
-import { WHATSAPP_HREF, WHATSAPP_NUMBER } from "@/lib/contact-info";
+import { whatsappHref } from "@/lib/contact-info";
 import { ActionRailBar } from "./MobileMenu";
 
 /**
@@ -16,7 +16,7 @@ export async function ActionRail({ lang }: { lang: Locale }) {
     <ActionRailBar
       label={t.rail.label}
       whatsappLabel={t.rail.whatsapp}
-      whatsappHref={WHATSAPP_NUMBER ? WHATSAPP_HREF : ""}
+      whatsappHref={whatsappHref(lang)}
       newTabLabel={t.a11y.opensNewTab}
       ctaLabel={t.rail.cta}
       ctaShortLabel={chromeExtra[lang].rail.ctaShort}

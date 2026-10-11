@@ -26,7 +26,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { ButtonPrimary } from "@/components/ui/Button";
 import { LinkArrow } from "@/components/ui/LinkArrow";
-import { serviceSchema, breadcrumbSchema, faqSchema, absoluteUrl, alternatesFor, shareCard } from "@/lib/seo";
+import { serviceSchema, breadcrumbSchema, faqSchema, absoluteUrl, pageMetadata } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import styles from "./service.module.css";
 
@@ -70,21 +70,16 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/services/[
   const service = getService(slug, lang);
   if (!service) return {};
   const t = await getDictionary(lang);
-  const path = `/services/${service.slug}`;
-  return {
+  return pageMetadata({
+    lang,
+    path: `/services/${service.slug}`,
+    type: "article",
     title: service.metaTitle,
     description: service.metaDescription,
-    alternates: alternatesFor(lang, path),
-    ...shareCard({
-      lang,
-      path,
-      type: "article",
-      title: service.metaTitle,
-      description: service.metaDescription,
-      siteName: t.meta.siteName,
-      imageAlt: t.alt.og,
-    }),
-  };
+    siteName: t.meta.siteName,
+    titleTemplate: t.meta.titleTemplate,
+    imageAlt: t.alt.og,
+  });
 }
 
 export default async function ServicePage({ params }: PageProps<"/[lang]/services/[slug]">) {
@@ -158,13 +153,7 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
                   {service.title}
                 </h1>
 
-                <div className="mt-8 flex max-w-[60ch] flex-col gap-5">
-                  {service.intro.map((para, i) => (
-                    <p key={i} className="t-lead">
-                      {para}
-                    </p>
-                  ))}
-                </div>
+                <p className="t-lead mt-8">{service.intro}</p>
 
                 <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
                   <ButtonPrimary href={localePath(lang, "/contact")}>{p.cta}</ButtonPrimary>
@@ -297,7 +286,11 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
   );
 }
 
-/** One full-row link to another service, styled like the home index rows (§6.2). */
+/**
+ * One full-row link to another service, styled like the home index rows
+ * (§6.2): its title and tagline. The longer description stays on /services,
+ * so a service page does not restate the other two in full.
+ */
 function OtherServiceRow({
   lang,
   t,
@@ -339,7 +332,6 @@ function OtherServiceRow({
           <h3 className="t-h3 col-span-4 sm:col-span-8 lg:col-span-4 lg:col-start-3">{item.title}</h3>
           <span className="col-span-4 sm:col-span-8 lg:col-span-5 lg:col-start-7">
             <span className="t-body block font-semibold text-fg">{item.tagline}</span>
-            <span className="t-body mt-2 block text-muted">{item.description}</span>
             <span className="t-data mt-4 block text-accent">{t.services.readMore}</span>
           </span>
         </Grid>

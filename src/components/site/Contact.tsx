@@ -3,8 +3,8 @@ import { getDictionary } from "@/i18n/get-dictionary";
 import {
   CONTACT_EMAIL,
   WHATSAPP_DISPLAY,
-  WHATSAPP_HREF,
   WHATSAPP_NUMBER,
+  whatsappHref,
 } from "@/lib/contact-info";
 import { Container } from "@/components/ui/Container";
 import { Grid } from "@/components/ui/Grid";
@@ -48,9 +48,10 @@ export async function Contact({
   const hasWhatsapp = Boolean(WHATSAPP_NUMBER);
   const SubHeading = headingLevel === 1 ? "h2" : "h3";
 
+  const whatsapp = whatsappHref(lang);
   const whatsappRow = hasWhatsapp && (
     <a
-      href={WHATSAPP_HREF}
+      href={whatsapp}
       target="_blank"
       rel="noopener noreferrer"
       className="group relative flex items-center justify-between gap-6 py-6 text-fg"
@@ -113,6 +114,7 @@ export async function Contact({
                 successHeading={SubHeading}
                 prefillAnnouncement={t.estimator.added}
                 newTabLabel={t.a11y.opensNewTab}
+                whatsappHref={whatsapp}
                 privacy={{
                   text: c.privacy,
                   linkLabel: c.privacyLink,

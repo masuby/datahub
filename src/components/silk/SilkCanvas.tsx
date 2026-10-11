@@ -1,8 +1,21 @@
 "use client";
 
 import { useEffect, useEffectEvent, useRef } from "react";
-import { PRESETS, SHEEN_BUCKETS, sheenBucket, silkLights, silkSheen, silkY, type SilkPresetName } from "@/lib/silk";
+import {
+  PRESETS,
+  SHEEN_BUCKETS,
+  TWINKLES,
+  fieldAlpha,
+  sheenBucket,
+  silkLights,
+  silkSampler,
+  silkSheen,
+  silkY,
+  twinkleAt,
+  type SilkPresetName,
+} from "@/lib/silk";
 import { THEME_TRANSITION_EVENT } from "@/components/system/ThemeToggle";
+import { frameGeneration, onFrames } from "@/components/hero/frame-clock";
 
 /**
  * Tier-1 silk: the same `silkY` function as the static SVG, drawn on one
@@ -11,23 +24,44 @@ import { THEME_TRANSITION_EVENT } from "@/components/system/ThemeToggle";
  * only on devices that can afford it.
  *
  * Budget (spec §4.5):
- * - 30 fps cap; nothing is drawn while paused, while the canvas itself is
- *   off-screen, in a hidden tab or during a theme View Transition (ThemeToggle
- *   announces it with THEME_TRANSITION_EVENT).
+ * - 30 fps cap, on the hero's frame clock (src/components/hero/frame-clock.ts):
+ *   in the same frames as the word writer, and no wake-ups in between.
+ *   Nothing is drawn while paused, while the canvas itself is off-screen, in
+ *   a hidden tab or during a theme View Transition (ThemeToggle announces it
+ *   with THEME_TRANSITION_EVENT).
+ * - The filaments are sampled on a fixed grid (silkSampler): the same
+ *   numbers as silkY at a fraction of the cost per point.
  * - Strokes are batched by sheen bucket (6) × colour third (3): at most 18
  *   stroke() calls a frame, usually 8–12, plus the decision filament. §6.1
  *   asks for 6; a single tone per bucket would flatten the navy→royal blend
  *   the static SVG draws underneath, so each bucket keeps three tones.
  * - Backing store at min(devicePixelRatio, 1.5) on fine pointers, 1 on touch,
  *   capped at 1600×1000 device pixels.
- * - Kill switch: if the first 60 drawn frames average more than 22 ms of work,
- *   the loop stops and the last frame stays. Any exception removes the canvas
- *   (the parent unmounts it) and the SVG underneath remains.
+ * - No layout reads in the frame: where the hero and the canvas are is read
+ *   when the loop starts, on scroll while it runs, on resize and before a
+ *   theme repaint (a read in the frame would force the styles of everything
+ *   animating in the hero to be worked out twice). Stopped, it does not
+ *   follow the scroll at all.
+ * - Kill switch: if the first 60 drawn frames take more than 22 ms each
+ *   (median), the loop stops and the last frame stays. A frame is timed from
+ *   the start of its callbacks until the browser has rendered it — this
+ *   canvas, whatever else drew in it and the page's own restyle, paint and
+ *   commit — not just this canvas's drawing: on a slow device the rendering
+ *   costs more than the drawing. The 60 are taken while the same loops share
+ *   the clock (frameGeneration): when the word writer starts, steps down or
+ *   stops, the count starts again, so the silk is judged on frames like the
+ *   ones it will go on drawing — alone, or beside a writer that stays — and
+ *   the two kill switches cannot both fire on the same shared frames. Any
+ *   exception removes the canvas (the parent unmounts it) and the SVG
+ *   underneath remains.
  * - Colours come from the --silk-* tokens, re-read whenever <html class>
  *   changes, so a theme switch repaints without a reload.
  * - `lights` (desktop hero): small points of light travel along the
  *   filaments into the hand, each with a short tail (silkLights in
- *   src/lib/silk.ts) — about ten tails, sprites and dots a frame.
+ *   src/lib/silk.ts) — about ten tails, sprites and dots a frame — and a
+ *   few dots of the field behind twinkle (TWINKLES): a dozen sprites. Drawn
+ *   here rather than as CSS loops, which would be restyled in every one of
+ *   this canvas's frames, a dozen elements at a time.
  *
  * `fit` mirrors how the SVG underneath maps the preset box onto the element:
  * "fill" for a non-uniformly stretched box (desktop hero, so the sink and the
@@ -40,7 +74,7 @@ const SAMPLES = 96;
 const MAX_BUFFER_W = 1600;
 const MAX_BUFFER_H = 1000;
 const KILL_FRAMES = 60;
-const KILL_AVG_MS = 22;
+const KILL_MS = 22;
 /** Colour thirds per sheen bucket; each third is drawn in its centre tone. */
 const TONES = 3;
 const POINTER_R = 180;
@@ -51,6 +85,8 @@ const THEME_HOLD_MAX_MS = 2000;
 const LIGHT_TAIL = 0.05;
 const LIGHT_GLOW = 9;
 const LIGHT_CORE = 1.4;
+/** A twinkling field dot: its sprite's radius (CSS px), as the field's dots are drawn. */
+const TWINKLE_R = 5;
 
 type Rgb = readonly [number, number, number];
 type Palette = {
@@ -60,6 +96,9 @@ type Palette = {
   blend: GlobalCompositeOperation;
   light: string;
   lightGlow: string;
+  twinkle: string;
+  /** The dot field's grid step (CSS px), --field-step. */
+  step: number;
 };
 
 function hexToRgb(value: string): Rgb | null {
@@ -127,6 +166,8 @@ function readPalette(el: Element): Palette {
     blend: get("--silk-blend") === "lighter" ? "lighter" : "source-over",
     light: get("--silk-light") || "#ffffff",
     lightGlow: get("--silk-light-glow") || bRaw || "#68d4fb",
+    twinkle: get("--field-twinkle") || bRaw || "#036bfb",
+    step: parseFloat(get("--field-step")) || 22,
   };
 }
 
@@ -136,21 +177,36 @@ function withAlpha(color: string, alpha: number): string {
   return rgb ? `rgb(${rgb[0]} ${rgb[1]} ${rgb[2]} / ${alpha})` : color;
 }
 
-/** The soft glow drawn round each light: pre-rendered once per theme. */
-function glowSprite(color: string): HTMLCanvasElement {
+/** A soft round sprite, pre-rendered once per theme: [radius share, alpha] stops. */
+function sprite(color: string, stops: [number, number][]): HTMLCanvasElement {
   const c = document.createElement("canvas");
   c.width = c.height = 48;
   const g = c.getContext("2d");
   if (g) {
     const grad = g.createRadialGradient(24, 24, 0, 24, 24, 24);
-    grad.addColorStop(0, withAlpha(color, 1));
-    grad.addColorStop(0.25, withAlpha(color, 0.5));
-    grad.addColorStop(1, withAlpha(color, 0));
+    for (const [at, alpha] of stops) grad.addColorStop(at, withAlpha(color, alpha));
     g.fillStyle = grad;
     g.fillRect(0, 0, 48, 48);
   }
   return c;
 }
+
+/** The glow round each light. */
+const glowSprite = (color: string) =>
+  sprite(color, [
+    [0, 1],
+    [0.25, 0.5],
+    [1, 0],
+  ]);
+
+/** A twinkling dot: a solid core of 1.3 px and a soft edge out to 5 px. */
+const twinkleSprite = (color: string) =>
+  sprite(color, [
+    [0, 1],
+    [0.26, 1],
+    [0.4, 0.35],
+    [1, 0],
+  ]);
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
@@ -212,25 +268,37 @@ export function SilkCanvas({
       return;
     }
     const g = ctx;
+    const grid = silkSampler(p, SAMPLES);
     const hero: HTMLElement = canvas.closest("section") ?? canvas.parentElement ?? canvas;
     const finePointer = window.matchMedia("(pointer: fine)").matches;
     const calmAllowed = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
     let palette = readPalette(canvas);
-    let sprite = glowSprite(palette.lightGlow);
+    let glow = glowSprite(palette.lightGlow);
+    let dot = twinkleSprite(palette.twinkle);
+    /** The twinkling dots, on the field's grid: canvas position, field alpha, timing. */
+    let twinkles: { X: number; Y: number; alpha: number; delay: number; period: number }[] = [];
     let cssW = 1;
     let cssH = 1;
     let dpr = 1;
+    /** The hero's top and height, the canvas's top-left (viewport px), as of the last scroll or resize. */
+    let heroTop = 0;
     let heroH = 1;
+    let canvasLeft = 0;
+    let canvasTop = 0;
 
     let t = 0; // seconds of drift (advances only while running)
-    let raf = 0;
+    let stopLoop: (() => void) | null = null;
     let last = 0;
     let dead = false;
     let killed = false;
     let firstDone = false;
-    let measured = 0;
-    let workMs = 0;
+    /** Kill switch: the measured frames' times, the start of the one being rendered, and the clock's generation they share. */
+    const frameTimes: number[] = [];
+    let frameStart = 0;
+    let frameGen = -1;
+    // A message posted from a frame is handled once the browser has rendered it.
+    const rendered = new MessageChannel();
 
     let onscreen = true;
     let pageVisible = !document.hidden;
@@ -248,15 +316,34 @@ export function SilkCanvas({
 
     const groups = new Map<number, number[]>();
 
-    const resize = () => {
+    const place = () => {
+      const h = hero.getBoundingClientRect();
+      heroTop = h.top;
+      heroH = Math.max(1, h.height);
       const r = canvas.getBoundingClientRect();
+      canvasLeft = r.left;
+      canvasTop = r.top;
+      return r;
+    };
+
+    const resize = () => {
+      const r = place();
       cssW = Math.max(1, r.width);
       cssH = Math.max(1, r.height);
       const base = finePointer ? Math.min(window.devicePixelRatio || 1, 1.5) : 1;
       dpr = Math.min(base, MAX_BUFFER_W / cssW, MAX_BUFFER_H / cssH);
       canvas.width = Math.max(1, Math.round(cssW * dpr));
       canvas.height = Math.max(1, Math.round(cssH * dpr));
-      heroH = Math.max(1, hero.getBoundingClientRect().height);
+      // On a dot of the field's grid, as the field draws them (dots in the
+      // middle of each step from the top-left corner it shares with this canvas).
+      const step = palette.step;
+      twinkles = lights
+        ? TWINKLES.map(([x, y, delay, period]) => {
+            const X = Math.floor((x * cssW) / step) * step + step / 2;
+            const Y = Math.floor((y * cssH) / step) * step + step / 2;
+            return { X, Y, alpha: fieldAlpha(X / cssW, Y / cssH), delay, period };
+          })
+        : [];
     };
 
     const draw = () => {
@@ -276,7 +363,7 @@ export function SilkCanvas({
       }
 
       // Order k: the silk straightens into rules as the hero scrolls away.
-      const kScroll = 0.85 * clamp01(-hero.getBoundingClientRect().top / heroH);
+      const kScroll = 0.85 * clamp01(-heroTop / heroH);
 
       // Pointer position in canvas CSS pixels.
       let px = 0;
@@ -287,24 +374,27 @@ export function SilkCanvas({
         py = ly;
       }
 
-      /** Canvas y of filament i at normalised x (canvas X), pointer calm included. */
-      const yAt = (i: number, x: number, X: number) => {
-        let Y = oy + silkY(p, i, x, t, kScroll) * sy;
-        if (calmOn) {
-          const d = Math.hypot(X - px, Y - py);
-          if (d < POINTER_R) {
-            const f = 1 - d / POINTER_R;
-            Y = oy + silkY(p, i, x, t, Math.min(1, kScroll + 0.6 * f * f * calm)) * sy;
-          }
-        }
-        return Y;
+      /** Order at canvas point (X, Y): the scroll's, calmer near the pointer. */
+      const orderAt = (X: number, Y: number) => {
+        const d = Math.hypot(X - px, Y - py);
+        if (d >= POINTER_R) return kScroll;
+        const f = 1 - d / POINTER_R;
+        return Math.min(1, kScroll + 0.6 * f * f * calm);
       };
 
+      /** Canvas y of filament i at normalised x (canvas X), pointer calm included. */
+      const yAt = (i: number, x: number, X: number) => {
+        const Y = oy + silkY(p, i, x, t, kScroll) * sy;
+        return calmOn ? oy + silkY(p, i, x, t, orderAt(X, Y)) * sy : Y;
+      };
+
+      // The filaments themselves: grid points, the same numbers, cheaper.
+      grid.at(t);
       const trace = (i: number) => {
         for (let s = 0; s <= SAMPLES; s++) {
-          const x = s / SAMPLES;
-          const X = ox + x * p.W * sx;
-          const Y = yAt(i, x, X);
+          const X = ox + (s / SAMPLES) * p.W * sx;
+          let Y = oy + grid.y(i, s, kScroll) * sy;
+          if (calmOn) Y = oy + grid.y(i, s, orderAt(X, Y)) * sy;
           if (s === 0) g.moveTo(X, Y);
           else g.lineTo(X, Y);
         }
@@ -313,6 +403,17 @@ export function SilkCanvas({
       g.setTransform(1, 0, 0, 1, 0, 0);
       g.clearRect(0, 0, canvas.width, canvas.height);
       g.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // The field's twinkling dots, behind the silk.
+      g.globalCompositeOperation = "source-over";
+      for (const tw of twinkles) {
+        const a = tw.alpha * twinkleAt(t, tw.delay, tw.period);
+        if (a <= 0.01) continue;
+        g.globalAlpha = a;
+        g.drawImage(dot, tw.X - TWINKLE_R, tw.Y - TWINKLE_R, TWINKLE_R * 2, TWINKLE_R * 2);
+      }
+      g.globalAlpha = 1;
+
       g.globalCompositeOperation = palette.blend;
       g.lineJoin = "round";
       g.lineCap = "round";
@@ -378,7 +479,7 @@ export function SilkCanvas({
           g.strokeStyle = tail;
           g.globalAlpha = light.alpha;
           g.stroke();
-          g.drawImage(sprite, X1 - LIGHT_GLOW, Y1 - LIGHT_GLOW, LIGHT_GLOW * 2, LIGHT_GLOW * 2);
+          g.drawImage(glow, X1 - LIGHT_GLOW, Y1 - LIGHT_GLOW, LIGHT_GLOW * 2, LIGHT_GLOW * 2);
           g.fillStyle = palette.light;
           g.beginPath();
           g.arc(X1, Y1, LIGHT_CORE, 0, Math.PI * 2);
@@ -389,26 +490,50 @@ export function SilkCanvas({
       g.globalAlpha = 1;
     };
 
+    const onScroll = () => {
+      place();
+    };
+
+    const halt = () => {
+      stopLoop?.();
+      stopLoop = null;
+      window.removeEventListener("scroll", onScroll);
+    };
+
     const die = () => {
       dead = true;
-      if (raf) cancelAnimationFrame(raf);
-      raf = 0;
+      halt();
       failed();
     };
 
-    const paint = (measure: boolean) => {
+    rendered.port1.onmessage = () => {
+      if (dead || killed || !frameStart) return;
+      const took = performance.now() - frameStart;
+      frameStart = 0;
+      // Another loop joined or left the clock since the count began: time afresh.
+      if (frameGeneration() !== frameGen) {
+        frameTimes.length = 0;
+        return;
+      }
+      frameTimes.push(took);
+      if (frameTimes.length < KILL_FRAMES) return;
+      const median = frameTimes.sort((a, b) => a - b)[KILL_FRAMES >> 1];
+      if (median > KILL_MS) {
+        killed = true;
+        update();
+        stopped();
+      }
+    };
+
+    /** `start`: when the frame's callbacks began, if it is to be timed. */
+    const paint = (start?: number) => {
       if (dead) return;
       try {
-        const start = performance.now();
         draw();
-        if (measure && measured < KILL_FRAMES) {
-          workMs += performance.now() - start;
-          measured++;
-          if (measured === KILL_FRAMES && workMs / KILL_FRAMES > KILL_AVG_MS) {
-            killed = true;
-            update();
-            stopped();
-          }
+        if (start !== undefined && !frameStart && frameTimes.length < KILL_FRAMES) {
+          if (!frameTimes.length) frameGen = frameGeneration();
+          frameStart = start;
+          rendered.port2.postMessage(0);
         }
         if (!firstDone) {
           firstDone = true;
@@ -419,9 +544,7 @@ export function SilkCanvas({
       }
     };
 
-    const frame = (now: number) => {
-      raf = requestAnimationFrame(frame);
-      if (last && now - last < FRAME_MS - 2) return; // 30 fps cap
+    const frame = (now: number, began: number) => {
       const dt = last ? Math.min(now - last, 100) : FRAME_MS;
       last = now;
       t += dt / 1000;
@@ -429,9 +552,8 @@ export function SilkCanvas({
         const a = 1 - Math.exp(-dt / POINTER_EASE_MS);
         calm += ((inside ? 1 : 0) - calm) * a;
         if (inside) {
-          const r = canvas.getBoundingClientRect();
-          const tx = rawX - r.left;
-          const ty = rawY - r.top;
+          const tx = rawX - canvasLeft;
+          const ty = rawY - canvasTop;
           if (!haveLocal) {
             lx = tx;
             ly = ty;
@@ -442,7 +564,7 @@ export function SilkCanvas({
           }
         }
       }
-      paint(true);
+      paint(began);
     };
 
     const shouldRun = () =>
@@ -450,13 +572,15 @@ export function SilkCanvas({
 
     function update() {
       if (shouldRun()) {
-        if (!raf) {
+        if (!stopLoop) {
           last = 0;
-          raf = requestAnimationFrame(frame);
+          // Off screen or still, nothing followed the page's scroll.
+          place();
+          window.addEventListener("scroll", onScroll, { passive: true });
+          stopLoop = onFrames(FRAME_MS, frame);
         }
-      } else if (raf) {
-        cancelAnimationFrame(raf);
-        raf = 0;
+      } else {
+        halt();
       }
     }
     updateRef.current = update;
@@ -468,7 +592,7 @@ export function SilkCanvas({
       die();
       return;
     }
-    paint(false);
+    paint();
 
     const ro = new ResizeObserver(() => {
       try {
@@ -477,7 +601,7 @@ export function SilkCanvas({
         die();
         return;
       }
-      paint(false); // resizing clears the bitmap: repaint even when paused
+      paint(); // resizing clears the bitmap: repaint even when paused
     });
     ro.observe(canvas);
     ro.observe(hero);
@@ -506,8 +630,10 @@ export function SilkCanvas({
       if (key === paletteKey) return;
       palette = next;
       paletteKey = key;
-      sprite = glowSprite(palette.lightGlow);
-      paint(false);
+      glow = glowSprite(palette.lightGlow);
+      dot = twinkleSprite(palette.twinkle);
+      place(); // still (paused, stopped), it has not followed the scroll
+      paint();
     });
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
@@ -543,8 +669,7 @@ export function SilkCanvas({
 
     return () => {
       updateRef.current = null;
-      if (raf) cancelAnimationFrame(raf);
-      raf = 0;
+      halt();
       dead = true;
       window.clearTimeout(themeTimer);
       ro.disconnect();
@@ -552,6 +677,7 @@ export function SilkCanvas({
       mo.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener(THEME_TRANSITION_EVENT, onThemeTransition);
+      rendered.port1.onmessage = null;
       if (calmAllowed) {
         hero.removeEventListener("pointermove", onMove);
         hero.removeEventListener("pointerleave", onLeave);

@@ -79,6 +79,80 @@ export function silkY(p: SilkPreset, i: number, x: number, t: number, k: number)
   return y;
 }
 
+/**
+ * `silkY` on a fixed grid of `samples + 1` evenly spaced x, for a renderer
+ * that draws every filament every frame (the canvas). Everything that does
+ * not change with time or order is worked out once; the two drifting waves
+ * use sin(a ± ωt) = sin a·cos ωt ± cos a·sin ωt, so `at(t)` takes the four
+ * time terms once per frame and a point then costs a few multiplications
+ * instead of three sines and an exponential. The same numbers as `silkY`,
+ * term for term (to floating-point rounding), so a canvas drawn from it
+ * still lies exactly on the static SVG.
+ */
+export function silkSampler(p: SilkPreset, samples: number) {
+  const n = samples + 1;
+  const cy0 = new Float64Array(n);
+  const spread0 = new Float64Array(n);
+  const after = new Float64Array(n);
+  const turb = new Float64Array(n);
+  const land = new Float64Array(n);
+  for (let s = 0; s < n; s++) {
+    const x = s / samples;
+    const into = ss(0, p.sinkX, x);
+    after[s] = ss(p.sinkX, Math.min(1, p.sinkX + 0.12), x);
+    const pinch = Math.exp(-(((x - p.sinkX) / 0.09) ** 2));
+    cy0[s] = lerp(p.leftY, p.sinkY, into);
+    spread0[s] = lerp(lerp(p.spreadIn, p.spreadPinch, into), p.spreadOut, after[s]) - 0.04 * pinch;
+    turb[s] = 1 - ss(0.25, p.sinkX, x);
+    land[s] = ss(p.sinkX + 0.06, 0.96, x);
+  }
+  const offset = new Float64Array(p.N);
+  const fold = new Float64Array(p.N);
+  // Per filament and sample: sine and cosine of each wave's phase at t = 0,
+  // and the third wave, which does not drift.
+  const s1 = new Float64Array(p.N * n);
+  const c1 = new Float64Array(p.N * n);
+  const s2 = new Float64Array(p.N * n);
+  const c2 = new Float64Array(p.N * n);
+  const w3 = new Float64Array(p.N * n);
+  for (let i = 0; i < p.N; i++) {
+    const u = p.N === 1 ? 0.5 : i / (p.N - 1);
+    offset[i] = u - 0.5;
+    fold[i] = 0.06 * Math.sin(3 * Math.PI * u);
+    for (let s = 0; s < n; s++) {
+      const x = s / samples;
+      const j = i * n + s;
+      s1[j] = Math.sin(5.1 * x + 6.3 * u);
+      c1[j] = Math.cos(5.1 * x + 6.3 * u);
+      s2[j] = Math.sin(9.7 * x - 4.1 * u);
+      c2[j] = Math.cos(9.7 * x - 4.1 * u);
+      w3[j] = 0.15 * Math.sin(17.3 * x + 11.6 * u);
+    }
+  }
+  let ct1 = 1;
+  let st1 = 0;
+  let ct2 = 1;
+  let st2 = 0;
+  return {
+    /** Sets the time (s) for the following `y` calls. */
+    at(t: number) {
+      ct1 = Math.cos(0.11 * t);
+      st1 = Math.sin(0.11 * t);
+      ct2 = Math.cos(0.07 * t);
+      st2 = Math.sin(0.07 * t);
+    },
+    /** silkY(p, i, s / samples, t, k). */
+    y(i: number, s: number, k: number): number {
+      const j = i * n + s;
+      const dy = 0.55 * (s1[j] * ct1 + c1[j] * st1) + 0.3 * (s2[j] * ct2 - c2[j] * st2) + w3[j];
+      const cy = lerp(cy0[s], p.sinkY, k);
+      const spread = lerp(spread0[s], p.spreadOut, k);
+      const y = p.H * (cy + (offset[i] + fold[i] * (1 - after[s])) * spread) + p.H * p.amp * turb[s] * (1 - k) * dy;
+      return i === p.decision ? lerp(y, p.H - 0.75, land[s]) : y;
+    },
+  };
+}
+
 /** 0..1 brightness of filament u at time t: a travelling sheen across the bundle. */
 export const silkSheen = (u: number, t: number) =>
   0.35 + 0.65 * Math.pow(0.5 + 0.5 * Math.sin(2 * Math.PI * (u * 1.6 - t / 14)), 6);
@@ -153,6 +227,47 @@ const hash = (a: number) => {
   const v = Math.sin(a * 127.1) * 43758.5453;
   return v - Math.floor(v);
 };
+
+/**
+ * A few dots of the hero's dot field that twinkle, around the mark and the
+ * silk (iteration-2 §B; drawn by the desktop canvas with the lights, on the
+ * field's grid): [x, y] as fractions of the field, delay and period in s.
+ */
+export const TWINKLES: readonly (readonly [number, number, number, number])[] = [
+  [0.58, 0.16, 0, 4.2],
+  [0.66, 0.8, 1.3, 5.1],
+  [0.71, 0.09, 2.2, 3.8],
+  [0.88, 0.2, 0.6, 4.6],
+  [0.94, 0.62, 3.1, 5.4],
+  [0.61, 0.44, 1.9, 4.9],
+  [0.97, 0.36, 2.7, 3.9],
+  [0.84, 0.86, 0.3, 4.4],
+  [0.53, 0.66, 3.6, 5.6],
+  [0.76, 0.28, 4.2, 4.1],
+  [0.45, 0.07, 2.5, 5.2],
+  [0.9, 0.08, 1.1, 4.7],
+];
+
+/** 0..1 brightness of a twinkle at time t: dark until `delay`, then up, a short hold and down, every `period`. */
+export function twinkleAt(t: number, delay: number, period: number): number {
+  if (t < delay) return 0;
+  const f = ((t - delay) % period) / period;
+  if (f < 0.45) return ss(0, 0.45, f);
+  if (f < 0.6) return lerp(1, 0.9, ss(0.45, 0.6, f));
+  return 0.9 * (1 - ss(0.6, 1, f));
+}
+
+/**
+ * How much of the hero's dot field shows at (x, y), fractions of the field:
+ * the field's own mask (Hero.module.css .field), strongest round the mark,
+ * fading to the edges and quieter towards the text.
+ */
+export function fieldAlpha(x: number, y: number): number {
+  const d = Math.hypot((x - 0.76) / 0.7, (y - 0.46) / 0.85);
+  const near = d < 0.35 ? lerp(1, 0.7, d / 0.35) : d < 0.78 ? lerp(0.7, 0, (d - 0.35) / 0.43) : 0;
+  const side = x <= 0.38 ? 0.45 : x >= 0.62 ? 1 : lerp(0.45, 1, (x - 0.38) / 0.24);
+  return near * side;
+}
 
 export function silkLights(p: SilkPreset, t: number, count = 10): SilkLight[] {
   const out: SilkLight[] = [];

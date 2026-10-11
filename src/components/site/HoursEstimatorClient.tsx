@@ -7,6 +7,7 @@ import { fill } from "@/i18n/fill";
 import { formatNumber } from "@/lib/format";
 import { ButtonText } from "@/components/ui/Button";
 import { Grid } from "@/components/ui/Grid";
+import { leavePrefill } from "@/components/system/prefill";
 import { withCampaign } from "./MobileMenu";
 
 /**
@@ -14,17 +15,15 @@ import { withCampaign } from "./MobileMenu";
  *
  * Nothing leaves the device: the only output is the optional "Add this to my
  * message", which hands a sentence to the contact form. The form lives on
- * the contact page, so the sentence is left in sessionStorage["dh-prefill"]
- * and that page opens (keeping the campaign tag); the form adopts it on
- * mount. Until it shows, which on a slow network takes a moment, the button
+ * the contact page, so the sentence is left for it (in sessionStorage, and
+ * in memory for when storage is blocked: see system/prefill) and that page
+ * opens (keeping the campaign tag); the form adopts it on mount. Until it
+ * shows, which on a slow network takes a moment, the button
  * is aria-busy with its thread drawn. Should a contact form ever share the
  * page, it gets the sentence through the `dh:prefill` window event
  * ({ detail: { message } }) instead.
  */
 export type EstimatorStrings = Omit<Dictionary["estimator"], "eyebrow" | "title" | "lead">;
-
-/** Where the sentence waits for the contact form. Same key in ContactForm.tsx. */
-const PREFILL_STORAGE_KEY = "dh-prefill";
 
 type Field = "count" | "people" | "hours";
 type Period = "day" | "week" | "month";
@@ -141,11 +140,7 @@ export function HoursEstimatorClient({ s, contactHref }: { s: EstimatorStrings; 
     const contact = document.getElementById("contact");
     if (!contact) {
       // The contact page's form picks the sentence up on mount.
-      try {
-        sessionStorage.setItem(PREFILL_STORAGE_KEY, message);
-      } catch {
-        /* storage blocked: the contact page opens with an empty message */
-      }
+      leavePrefill(message);
       startOpening(() => router.push(withCampaign(contactHref)));
       return;
     }

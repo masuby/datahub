@@ -27,8 +27,10 @@ const ARROW_MOVE =
  *
  * An R2 opener and a small heading, then three columns (cols 1–4, 5–8,
  * 9–12) divided by vertical hairlines, as in the hero's service index;
- * phones stack them with hairlines between. Hover/focus: the thread
- * underlines the title, the number turns accent, the arrow moves 6px.
+ * below 1024px they stack with hairlines between, each on two lines: the
+ * number, title and arrow, then the line under the title (the wrapper of
+ * number and arrow steps aside with `display: contents`). Hover/focus: the
+ * thread underlines the title, the number turns accent, the arrow moves 6px.
  */
 export function HomeReasons({ lang }: { lang: Locale }) {
   const r = pagesExtra[lang].home.reasons;
@@ -54,22 +56,23 @@ export function HomeReasons({ lang }: { lang: Locale }) {
                 {i > 0 && <Rule className="lg:hidden" />}
                 <Link
                   href={localePath(lang, path)}
-                  className="group relative flex h-full flex-col py-5 text-fg lg:py-2 lg:pr-6"
+                  className="group relative grid h-full grid-cols-[auto_minmax(0,1fr)_auto] items-baseline py-3.5 text-fg lg:flex lg:flex-col lg:items-stretch lg:py-2 lg:pr-6"
+                  style={{ columnGap: "var(--col-gap)" }}
                 >
-                  <span className="flex items-baseline justify-between gap-4">
-                    <span className="t-eyebrow transition-colors duration-[160ms] group-hover:text-accent group-focus-visible:text-accent">
+                  <span className="contents lg:flex lg:items-baseline lg:justify-between lg:gap-4">
+                    <span className="t-eyebrow col-start-1 row-start-1 transition-colors duration-[160ms] group-hover:text-accent group-focus-visible:text-accent">
                       {index}
                     </span>
-                    <span aria-hidden="true" className={`${ARROW_MOVE} font-sans text-lg leading-none`}>
+                    <span aria-hidden="true" className={`${ARROW_MOVE} col-start-3 row-start-1 font-sans text-lg leading-none`}>
                       →
                     </span>
                   </span>
-                  <h3 className="t-title mt-3">
+                  <h3 className="t-title col-start-2 row-start-1 lg:mt-3">
                     <span className="link-thread pb-0.5 group-hover:[background-size:100%_2px] group-focus-visible:[background-size:100%_2px]">
                       {r.items[key].title}
                     </span>
                   </h3>
-                  <p className="t-small mt-2 font-normal text-muted">{r.items[key].body}</p>
+                  <p className="t-small col-span-2 col-start-2 row-start-2 mt-1 font-normal text-muted lg:mt-2">{r.items[key].body}</p>
                 </Link>
               </li>
             ))}

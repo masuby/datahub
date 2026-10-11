@@ -9,7 +9,6 @@ import { LinkArrow } from "@/components/ui/LinkArrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { Rule } from "@/components/ui/Rule";
 import { Section } from "@/components/ui/Section";
-import { SectionHeader } from "@/components/ui/SectionHeader";
 import { SERVICE_ITEM_KEY } from "../Services";
 
 /** The row arrow's 6px move; each arrow sets its own display (one shows on phones, one from 1024px). */
@@ -17,16 +16,22 @@ const ARROW_MOVE =
   "transition-transform duration-[280ms] ease-[var(--ease-silk)] group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5";
 
 /**
- * Home · 01 — What we do, short: the three services as one ledger of links,
- * one line each (the tagline), then "All services →" to /services, where
- * each one is described in full.
+ * Home · 01 — What we do, short: an R2 opener and a small heading (the
+ * eyebrow, as in the reasons row: the section title, "Three ways we turn
+ * data into decisions", stays on /services rather than repeating the hero
+ * line right under it), the three services as one ledger of links, one line
+ * each (the tagline), then "All services →" to /services, where each one is
+ * described in full.
  *
  * Each row opens on its own R1 and a closing R1 ends the ledger; each row is
  * one link (the whole row is the hit area) holding its <h3>. On hover/focus
  * a thread draws over the row's top rule, the index turns accent and the
- * arrow moves 6px. Desktop: index in cols 1–3 under the eyebrow,
- * title in cols 4–7 under the section title, tagline in cols 8–11, arrow in
- * col 12. Phones: index and arrow on one line, then title, then tagline.
+ * arrow moves 6px. Desktop: index in cols 1–3 under the heading, title in
+ * cols 4–7, tagline in cols 8–11, arrow in col 12. Tablets: index and arrow
+ * on one line, then title and tagline side by side. Phones, where the home
+ * page must stay short: index, title and arrow on one line (the
+ * index-and-arrow wrapper steps aside with `display: contents`), the tagline
+ * under the title.
  */
 export async function HomeServices({ lang }: { lang: Locale }) {
   const t = await getDictionary(lang);
@@ -37,10 +42,12 @@ export async function HomeServices({ lang }: { lang: Locale }) {
   return (
     <Section id="services" labelledBy="services-title" compact>
       <Container>
-        <SectionHeader index="01" eyebrow={s.eyebrow} title={s.title} titleId="services-title" />
-
         <Reveal>
-          <ol role="list" className="list-none p-0">
+          <Rule variant="section" animate />
+          <h2 id="services-title" className="t-eyebrow mt-5 a-rise lg:mt-6" style={{ animationDelay: "120ms" }}>
+            {s.eyebrow}
+          </h2>
+          <ol role="list" className="mt-4 list-none p-0 lg:mt-8">
             {rows.map((svc) => {
               const item = s.items[SERVICE_ITEM_KEY[svc.slug]];
               return (
@@ -49,25 +56,28 @@ export async function HomeServices({ lang }: { lang: Locale }) {
                   <Rule />
                   <Link
                     href={localePath(lang, `/services/${svc.slug}`)}
-                    className="group relative grid grid-cols-4 items-baseline py-5 text-fg sm:grid-cols-8 lg:grid-cols-12 lg:py-6"
+                    className="group relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-baseline py-3.5 text-fg sm:grid-cols-8 sm:py-5 lg:grid-cols-12 lg:py-6"
                     style={{ columnGap: "var(--col-gap)" }}
                   >
                     <span
                       aria-hidden="true"
                       className="thread pointer-events-none absolute inset-x-0 top-[-1.5px] scale-x-0 transition-transform duration-[280ms] ease-[var(--ease-thread)] group-hover:scale-x-100 group-focus-visible:scale-x-100"
                     />
-                    <span className="col-span-4 flex items-baseline justify-between sm:col-span-8 lg:col-span-3 lg:block">
-                      <span className="t-eyebrow transition-colors duration-[160ms] group-hover:text-accent group-focus-visible:text-accent">
+                    <span className="contents sm:col-span-8 sm:flex sm:items-baseline sm:justify-between lg:col-span-3 lg:block">
+                      <span className="t-eyebrow col-start-1 row-start-1 transition-colors duration-[160ms] group-hover:text-accent group-focus-visible:text-accent">
                         {item.index}
                       </span>
-                      <span aria-hidden="true" className={`${ARROW_MOVE} t-small inline-block font-semibold lg:hidden`}>
+                      <span
+                        aria-hidden="true"
+                        className={`${ARROW_MOVE} t-small col-start-3 row-start-1 inline-block font-semibold lg:hidden`}
+                      >
                         →
                       </span>
                     </span>
-                    <h3 className="t-title col-span-4 mt-2 sm:col-span-4 lg:col-span-4 lg:col-start-4 lg:mt-0">
+                    <h3 className="t-title col-start-2 row-start-1 sm:col-span-4 sm:col-start-auto sm:row-start-auto sm:mt-2 lg:col-span-4 lg:col-start-4 lg:mt-0">
                       {item.title}
                     </h3>
-                    <span className="t-body col-span-4 mt-1 text-muted sm:col-span-4 sm:mt-2 lg:col-span-4 lg:col-start-8 lg:mt-0">
+                    <span className="t-body col-span-2 col-start-2 row-start-2 mt-1 text-muted sm:col-span-4 sm:col-start-auto sm:row-start-auto sm:mt-2 lg:col-span-4 lg:col-start-8 lg:mt-0">
                       {item.tagline}
                     </span>
                     <span

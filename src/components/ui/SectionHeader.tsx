@@ -21,6 +21,8 @@ import { cn } from "@/lib/utils";
  * own (/process, /team…) keeps its chapter number in the eyebrow and shows no
  * total. With `headingLevel` 1 the title is that page's one h1, set in the
  * page-title size, and marks where the mobile action rail may slide in.
+ * `compact` (the home page's teasers) closes up the space under the title
+ * and before the lead on phones; from 640px it is the same as the default.
  */
 export function SectionHeader({
   index,
@@ -30,6 +32,7 @@ export function SectionHeader({
   titleId,
   lead,
   headingLevel = 2,
+  compact = false,
   children,
   className,
 }: {
@@ -44,6 +47,8 @@ export function SectionHeader({
   lead?: ReactNode;
   /** 1 where this section is the page (its title is the page's h1). */
   headingLevel?: 1 | 2;
+  /** Tighter spacing on phones, for the home page's short sections. */
+  compact?: boolean;
   /** Extra content under the lead in the same columns (e.g. a notice). */
   children?: ReactNode;
   className?: string;
@@ -52,7 +57,9 @@ export function SectionHeader({
   const Heading = headingLevel === 1 ? "h1" : "h2";
 
   return (
-    <Reveal className={cn("mb-[clamp(2.5rem,1.8rem+3vw,4.5rem)]", className)}>
+    <Reveal
+      className={cn(compact ? "mb-6 sm:mb-[clamp(2.5rem,1.8rem+3vw,4.5rem)]" : "mb-[clamp(2.5rem,1.8rem+3vw,4.5rem)]", className)}
+    >
       <Rule variant="section" animate />
       <Grid className="mt-5 lg:mt-6">
         <p
@@ -94,7 +101,10 @@ export function SectionHeader({
           </p>
         )}
         {(lead || children) && (
-          <div className="col-span-4 mt-6 sm:col-span-8 lg:col-span-7 lg:col-start-4 a-rise" style={{ animationDelay: "240ms" }}>
+          <div
+            className={cn("col-span-4 sm:col-span-8 sm:mt-6 lg:col-span-7 lg:col-start-4 a-rise", compact ? "mt-3" : "mt-6")}
+            style={{ animationDelay: "240ms" }}
+          >
             {lead && <p className="t-lead">{lead}</p>}
             {children}
           </div>

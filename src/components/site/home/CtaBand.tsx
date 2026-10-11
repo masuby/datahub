@@ -2,7 +2,7 @@ import { Fragment, type ReactNode } from "react";
 import { localePath, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { pagesExtra } from "@/i18n/extra/pages";
-import { CONTACT_EMAIL, WHATSAPP_DISPLAY, WHATSAPP_HREF, WHATSAPP_NUMBER } from "@/lib/contact-info";
+import { CONTACT_EMAIL, WHATSAPP_DISPLAY, WHATSAPP_NUMBER, whatsappHref } from "@/lib/contact-info";
 import { ButtonPrimary } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Grid } from "@/components/ui/Grid";
@@ -36,7 +36,7 @@ export async function CtaBand({ lang }: { lang: Locale }) {
   const alt = WHATSAPP_NUMBER
     ? fillNode(t.form.whatsappAlt, {
         number: (
-          <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" className={INLINE_LINK}>
+          <a href={whatsappHref(lang)} target="_blank" rel="noopener noreferrer" className={INLINE_LINK}>
             <span className="tnum whitespace-nowrap">{WHATSAPP_DISPLAY}</span>
             <span className="sr-only"> {t.a11y.opensNewTab}</span>
           </a>

@@ -1,4 +1,5 @@
 import { GLYPHS, GLYPH_UPM } from "./glyphs";
+import { frameGeneration, onFrames } from "./frame-clock";
 
 /**
  * The hero word that writes itself (iteration-2 §B): decisions → insights →
@@ -20,6 +21,11 @@ import { GLYPHS, GLYPH_UPM } from "./glyphs";
  * seeded, not simulated — so freezing, resuming and resizing need no state
  * beyond the clock. Nothing runs while frozen; the caller freezes it off
  * screen, in a hidden tab, under reduced motion and while motion is paused.
+ * It draws on the hero's frame clock (frame-clock.ts), in the silk's frames.
+ *
+ * It only ever draws the words it was given, over the text it measured: if
+ * anything rewrites that text — a browser translating the page — it stops
+ * for good and the (translated) text word stays.
  */
 
 /**
@@ -77,22 +83,41 @@ const HOLES_PER_GLYPH = 80;
 /**
  * Per tier: the shortest frame interval (ms), the share of each letter's
  * holes used (fewer, larger holes cover the same ink), one spark per this
- * many holes, and the kill switch's budget: the most a frame may cost on
- * average (ms) over any window of KILL_WINDOW drawn frames.
+ * many holes, and the kill switch's budget: the longest a drawn frame may
+ * take (median, ms) over any window of KILL_WINDOW of them, timed from the
+ * start of the frame's callbacks until the browser has rendered it — the
+ * page's own restyle, paint and commit count, and the silk's drawing in the
+ * frames the two share, not just this canvas's drawing.
  */
 const TIERS: Record<WriterTier, { frameMs: number; holes: number; sparkEvery: number; budgetMs: number }> = {
-  // At most 60 fps, also on 120 Hz screens.
-  full: { frameMs: 14, holes: 1, sparkEvery: 2, budgetMs: 7 },
-  // 30 fps, the spec's canvas rate (§4.5).
-  lite: { frameMs: 30, holes: 0.5, sparkEvery: 4, budgetMs: 12 },
+  // At most 60 fps, also on 120 Hz screens. Over budget, it steps down to
+  // lite. The letters coming apart decide it: every frame, each of them is
+  // cut by up to 80 soft holes. With the CPU slowed to half this site's
+  // development desktop (about a mid-range laptop), those frames take
+  // 13–19 ms even without the silk, past a 60 Hz frame, so such a laptop
+  // writes the lite word; the budget is right, the dissolve is costly.
+  full: { frameMs: 1000 / 60, holes: 1, sparkEvery: 2, budgetMs: 10 },
+  // 30 fps, the spec's canvas rate and frame budget (§4.5), in step with the silk.
+  lite: { frameMs: 1000 / 30, holes: 0.5, sparkEvery: 4, budgetMs: 22 },
 };
+
+/**
+ * The canvas follows the display's pixel ratio, like the text it lies on,
+ * up to this many device pixels (the silk's buffer cap, spec §4.5): sharp at
+ * 3x and under browser zoom, bounded at extreme ratios.
+ */
+const MAX_PIXELS = 1600 * 1000;
 
 /**
  * Kill switch: drawn frames are timed in windows of this many, from the
  * first one until a whole word has gone round (the sheen, every letter
  * coming apart, the next word's outlines and fill), so the costliest phases
- * are measured, not just the cheap ones. A window over budget stops the
- * writer; the text word stays.
+ * are measured, not just the cheap ones. A window over budget steps the
+ * full tier down to the lite one (timed afresh), and stops the lite one;
+ * the text word stays. A window only holds frames taken while the same
+ * loops share the clock (frameGeneration): when the silk starts or stops,
+ * on its own kill switch too, the window starts again, so the two kill
+ * switches never both fire on the same shared frames.
  */
 const KILL_WINDOW = 30;
 
@@ -370,9 +395,11 @@ export function createWriter({
   const g = ctx;
   const lg = layerCtx;
   const probe = probeCtx;
-  const { frameMs, holes: holeShare, sparkEvery, budgetMs } = TIERS[tier];
+  /** The tier now: the kill switch can step full down to lite. */
+  let level = tier;
+  let { frameMs, holes: holeShare, sparkEvery, budgetMs } = TIERS[level];
   /** Fewer holes are larger, so a letter still comes apart completely. */
-  const holeR = HOLE / Math.sqrt(holeShare);
+  let holeR = HOLE / Math.sqrt(holeShare);
 
   let palette = readPalette(slot);
   let halo = sprite(palette.halo, [
@@ -393,21 +420,61 @@ export function createWriter({
   let tau = 0; // seconds into it
   let live = false;
   let dead = false;
-  let raf = 0;
+  let stopClock: (() => void) | null = null;
   let last = 0;
-  /** Kill switch: still timing; the open window; the word timing began on; a whole word seen since. */
+  /** Kill switch: still timing; the window's frame times; the frame being rendered; the clock's generation the window shares; the word timing began on; a whole word seen since. */
   let timing = true;
-  let windowMs = 0;
-  let windowFrames = 0;
+  const frameTimes: number[] = [];
+  let frameStart = 0;
+  let frameGen = -1;
   let timedFrom = -1;
   let cycled = false;
+  // A message posted from a frame is handled once the browser has rendered it.
+  const rendered = new MessageChannel();
+  rendered.port1.onmessage = () => {
+    if (dead || !frameStart) return;
+    const took = performance.now() - frameStart;
+    frameStart = 0;
+    // A loop joined or left the clock since the window began (the silk
+    // started or stopped, on its own kill switch too): time afresh.
+    if (frameGeneration() !== frameGen) {
+      frameTimes.length = 0;
+      return;
+    }
+    frameTimes.push(took);
+    if (frameTimes.length < KILL_WINDOW) return;
+    const median = frameTimes.sort((a, b) => a - b)[KILL_WINDOW >> 1];
+    frameTimes.length = 0;
+    if (median > budgetMs) {
+      if (level === "full") stepDown();
+      else die();
+      return;
+    }
+    // A whole word has been timed: stop at the end of this window.
+    if (cycled) timing = false;
+  };
   /** The last frame drawn was a still one: until something moves, skip. */
   let settled = false;
+
+  /**
+   * Every word's copy still holds exactly that word, as one text node. False
+   * once a page translator (or anything else) has rewritten it: the writer
+   * would draw the original word over the hidden new text or, finding no
+   * text node, draw nowhere.
+   */
+  function textIntact(): boolean {
+    const spans = slot.querySelectorAll<HTMLElement>("[data-i]");
+    return words.every((word, i) => {
+      const node = spans[i]?.firstChild;
+      return spans[i]?.childNodes.length === 1 && node?.nodeType === Node.TEXT_NODE && node.textContent === word;
+    });
+  }
 
   /** Reads where the browser put every letter of every word; builds the timelines. */
   function measure() {
     const c = canvas.getBoundingClientRect();
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const ratio = window.devicePixelRatio || 1;
+    dpr = Math.min(ratio, Math.sqrt(MAX_PIXELS / Math.max(1, c.width * c.height)));
     canvas.width = Math.max(1, Math.round(c.width * dpr));
     canvas.height = Math.max(1, Math.round(c.height * dpr));
     const cs = getComputedStyle(slot);
@@ -772,21 +839,21 @@ export function createWriter({
 
   /* ── Clock ─────────────────────────────────────────────────────────── */
 
-  function frame(now: number) {
-    raf = requestAnimationFrame(frame);
-    if (last && now - last < frameMs) return;
+  function frame(now: number, began: number) {
     const dt = last ? Math.min(now - last, 100) / 1000 : 0;
     last = now;
     tau += dt;
     while (layout.length && tau >= layout[k].end) {
       tau -= layout[k].end;
       k = (k + 1) % layout.length;
+      // The text under the canvas follows the word, for print (which hides
+      // the canvas) and for the hand-over.
+      if (live) slot.dataset.shown = String(k);
     }
     const W = layout[k];
     if (!W) return;
     const isStill = still(W);
     if (settled && isStill) return;
-    const start = performance.now();
     try {
       draw();
     } catch {
@@ -799,16 +866,10 @@ export function createWriter({
       setLive(true);
     }
     if (timing) {
-      windowMs += performance.now() - start;
-      if (++windowFrames === KILL_WINDOW) {
-        if (windowMs / KILL_WINDOW > budgetMs) {
-          die();
-          return;
-        }
-        windowMs = 0;
-        windowFrames = 0;
-        // A whole word has been timed: stop at the end of this window.
-        if (cycled) timing = false;
+      if (!frameStart) {
+        if (!frameTimes.length) frameGen = frameGeneration();
+        frameStart = began;
+        rendered.port2.postMessage(0);
       }
       // The word after the one timing began on has been written and filled.
       if (k !== timedFrom && tau >= W.fillEnd + DECAY) cycled = true;
@@ -816,21 +877,47 @@ export function createWriter({
   }
 
   function stop() {
-    if (raf) cancelAnimationFrame(raf);
-    raf = 0;
+    stopClock?.();
+    stopClock = null;
     last = 0;
     // The current word stays, written, as text.
     slot.dataset.shown = String(k);
     setLive(false);
   }
 
+  /** For good: the text word stays, and nothing keeps watching the headline. */
   function die() {
     dead = true;
     stop();
+    release();
+  }
+
+  /** Too costly here at full rate: carry on as the lite tier, timed afresh. */
+  function stepDown() {
+    level = "lite";
+    ({ frameMs, holes: holeShare, sparkEvery, budgetMs } = TIERS[level]);
+    holeR = HOLE / Math.sqrt(holeShare);
+    try {
+      measure(); // the holes and sparks, at the lite tier's share
+      // measure() clears the canvas: restore the frame before it is shown,
+      // not at the lite tier's next slot (the word would blink out).
+      if (live) draw();
+    } catch {
+      die();
+      return;
+    }
+    frameTimes.length = 0;
+    frameStart = 0;
+    cycled = false;
+    timedFrom = k;
+    if (stopClock) {
+      stopClock();
+      stopClock = onFrames(frameMs, frame);
+    }
   }
 
   function start() {
-    if (raf || dead) return;
+    if (stopClock || dead) return;
     // Pick up in the hold of the word the text shows: the same pixels, so the
     // hand-over cannot be seen; the sheen then crosses it and it moves on.
     tau = layout[k] ? layout[k].fillEnd + DECAY : 0;
@@ -839,24 +926,64 @@ export function createWriter({
     // Resuming skips the rest of a word: until a whole one has been timed,
     // count from the word shown now.
     if (!cycled) timedFrom = k;
-    raf = requestAnimationFrame(frame);
+    stopClock = onFrames(frameMs, frame);
   }
 
-  const ro = new ResizeObserver(() => {
+  /** Measures again (a new size, a new pixel ratio) and repaints a frozen frame. */
+  function remeasure() {
+    if (dead) return;
+    if (!textIntact()) {
+      die();
+      return;
+    }
     try {
       measure();
       if (live) draw();
     } catch {
       die();
     }
-  });
+  }
 
+  const ro = new ResizeObserver(remeasure);
+  // A translator swaps the words' text nodes; the slot need not resize.
+  const mo = new MutationObserver(() => {
+    if (!dead && !textIntact()) die();
+  });
+  // Zoom, or a move to another screen, changes the pixel ratio, often
+  // without a resize: one query for the current ratio, renewed each time.
+  let ratioQuery: MediaQueryList | null = null;
+  function watchRatio() {
+    ratioQuery?.removeEventListener("change", onRatio);
+    try {
+      ratioQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+      ratioQuery.addEventListener("change", onRatio);
+    } catch {
+      ratioQuery = null;
+    }
+  }
+  function onRatio() {
+    watchRatio();
+    remeasure();
+  }
+
+  /** Lets go of the slot, the screen and the frame timings (a stray record or message still finds `dead`). */
+  function release() {
+    ro.disconnect();
+    mo.disconnect();
+    rendered.port1.onmessage = null;
+    ratioQuery?.removeEventListener("change", onRatio);
+    ratioQuery = null;
+  }
+
+  if (!textIntact()) return null;
   try {
     measure();
   } catch {
     return null;
   }
   ro.observe(slot);
+  mo.observe(slot, { childList: true, characterData: true, subtree: true });
+  watchRatio();
 
   return {
     setRunning(run) {
@@ -872,12 +999,12 @@ export function createWriter({
         [1, 0],
       ]);
       settled = false;
-      if (live && !raf) draw();
+      if (live && !stopClock) draw();
     },
     destroy() {
-      ro.disconnect();
-      if (raf) cancelAnimationFrame(raf);
-      raf = 0;
+      release();
+      stopClock?.();
+      stopClock = null;
       dead = true;
       setLive(false);
     },
