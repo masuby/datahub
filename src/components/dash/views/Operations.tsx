@@ -3,7 +3,6 @@ import { formatHours, formatNumber, formatSeconds } from "@/lib/format";
 import {
   KPI_STATUS,
   OPERATIONS,
-  PACK,
   RUNS,
   SCHEDULE,
   SCHEDULE_FROM_HOUR,
@@ -12,16 +11,19 @@ import {
 } from "@/lib/sample-data";
 import { cn } from "@/lib/utils";
 import { marksFor, notesFor, type DashCtx } from "../context";
-import { Cell, Figure, FigureTitle, PlateRow, StatusMark } from "../Figure";
+import { Figure, FigureTitle, StatusMark } from "../Figure";
 import type { Kpi } from "../KpiStrip";
-import { Plate } from "../Plate";
 import { ReadMarker, ReadNotes } from "../ReadMarker";
 import { Bars } from "../kit/Bars";
-import { Slope } from "../kit/Slope";
 import { Swimlane } from "../kit/Swimlane";
 import styles from "../dash.module.css";
 
-/** View 4 · Automation & operations — Sample lender's reporting system, September 2026. */
+/**
+ * View 4 · Automation & operations — Sample lender's reporting system,
+ * September 2026. The parts the service pages' sample bands show
+ * (SamplePlate): the KPIs and two figures on the automation page, the
+ * agent's log on the AI agents page.
+ */
 
 export function operationsKpis(ctx: DashCtx): Kpi[] {
   const k = ctx.t.views.operations.kpis;
@@ -66,7 +68,6 @@ export function ScheduleFigure({ ctx }: { ctx: DashCtx }) {
       <Swimlane
         ctx={ctx}
         id={id}
-        label={f.title}
         summary={f.summary}
         lanes={f.lanes}
         items={items}
@@ -84,7 +85,6 @@ export function RunsFigure({ ctx }: { ctx: DashCtx }) {
   const v = ctx.t.views.operations;
   const f = v.figures.runs;
   const id = `${ctx.idp}-runs`;
-  const reads = RUNS.map((s, i) => fill(f.readout, { n: i + 1, value: s }));
   const notes = notesFor(ctx, "operations", "runs");
   return (
     <Figure
@@ -94,7 +94,7 @@ export function RunsFigure({ ctx }: { ctx: DashCtx }) {
       title={f.title}
       summary={f.summary}
       creditPeriod={v.creditPeriod}
-      readout={reads[reads.length - 1]}
+      readout={fill(f.readout, { n: RUNS.length, value: RUNS[RUNS.length - 1] })}
       notes={notes}
       table={{
         head: [ctx.x.columns.run, ctx.x.columns.seconds],
@@ -105,9 +105,7 @@ export function RunsFigure({ ctx }: { ctx: DashCtx }) {
       <Bars
         ctx={ctx}
         id={id}
-        label={f.title}
         summary={f.summary}
-        readoutId={`${id}-readout`}
         values={RUNS}
         xLabels={RUNS.map((_, i) => String(i + 1))}
         max={80}
@@ -119,44 +117,7 @@ export function RunsFigure({ ctx }: { ctx: DashCtx }) {
           value: OPERATIONS.medianSeconds,
           label: fill(ctx.x.runs.median, { value: formatSeconds(OPERATIONS.medianSeconds, ctx.lang) }),
         }}
-        reads={reads}
         marks={marksFor(notes, (a) => Number(a) - 1)}
-      />
-    </Figure>
-  );
-}
-
-export function PackFigure({ ctx }: { ctx: DashCtx }) {
-  const v = ctx.t.views.operations;
-  const f = v.figures.pack;
-  const id = `${ctx.idp}-pack`;
-  const notes = notesFor(ctx, "operations", "pack");
-  return (
-    <Figure
-      ctx={ctx}
-      id={id}
-      number={f.number}
-      title={f.title}
-      summary={f.summary}
-      creditPeriod={v.creditPeriod}
-      notes={notes}
-      table={{
-        head: [ctx.x.columns.method, ctx.x.columns.duration],
-        rows: [
-          [f.before, f.beforeValue],
-          [f.after, f.afterValue],
-        ],
-        numeric: [false, true],
-      }}
-    >
-      <Slope
-        ctx={ctx}
-        id={id}
-        label={f.title}
-        summary={f.summary}
-        before={{ label: f.before, value: PACK.beforeMinutes, display: f.beforeValue }}
-        after={{ label: f.after, value: PACK.afterMinutes, display: f.afterValue }}
-        marks={marksFor(notes, (a) => (a === "before" ? 0 : a === "after" ? 1 : -1))}
       />
     </Figure>
   );
@@ -171,9 +132,7 @@ export function AgentLog({ ctx }: { ctx: DashCtx }) {
   return (
     <figure className={cn(styles.fig, "min-w-0")} aria-labelledby={`${id}-h`}>
       <figcaption>
-        <FigureTitle ctx={ctx} id={`${id}-h`}>
-          {log.title}
-        </FigureTitle>
+        <FigureTitle id={`${id}-h`}>{log.title}</FigureTitle>
         <p className="t-small mt-2 font-normal text-muted">{log.caption}</p>
       </figcaption>
       <div className={cn(styles.figBody, "mt-4")}>
@@ -195,7 +154,7 @@ export function AgentLog({ ctx }: { ctx: DashCtx }) {
                   {item.text}
                   {note && (
                     <span className="ml-3 inline-flex align-middle">
-                      <ReadMarker ctx={ctx} n={note.n} noteId={note.noteId} inline />
+                      <ReadMarker n={note.n} inline />
                     </span>
                   )}
                 </span>
@@ -208,35 +167,5 @@ export function AgentLog({ ctx }: { ctx: DashCtx }) {
       </div>
       <p className="t-data mt-4">{fill(ctx.t.credit, { period: v.creditPeriod })}</p>
     </figure>
-  );
-}
-
-export function Operations({ ctx }: { ctx: DashCtx }) {
-  return (
-    <Plate
-      ctx={ctx}
-      view="operations"
-      kpis={operationsKpis(ctx)}
-      rows={[
-        <PlateRow key="a">
-          <Cell>
-            <ScheduleFigure ctx={ctx} />
-          </Cell>
-        </PlateRow>,
-        <PlateRow key="b">
-          <Cell span={6}>
-            <RunsFigure ctx={ctx} />
-          </Cell>
-          <Cell span={6}>
-            <PackFigure ctx={ctx} />
-          </Cell>
-        </PlateRow>,
-        <PlateRow key="c">
-          <Cell>
-            <AgentLog ctx={ctx} />
-          </Cell>
-        </PlateRow>,
-      ]}
-    />
   );
 }

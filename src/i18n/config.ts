@@ -26,11 +26,13 @@ export const LOCALE_NAME: Record<Locale, string> = { en: "English", sw: "Kiswahi
 /**
  * Public path of a page in a locale. `path` is the locale-free path and must
  * start with "/". `localePath("sw", "/services/dashboards")` -> `/sw/services/dashboards`.
+ * The home page has no trailing slash, also before a fragment or query:
+ * `localePath("sw", "/#dashboards")` -> `/sw#dashboards`.
  */
 export function localePath(locale: Locale, path: string = "/"): string {
   const clean = path.startsWith("/") ? path : `/${path}`;
   if (locale === DEFAULT_LOCALE) return clean;
-  return clean === "/" ? `/${locale}` : `/${locale}${clean}`;
+  return /^\/(?:[?#]|$)/.test(clean) ? `/${locale}${clean.slice(1)}` : `/${locale}${clean}`;
 }
 
 /** Strips a locale prefix from a public pathname: `/sw/services/x` -> `/services/x`. */

@@ -19,7 +19,7 @@ import { withCampaign } from "./MobileMenu";
  * in memory for when storage is blocked: see system/prefill) and that page
  * opens (keeping the campaign tag); the form adopts it on mount. Until it
  * shows, which on a slow network takes a moment, the button
- * is aria-busy with its thread drawn. Should a contact form ever share the
+ * is aria-busy and stays accent. Should a contact form ever share the
  * page, it gets the sentence through the `dh:prefill` window event
  * ({ detail: { message } }) instead.
  */
@@ -196,9 +196,11 @@ export function HoursEstimatorClient({ s, contactHref }: { s: EstimatorStrings; 
 
   return (
     <Grid className="items-start">
-      {/* ── The sentence (cols 1–7) ── */}
-      <div className="col-span-4 sm:col-span-8 lg:col-span-7">
-        <p className="t-title max-w-[34ch] [text-wrap:pretty] lg:leading-[1.7]">
+      {/* ── The sentence (cols 1–7). Centred on phones and tablets, like
+          everything around it there; left-aligned beside the result from
+          1024px. ── */}
+      <div className="col-span-4 text-center sm:col-span-8 lg:col-span-7 lg:text-left">
+        <p className="t-title mx-auto max-w-[34ch] [text-wrap:pretty] lg:mx-0 lg:leading-[1.7]">
           {s.sentence.map((tok, i) => {
             const slot = SLOT.exec(tok)?.[1];
             if (slot === "period") {
@@ -241,7 +243,7 @@ export function HoursEstimatorClient({ s, contactHref }: { s: EstimatorStrings; 
             <span aria-hidden="true" className="mr-2 font-mono font-medium">
               !
             </span>
-            <span className="font-semibold">{s.labels[f]}</span>{" "}
+            <span className="font-bold">{s.labels[f]}</span>{" "}
             {fill(s.error.range, { min: fmt(LIMITS[f][0]), max: fmt(LIMITS[f][1]) })}
           </p>
         ))}
@@ -251,7 +253,7 @@ export function HoursEstimatorClient({ s, contactHref }: { s: EstimatorStrings; 
           <label htmlFor="est-salary" className="t-small block text-muted">
             {s.salary.label}
           </label>
-          <div className="mt-2 flex items-baseline gap-3">
+          <div className="mt-2 flex items-baseline justify-center gap-3 lg:justify-start">
             <span aria-hidden="true" className="t-mono text-subtle">
               {s.salary.unit}
             </span>
@@ -280,8 +282,9 @@ export function HoursEstimatorClient({ s, contactHref }: { s: EstimatorStrings; 
         </div>
       </div>
 
-      {/* ── The result (cols 8–12), a vertical R1 between the halves ── */}
-      <div className="relative col-span-4 mt-12 sm:col-span-8 lg:col-span-5 lg:col-start-8 lg:mt-0 lg:pl-[clamp(1rem,2vw,2.5rem)]">
+      {/* ── The result (cols 8–12), a vertical R1 between the halves. Short
+          lines, so it centres at every width (iteration-5 §B). ── */}
+      <div className="relative col-span-4 mt-12 text-center sm:col-span-8 lg:col-span-5 lg:col-start-8 lg:mt-0 lg:px-[clamp(1rem,2vw,2.5rem)]">
         <span aria-hidden="true" className="rule-hair mb-10 lg:hidden" />
         <span
           aria-hidden="true"

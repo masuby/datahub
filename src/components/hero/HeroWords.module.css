@@ -9,9 +9,12 @@
   white-space: nowrap;
 }
 
+/* Each word sits at the slot's start, or at its centre where the line is
+   centred (--word-align on an ancestor, the hero below 1024px): the writer
+   measures every word where it lies, so either way the canvas matches. */
 .word {
   grid-area: 1 / 1;
-  justify-self: start;
+  justify-self: var(--word-align, start);
   visibility: hidden;
   /* Room for the ink outside the advance box (descenders, the last letter's
      overhang under negative tracking), so the gradient paints all of it;

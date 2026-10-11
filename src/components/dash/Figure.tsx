@@ -17,8 +17,8 @@ export type TableSpec = {
 /**
  * Figure anatomy (spec §8.1):
  *
- *   <figcaption>  Fig. 02.n · title (h3; h2 on /dashboards) · one-sentence summary
- *   readout       crosshair value, aria-live polite; at rest the latest point
+ *   <figcaption>  Fig. 03.n · title (h3) · one-sentence summary
+ *   readout       the latest point, in words
  *   chart         server SVG (stamp + <title> inside)   | read-mode notes
  *   credit        "Source: DataHub sample data · TZS · {period}"
  *   <details>     "View as table": booktabs table of the same numbers
@@ -52,22 +52,12 @@ export function Figure({
     <figure className={cn(styles.fig, "min-w-0", className)} aria-labelledby={`${id}-h`}>
       <figcaption>
         <p className="t-eyebrow">{figLabel(ctx, number)}</p>
-        <FigureTitle ctx={ctx} id={`${id}-h`} className="mt-2">
+        <FigureTitle id={`${id}-h`} className="mt-2">
           {title}
         </FigureTitle>
         <p className="t-small mt-2 max-w-[60ch] font-normal text-muted">{summary}</p>
       </figcaption>
-      {readout !== undefined && (
-        <p
-          id={`${id}-readout`}
-          className="t-data mt-3 min-h-[1.4em] text-muted"
-          data-readout=""
-          data-idle={readout}
-          aria-live="polite"
-        >
-          {readout}
-        </p>
-      )}
+      {readout !== undefined && <p className="t-data mt-3 min-h-[1.4em] text-muted">{readout}</p>}
       <div className={cn(styles.figBody, "mt-4")}>
         <div className="min-w-0">{children}</div>
         <ReadNotes ctx={ctx} notes={notes} />
@@ -78,23 +68,12 @@ export function Figure({
   );
 }
 
-/** A figure's title: h3 under a section's h2, h2 under the page's h1 (DashCtx.figureLevel). */
-export function FigureTitle({
-  ctx,
-  id,
-  className,
-  children,
-}: {
-  ctx: DashCtx;
-  id: string;
-  className?: string;
-  children: ReactNode;
-}) {
-  const H = ctx.figureLevel === 2 ? "h2" : "h3";
+/** A figure's title: an h3 under the sample band's h2. */
+export function FigureTitle({ id, className, children }: { id: string; className?: string; children: ReactNode }) {
   return (
-    <H id={id} className={cn("t-title text-fg", className)}>
+    <h3 id={id} className={cn("t-title text-fg", className)}>
       {children}
-    </H>
+    </h3>
   );
 }
 
@@ -138,21 +117,8 @@ export function DataTable({ ctx, caption, spec }: { ctx: DashCtx; caption: strin
 }
 
 /** One row of the plate: one or two figures, a vertical R1 between them on desktop. */
-export function PlateRow({
-  children,
-  className,
-  link = false,
-}: {
-  children: ReactNode;
-  className?: string;
-  /** Figures in this row share highlight keys (map rings ↔ ranked bars). */
-  link?: boolean;
-}) {
-  return (
-    <div className={cn(styles.row, className)} data-link={link ? "" : undefined}>
-      {children}
-    </div>
-  );
+export function PlateRow({ children, className }: { children: ReactNode; className?: string }) {
+  return <div className={cn(styles.row, className)}>{children}</div>;
 }
 
 /** A cell of a plate row; `span` of 12 from 1024px. */

@@ -6,14 +6,17 @@
    runs behind the wordmark too. The silk plate, its wash and the mark fill
    --plate-h of it: the whole stage on desktop, a band at its top below
    1024px, with the wordmark under the band. The mark's centre is the
-   plate's sink: (0.85, 0.40) of the plate (src/lib/silk.ts, preset
-   "plate"), at (--mark-x, --mark-y). */
+   silk's sink, at (--mark-x, --mark-y): on desktop (0.85, 0.40) of the
+   plate (src/lib/silk.ts, preset "plate"); below 1024px, where the rest of
+   the footer is centred, (0.5, 0.40) of the band (preset "plate-band"),
+   as the hero's band centres its mark. The wash, the dot field's pool and
+   the twinkling dots follow --mark-x. */
 
 .stage {
   --mark-size: 96px;
   --field-step: 22px;
   --plate-h: 176px;
-  --mark-x: 85%;
+  --mark-x: 50%;
   --mark-y: calc(var(--plate-h) * 0.4);
   /* The writer's canvas reaches past the wordmark's column (the nib, on the
      widest word, HeroWords.module.css): on the narrowest phones the screen's
@@ -32,7 +35,7 @@
   inset: 0;
   overflow: clip;
   background: radial-gradient(
-      46% 70% at 85% 40%,
+      46% 70% at var(--mark-x) 40%,
       color-mix(in srgb, var(--silk-wash) 55%, transparent),
       transparent 72%
     )
@@ -51,9 +54,14 @@
 
 /* The wordmark sizes itself to its column: its widest line (--fit-em, from
    the font's advances, set by FooterMark) fits, so the word line never
-   wraps, down to a 320px phone. The paragraph is the size container. */
+   wraps, down to a 320px phone. The paragraph is the size container.
+   Below 1024px it centres, like the hero's headline and the footer under
+   it (iteration-5 §B), and so does the written word inside its slot
+   (--word-align, HeroWords.module.css); from 1024px it sits at the left. */
 .title {
   container-type: inline-size;
+  text-align: center;
+  --word-align: center;
   /* The nib stands up and to the right of the line it writes: the writer's
      canvas reaches further than the hero's (HeroWords.module.css). */
   --writer-reach-top: 0.95em;
@@ -64,16 +72,17 @@
   font-size: min(calc(var(--fs) * var(--display-scale, 1)), 100cqi / var(--fit-em));
 }
 
-/* Under the wordmark, at its left edge (the button's own inset brought
-   back), at every width: the floating WhatsApp button keeps the bottom
-   right, so the two never meet. Positioned, so it sits above the word's
-   ink padding (HeroWords.module.css), which reaches down over it and
-   would otherwise take its clicks. */
+/* Under the wordmark: centred below 1024px, at its left edge from 1024px
+   (the button's own inset brought back). Either way the floating WhatsApp
+   button keeps the bottom right, so the two never meet. Positioned, so it
+   sits above the word's ink padding (HeroWords.module.css), which reaches
+   down over it and would otherwise take its clicks. */
 .pause {
   position: relative;
   display: flex;
+  justify-content: center;
   min-height: 2.75rem;
-  margin: 8px 0 0 -4px;
+  margin-top: 8px;
 }
 
 @media (min-width: 640px) {
@@ -85,6 +94,7 @@
 
 @media (min-width: 1024px) {
   .stage {
+    --mark-x: 85%;
     --mark-size: clamp(168px, 15vw, 232px);
     --plate-h: 100%;
     display: flex;
@@ -96,8 +106,14 @@
     padding-top: 96px;
     padding-bottom: 8px;
   }
+  .title {
+    text-align: start;
+    --word-align: start;
+  }
   /* Clear of the descenders of the word above (g, y) at display size. */
   .pause {
+    justify-content: flex-start;
+    margin-left: -4px;
     margin-top: 20px;
   }
 }
@@ -122,7 +138,11 @@
 
 /* The silk plate, stretched over the plate's height; quiet where the
    wordmark stands (left), full at the mark. Mask colours are alpha
-   sources, not design colours. */
+   sources, not design colours. The band below 1024px has no words over
+   it: whole, like the hero's. */
+.silkBand {
+  height: var(--plate-h);
+}
 .silk {
   height: var(--plate-h);
   -webkit-mask-image: linear-gradient(to right, rgb(0 0 0 / 0.5) 0 35%, #000 70%);

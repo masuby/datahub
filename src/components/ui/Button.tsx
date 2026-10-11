@@ -6,25 +6,27 @@ import { glassClasses } from "./glass/glass-classes";
 
 /**
  * The primary action — the only filled shape on the site besides chart marks.
- * Royal liquid glass (owner's brief, 11 Oct 2026: Apple-style glass
- * buttons); hover turns it navy (light) / sky (dark). At most one per
- * viewport (the header CTA excepted). Renders a link when given `href`.
+ * Liquid-metal glass, like the hero's hand (iteration 5 §E): a deep royal
+ * glass pill inside a chrome ring that slowly turns; hover brightens the
+ * ring. A 14px semibold display-face label, so the pill stays 44px (40px
+ * compact, the header and the action rail). At most one per viewport (the
+ * header CTA excepted). Renders a link when given `href`.
  *
  * The element stays a real <a> (next/link) or <button>, with its label,
  * focus ring and keyboard behaviour; GlassSurface only paints its surface
- * (src/components/ui/glass). `glass` picks what wakes its liquid layer:
- * "zone" — the pointer coming near, for a button inside a [data-glass-zone]
- * (the hero, the closing band); "self" (default) — the pointer over it.
+ * and metal (src/components/ui/glass). `glass` picks what wakes its liquid
+ * layer: "zone" — the pointer coming near, for a button inside a
+ * [data-glass-zone] (the hero); "self" (default) — the pointer over it.
  * Keyboard focus always does.
  */
 const primary =
-  "inline-flex items-center justify-center gap-2 px-7 font-sans text-base font-semibold " +
+  "inline-flex items-center justify-center gap-2 px-6 font-display text-sm font-semibold tracking-[0.01em] " +
   "disabled:cursor-not-allowed disabled:opacity-60 aria-busy:cursor-progress " +
   glassClasses.royal;
 
 const sizes = {
-  default: "h-[52px] lg:h-14",
-  compact: "h-11 px-5 text-[0.9375rem]",
+  default: "h-11",
+  compact: "h-10 px-5",
 };
 
 type Common = { children: ReactNode; size?: keyof typeof sizes; className?: string; glass?: "zone" | "self" };
@@ -38,7 +40,7 @@ export function ButtonPrimary(
 ) {
   const { children, size = "default", className, glass = "self", ...rest } = props;
   const classes = cn(primary, sizes[size], className);
-  const surface = <GlassSurface wake={glass} />;
+  const surface = <GlassSurface wake={glass} metal />;
   if ("href" in rest && rest.href !== undefined) {
     const { href, ...anchor } = rest;
     if (href.startsWith("#") || /^(https?:|mailto:|tel:)/.test(href)) {
@@ -66,9 +68,11 @@ export function ButtonPrimary(
 }
 
 /**
- * Secondary action on a <button>: LinkArrow styling, 48px minimum hit area.
- * `active` draws the thread under the label (for a button whose label
- * already says its state, so it must not also carry aria-pressed).
+ * Secondary action on a <button>: LinkArrow styling (a display-face label),
+ * 48px minimum hit area.
+ * `active` (or aria-pressed) holds the label in the accent colour, as hover
+ * does — no underline (iteration-5 §A). Use `active` for a button whose
+ * label already says its state, so it must not also carry aria-pressed.
  */
 export function ButtonText({
   children,
@@ -85,15 +89,14 @@ export function ButtonText({
   return (
     <button
       type={rest.type ?? "button"}
+      data-active={(active ?? rest["aria-pressed"] === true) ? "true" : undefined}
       className={cn(
-        "group inline-flex min-h-12 items-center gap-2 font-sans text-[0.9375rem] font-semibold text-fg transition-colors duration-[160ms] hover:text-accent",
+        "group inline-flex min-h-12 items-center gap-2 font-display text-sm font-semibold tracking-[0.01em] text-fg transition-colors duration-[160ms] hover:text-accent focus-visible:text-accent data-[active=true]:text-accent",
         className,
       )}
       {...rest}
     >
-      <span className="link-thread pb-0.5" data-active={(active ?? rest["aria-pressed"] === true) ? "true" : undefined}>
-        {children}
-      </span>
+      <span>{children}</span>
       {arrow && (
         <span aria-hidden="true" className="inline-block transition-transform duration-[280ms] group-hover:translate-x-1.5">
           {arrow}

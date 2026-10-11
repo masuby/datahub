@@ -15,7 +15,6 @@ export type LaneItem = { time: string; lane: number; label: string };
 export function Swimlane({
   ctx,
   id,
-  label,
   summary,
   lanes,
   items,
@@ -27,7 +26,6 @@ export function Swimlane({
 }: {
   ctx: DashCtx;
   id: string;
-  label: string;
   summary: string;
   lanes: readonly string[];
   items: readonly LaneItem[];
@@ -69,7 +67,7 @@ export function Swimlane({
   for (let h = fromHour; h <= toHour; h += 3) hours.push(h);
 
   return (
-    <ChartArea ctx={ctx} label={label} style={{ height }}>
+    <ChartArea style={{ height }}>
       <ChartSvg ctx={ctx} titleId={`${id}-title`} summary={summary} height={height}>
         <g aria-hidden="true">
           {hours.map((h) => (
@@ -156,15 +154,7 @@ export function Swimlane({
         );
       })}
       {marks.map((mk, k) => (
-        <ReadMarker
-          key={mk.n}
-          ctx={ctx}
-          n={mk.n}
-          noteId={mk.noteId}
-          order={k}
-          left={x(minutes(items[mk.i].time))}
-          top={itemY.get(mk.i) ?? 0}
-        />
+        <ReadMarker key={mk.n} n={mk.n} order={k} left={x(minutes(items[mk.i].time))} top={itemY.get(mk.i) ?? 0} />
       ))}
     </ChartArea>
   );

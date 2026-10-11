@@ -3,6 +3,7 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { THEME_STORAGE_KEY } from "./ThemeScript";
 import { useMotionAllowed } from "./motion-store";
+import { glassClasses } from "@/components/ui/glass/glass-classes";
 import { cn } from "@/lib/utils";
 
 /*
@@ -204,8 +205,10 @@ export function centreOf(el: Element | null): { x: number; y: number } | undefin
 
 /**
  * Header theme button: a 20px half-filled circle in currentColor inside a
- * 44×44 hit area. It flips light ↔ dark (an explicit choice) and turns 180°;
- * its accessible name says what pressing it will do.
+ * 44×44 hit area, muted at rest; hover or keyboard focus raises a 36px
+ * clear-glass circle behind it, like the nav's pills (iteration 5b §K). It
+ * flips light ↔ dark (an explicit choice) and turns 180°; its accessible
+ * name says what pressing it will do.
  */
 export function ThemeToggle({
   labels,
@@ -233,10 +236,7 @@ export function ThemeToggle({
         const os = window.matchMedia(DARK_MQ).matches ? "dark" : "light";
         setTheme(next === os ? "system" : next, { animate: motionAllowed, origin: centreOf(ref.current) });
       }}
-      className={cn(
-        "inline-grid size-11 shrink-0 place-items-center text-muted transition-colors duration-[160ms] hover:text-fg",
-        className,
-      )}
+      className={cn(glassClasses.navRound, "inline-grid size-11 shrink-0 place-items-center", className)}
     >
       <svg
         viewBox="0 0 20 20"

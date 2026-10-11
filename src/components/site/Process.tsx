@@ -9,17 +9,19 @@ import { cn } from "@/lib/utils";
 import styles from "./Process.module.css";
 
 /**
- * 04 — How we work: the /process page (`headingLevel` 1 there, where its
+ * 03 — How we work: the /process page (`headingLevel` 1 there, where its
  * title is the page's h1 and the step titles step up to h2).
  *
- * Four steps on one track. Desktop: the track runs across the 12 columns with
- * a node at the start of cols 1, 4, 7 and 10 and a hairline dropping from each
- * node beside its step. Below 1024px the track turns vertical at the left edge
- * and the steps stack, separated by hairlines.
+ * Four centred steps (iteration-5 §B), each under its node. Desktop: the
+ * steps stand side by side (cols 1–3, 4–6, 7–9, 10–12) and one track joins
+ * their nodes, from the first step's centre to the last's, with a fading
+ * hairline between the steps below it. Below 1024px the steps stack, each
+ * node above its step and a fading hairline between them; no track.
  *
  * The thread fills the track as the list scrolls through the viewport where
- * scroll-driven animation exists, and draws once on reveal elsewhere (see
- * Process.module.css). Zero client JS beyond the shared <Reveal>.
+ * scroll-driven animation exists, and draws once on reveal elsewhere; the
+ * nodes light as it reaches them (see Process.module.css). Zero client JS
+ * beyond the shared <Reveal>.
  */
 export async function Process({ lang, headingLevel = 2 }: { lang: Locale; headingLevel?: 1 | 2 }) {
   const t = (await getDictionary(lang)).process;
@@ -30,7 +32,7 @@ export async function Process({ lang, headingLevel = 2 }: { lang: Locale; headin
     <Section id="process" labelledBy={titleId}>
       <Container>
         <SectionHeader
-          index="04"
+          index="03"
           eyebrow={t.eyebrow}
           title={t.title}
           titleId={titleId}
@@ -50,14 +52,13 @@ export async function Process({ lang, headingLevel = 2 }: { lang: Locale; headin
                   key={step.index}
                   className={cn(styles.step, "col-span-4 sm:col-span-8 lg:col-span-3")}
                 >
-                  <span aria-hidden="true" className={styles.node} />
                   {i > 0 && <span aria-hidden="true" className={styles.between} />}
-                  <span aria-hidden="true" className={styles.drop} />
+                  <span aria-hidden="true" className={styles.node} />
 
                   <p className="t-eyebrow">{step.index}</p>
                   <StepHeading className="t-title mt-3">{step.title}</StepHeading>
-                  <p className="t-body mt-3 text-muted">{step.description}</p>
-                  <p className="t-small mt-5 text-fg">
+                  <p className="t-body mt-3 max-w-[32ch] text-balance text-muted">{step.description}</p>
+                  <p className="t-small mt-5 max-w-[32ch] text-balance text-fg">
                     <span className="t-data">{t.receivePrefix}</span> {step.receive}
                   </p>
                 </li>
@@ -66,9 +67,7 @@ export async function Process({ lang, headingLevel = 2 }: { lang: Locale; headin
           </div>
         </Reveal>
 
-        <Grid className="mt-[clamp(3rem,2.2rem+3vw,5rem)]">
-          <p className="t-lead col-span-4 sm:col-span-8 lg:col-span-9 lg:col-start-4">{t.closing}</p>
-        </Grid>
+        <p className="t-lead mx-auto mt-[clamp(3rem,2.2rem+3vw,5rem)] max-w-[40rem] text-center">{t.closing}</p>
       </Container>
     </Section>
   );

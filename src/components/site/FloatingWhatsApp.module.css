@@ -14,8 +14,9 @@
 
    The hero's pause control passes where the button floats (data-clear,
    set by WhatsAppFab while it is there): on wide screens the label folds
-   away and stops taking clicks, so the control under it can be pressed; on
-   phones the circle rises above it. */
+   away and stops taking clicks, so the control under it can be pressed.
+   On phones and tablets the control is centred (iteration-5 §B), clear of
+   the circle, so data-clear changes nothing there. */
 
 .fab {
   position: fixed;
@@ -61,10 +62,13 @@
   height: 40px;
   margin-right: -24px;
   padding: 0 38px 0 18px;
-  /* Colour, glass, rim and shadow: Glass.module.css (.glass.teal). */
-  font-family: var(--font-sans);
-  font-size: 0.9375rem;
+  /* Colour, glass, rim and shadow: Glass.module.css (.glass.teal). The
+     label is set like the primary button's: the display face, 14px, 600
+     (the body face has no 600, iteration-5 §F). */
+  font-family: var(--font-display);
+  font-size: 0.875rem;
   font-weight: 600;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   /* Glass.module.css's tint transitions, plus this file's fades. */
   transition:
@@ -90,13 +94,6 @@
 }
 
 @media (max-width: 1023.98px) {
-  /* Above the hero's pause row (the hero's last 44px) wherever WhatsAppFab
-     says it can meet the circle: its bottom edge from 68px above the bottom
-     of the screen to 34px below, so the circle clears the row's highest
-     point by 4px. The rail, when up, covers that row: docking wins. */
-  .fab[data-clear] {
-    transform: translateY(-100px);
-  }
   :global(:root[data-rail="shown"]) .fab {
     transform: translateY(12px);
   }

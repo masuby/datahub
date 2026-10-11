@@ -8,20 +8,30 @@
    1. Server HTML, Safari, Firefox, and Chromium until the browser is idle:
       CSS frosted glass — a tinted fill with a top sheen, a specular rim, a
       soft shadow, and backdrop blur + saturation.
-   2. Chromium with a fine pointer or keyboard, on a capable device, while
-      the button has the pointer near it or focus (GlassSurface):
-      liquid-glass-react draws the refracting layer (SVG displacement of the
-      backdrop) under the label; the host drops its own fill and blur
-      ([data-glass="live"]). At rest, and on touch screens, tier 1.
+   2. Chromium with a fine main pointer (mouse, trackpad), on a capable
+      device, while the button has the pointer near it or keyboard focus
+      and nothing on the page moves (GlassSurface): liquid-glass-react draws
+      the refracting layer (SVG displacement of the backdrop) under the
+      label; the host drops its own fill and blur ([data-glass="live"]). At
+      rest, and on touch screens (which never fetch the library), tier 1.
    3. Save-Data / low-end ([data-glass="flat"]): no backdrop blur at all.
-      prefers-reduced-transparency: an opaque fill. Forced colours: the
-      system's button colours.
+      prefers-reduced-transparency: an opaque fill, in every state. Forced
+      colours: the system's button colours.
+
+   The primary button is also liquid METAL (iteration 5 §E: "glass buttons
+   like the hand"): a chrome ring in the hand's colours that turns slowly
+   around the pill, a deep royal body, a lip of light along its top and, now
+   and then, a sheen that sweeps across. See "Liquid metal" below.
+
+   The header's nav, language switch and theme toggle use a quieter,
+   static glass (iteration 5b §K): see "Navigation glass" at the end.
 
    Contrast is carried by the tint alone, so it holds over ANY backdrop:
-   the label zone (24%..100% of the height) uses alphas at which the label
-   clears 4.5:1 even if the backdrop is pure white (white labels) or pure
-   black (dark labels). Worked numbers: tools/glass-contrast.mjs. The lighter
-   ends of the live layer and the top sheen never sit under the glyphs. */
+   the label zone (24%..100% of the height) uses alphas at which the white
+   label clears 4.5:1 even if the backdrop is pure white, with the sweeping
+   sheen at its brightest. The
+   lighter ends of the live layer, the top sheen and the lip never sit under
+   the glyphs (whose ink starts at ~38% of the height). */
 
 @property --g-top {
   syntax: "<color>";
@@ -39,35 +49,23 @@
   initial-value: transparent;
 }
 
-/* Royal (the primary button). #0A5CE6 @ .90: a white label clears 4.77:1
-   over a white backdrop; the pill clears 3:1 against both page backgrounds. */
+/* Royal (the primary button): deep royal glass that stays the same colour
+   on hover (the rim brightens instead). #084CCE @ .90 under the label: a
+   white label clears 5.83:1 over a white backdrop, and 4.80:1 under the
+   sheen's peak (+10% white). On the dark page the pill's edge is the
+   metal ring, which is light there. */
 .royal {
-  --g-top: rgb(46 124 246 / 0.84);
-  --g-mid: rgb(10 92 230 / 0.9);
-  --g-deep: rgb(10 77 184 / 0.92);
+  --g-top: rgb(44 124 246 / 0.86);
+  --g-mid: rgb(8 76 206 / 0.9);
+  --g-deep: rgb(5 50 150 / 0.93);
   --g-label: #ffffff;
-  --g-shadow: 0 1px 1px rgb(2 41 112 / 0.18), 0 10px 22px -10px rgb(2 41 112 / 0.55);
-}
-/* Hover: navy glass with a white label (light), sky glass with an ink label
-   (dark) — the spec's --action-hover / --on-action-hover, as glass. */
-.royal:hover,
-a:hover > .royal {
-  --g-top: rgb(26 74 158 / 0.86);
-  --g-mid: rgb(2 41 112 / 0.88);
-  --g-deep: rgb(2 33 92 / 0.92);
-}
-:global(.dark) .royal:hover,
-:global(.dark) a:hover > .royal,
-:global(.surface-ink) .royal:hover,
-:global(.surface-ink) a:hover > .royal {
-  --g-top: rgb(164 230 253 / 0.86);
-  --g-mid: rgb(104 212 251 / 0.88);
-  --g-deep: rgb(78 190 240 / 0.9);
-  --g-label: #030a1c;
+  --g-shadow: 0 1px 1px rgb(2 41 112 / 0.2), 0 10px 22px -10px rgb(2 41 112 / 0.6);
+  --g-glow: 0 0 18px -5px rgb(3 107 251 / 0.5);
 }
 :global(.dark) .royal,
 :global(.surface-ink) .royal {
   --g-shadow: 0 1px 1px rgb(0 0 0 / 0.4), 0 10px 26px -10px rgb(0 0 0 / 0.8), 0 0 22px -8px rgb(3 107 251 / 0.55);
+  --g-glow: 0 0 22px -4px rgb(104 212 251 / 0.5);
 }
 
 .glass {
@@ -95,6 +93,7 @@ a:hover > .royal {
     --g-mid var(--dur-micro) linear,
     --g-deep var(--dur-micro) linear,
     color var(--dur-micro) linear,
+    box-shadow var(--dur-ui) var(--ease-silk),
     transform var(--dur-micro) var(--ease-silk);
   -webkit-tap-highlight-color: transparent;
 }
@@ -122,8 +121,10 @@ a:hover > .royal {
   border-radius: 9999px;
 }
 
+/* Press: only while motion is allowed, by the OS and by the site's own
+   setting (GlassSurface marks the host [data-motion="off"] when paused). */
 @media (prefers-reduced-motion: no-preference) {
-  .glass:active {
+  .glass:not([data-motion="off"]):active {
     transform: scale(0.97);
   }
 }
@@ -167,6 +168,184 @@ a:hover > .teal {
 }
 :global(.dark) .green {
   box-shadow: var(--g-shadow);
+}
+
+/* ── Liquid metal (the primary button; GlassSurface `metal`) ──────────── */
+
+/* The hand's chrome (hero-shaders.ts paints it from the --metal-* tokens)
+   in a ring: white and ice glints, then the D's light and dark stripes and
+   the hand's, so it is navy metal on the light page and silver-white on the
+   dark one, like the hand itself. --g-metal-hi is the same ring with only
+   its light stops, faded in over it on hover and focus. Both start with a
+   glint at the top left. */
+.royal {
+  --g-rim-w: 2px;
+  --g-metal: conic-gradient(
+    from 290deg,
+    var(--button-metal-glint) 0deg,
+    var(--button-metal-ice) 12deg,
+    var(--metal-d-hi) 30deg,
+    var(--metal-d-lo) 62deg,
+    var(--metal-hand-lo) 96deg,
+    var(--metal-d-lo) 128deg,
+    var(--metal-hand-hi) 160deg,
+    var(--button-metal-glint) 180deg,
+    var(--metal-d-hi) 204deg,
+    var(--metal-d-lo) 240deg,
+    var(--metal-hand-lo) 280deg,
+    var(--metal-d-lo) 312deg,
+    var(--metal-d-hi) 340deg,
+    var(--button-metal-glint) 360deg
+  );
+  --g-metal-hi: conic-gradient(
+    from 290deg,
+    var(--button-metal-glint) 0deg,
+    var(--button-metal-ice) 30deg,
+    var(--metal-d-hi) 70deg,
+    var(--royal) 110deg,
+    var(--metal-d-hi) 150deg,
+    var(--button-metal-glint) 180deg,
+    var(--button-metal-ice) 214deg,
+    var(--metal-d-hi) 254deg,
+    var(--royal) 292deg,
+    var(--metal-d-hi) 330deg,
+    var(--button-metal-glint) 360deg
+  );
+}
+@media (min-resolution: 2dppx) {
+  .royal {
+    --g-rim-w: 1.5px;
+  }
+}
+
+/* The ring: a layer as big as the pill, cut to a --g-rim-w band (mask, the
+   same cut-out as the specular rim) and rounded (overflow). Inside it a
+   square carries the chrome and turns about the pill's centre, stretched
+   four times wider (scaleX, about a pill's proportions) so the stripes
+   spread evenly along the long sides and flow round at an even pace,
+   instead of flicking across the middle. Both are one transform on its own
+   compositor layer: a turn repaints nothing. The square's side (30% of the
+   pill + 60px) keeps the stretched turn over every corner of a 40-44px pill
+   of any width. Above the label (z-index 1), but only at the edge. */
+.metal {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: inherit;
+  padding: var(--g-rim-w);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.metal::before,
+.metal::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* Percentages of the pill's width, margins included: a centred square. */
+  width: calc(30% + 60px);
+  aspect-ratio: 1;
+  margin: calc(-15% - 30px) 0 0 calc(-15% - 30px);
+  background: var(--g-metal);
+  transform: scaleX(4);
+  animation: metal-turn 9s linear infinite paused;
+}
+.metal::after {
+  background: var(--g-metal-hi);
+  opacity: 0;
+  transition: opacity var(--dur-ui) var(--ease-silk);
+}
+@keyframes metal-turn {
+  from {
+    transform: scaleX(4) rotate(0turn);
+  }
+  to {
+    transform: scaleX(4) rotate(1turn);
+  }
+}
+
+/* Hover and keyboard focus: the rim brightens and a soft halo of its light
+   rises around the pill; the body keeps its colour. */
+.royal:hover > .metal::after,
+.royal:focus-visible > .metal::after {
+  opacity: 0.85;
+}
+.royal:hover,
+.royal:focus-visible {
+  box-shadow: var(--g-shadow), var(--g-glow);
+}
+
+/* A lip of light just inside the top of the ring, a little shade at the
+   bottom: the glass has a thickness. 1px each, never under the glyphs. */
+.royal::before {
+  inset: var(--g-rim-w);
+  padding: 0;
+  background: none;
+  -webkit-mask: none;
+  mask: none;
+  box-shadow:
+    inset 0 1px 0.5px rgb(255 255 255 / 0.5),
+    inset 0 -1px 1px rgb(2 20 64 / 0.28);
+}
+
+/* Now and then a soft sheen sweeps across: a skewed band that slides from
+   one end to the other (transform only) in the last 1.6 s of every 8 s.
+   Under the label (z-index -1, above the live layer), brightest along the
+   top and at most +10% white over the label's zone (mask), which the
+   body's contrast numbers above allow for. */
+.sheen {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  visibility: hidden;
+}
+.sheen::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 42%;
+  background: linear-gradient(
+    90deg,
+    rgb(255 255 255 / 0) 0%,
+    rgb(255 255 255 / 0.3) 50%,
+    rgb(255 255 255 / 0) 100%
+  );
+  -webkit-mask: linear-gradient(180deg, #000 0%, rgb(0 0 0 / 0.33) 34%, rgb(0 0 0 / 0.25) 100%);
+  mask: linear-gradient(180deg, #000 0%, rgb(0 0 0 / 0.33) 34%, rgb(0 0 0 / 0.25) 100%);
+  transform: translateX(-130%) skewX(-20deg);
+  animation: metal-sheen 8s ease-in-out 1.5s infinite paused;
+}
+@keyframes metal-sheen {
+  0%,
+  80% {
+    transform: translateX(-130%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(270%) skewX(-20deg);
+  }
+}
+
+/* Both move only while GlassSurface marks the host [data-metal="run"]:
+   motion allowed (OS and site setting), not Save-Data or a low-end device,
+   the tab showing and the button on screen. Otherwise the ring holds still
+   where it is (at rest: the glint at the top left) and the sheen hides. */
+.glass[data-metal="run"] > .metal::before,
+.glass[data-metal="run"] > .metal::after,
+.glass[data-metal="run"] > .sheen::before {
+  animation-play-state: running;
+}
+.glass[data-metal="run"] > .sheen {
+  visibility: visible;
 }
 
 /* ── Tier 2: the live layer (GlassSurface) ─────────────────────────────── */
@@ -238,6 +417,12 @@ a:hover > .teal {
   backdrop-filter: none;
 }
 
+/* Opaque in every state: a rule that changes a tint on hover, focus or
+   press (the WhatsApp ones above, 0,2,1 at most) needs its opaque twin here,
+   with the same selector, or it wins over these and the page shows through
+   (a sticky :hover after a tap included). The royal keeps its colour in
+   every state. Hover still answers, a shade lighter, opaque: white on the
+   teal #0a6b60 clears 6.4:1. */
 @media (prefers-reduced-transparency: reduce) {
   .glass {
     --g-sheen: linear-gradient(transparent, transparent);
@@ -245,33 +430,34 @@ a:hover > .teal {
     backdrop-filter: none;
   }
   .royal {
-    --g-top: rgb(10 92 230);
-    --g-mid: rgb(10 92 230);
-    --g-deep: rgb(10 77 184);
-  }
-  .royal:hover,
-  a:hover > .royal {
-    --g-top: #022970;
-    --g-mid: #022970;
-    --g-deep: #022970;
-  }
-  :global(.dark) .royal:hover,
-  :global(.dark) a:hover > .royal {
-    --g-top: #68d4fb;
-    --g-mid: #68d4fb;
-    --g-deep: #68d4fb;
+    --g-top: rgb(8 76 206);
+    --g-mid: rgb(8 76 206);
+    --g-deep: rgb(5 50 150);
   }
   .green {
     --g-top: #25d366;
     --g-mid: #25d366;
     --g-deep: #25d366;
   }
+  .green:hover,
+  a:hover > .green {
+    --g-top: #2ede72;
+    --g-mid: #2ede72;
+    --g-deep: #2ede72;
+  }
   .teal {
     --g-top: #075e54;
     --g-mid: #075e54;
     --g-deep: #075e54;
   }
-  .live {
+  .teal:hover,
+  a:hover > .teal {
+    --g-top: #0a6b60;
+    --g-mid: #0a6b60;
+    --g-deep: #0a6b60;
+  }
+  .live,
+  .sheen {
     display: none;
   }
 }
@@ -286,7 +472,9 @@ a:hover > .teal {
     backdrop-filter: none;
   }
   .glass::before,
-  .live {
+  .live,
+  .metal,
+  .sheen {
     display: none;
   }
 }
@@ -300,7 +488,217 @@ a:hover > .teal {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
-  .live {
+  .live,
+  .metal,
+  .sheen {
     display: none;
+  }
+}
+
+/* ── Navigation glass (the header's controls: iteration 5b §K) ──────────
+
+   The button's glass language, quieter, for the header nav, the language
+   switch and the theme toggle. Plain text at rest; on hover (a fine
+   pointer) or keyboard focus a faint clear-glass pill rises behind the
+   label (::before); the current one sits in a sky liquid-glass pill
+   (.navPill: tinted sky glass, a specular glint and a lip of light along
+   the top, a still metal rim in the hand's colours), its label navy in both
+   themes.
+
+   Nothing loops. Hover and a change of page fade the layers (opacity, and
+   the pill settles from a slight scale): compositor work, no repaint, no
+   backdrop filter. The host is pill-shaped and padded in every state, so a
+   pill appearing never moves or resizes anything; ::after stretches its
+   hit area to 44px tall whatever the pill's height.
+
+   Contrast (measured from screenshots, the label's band of the pill, its
+   darkest pixel): navy #022970 on the sky body clears 7.9:1 on the light
+   page and 6.6:1 on the dark one (the body's translucency over the dark
+   header counted), 8.0:1 opaque; the hover glint only lightens it. On the
+   light page the rim's darker lower stripes draw the pill's edge. */
+.navGlass {
+  --n-clear-fill: linear-gradient(180deg, rgb(255 255 255 / 0.8), rgb(255 255 255 / 0.4));
+  --n-clear-edge: inset 0 0 0 1px rgb(2 41 112 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.9);
+  --n-clear-shadow: 0 5px 12px -8px rgb(2 41 112 / 0.22);
+  --n-sky-shadow: 0 1px 2px rgb(2 41 112 / 0.16), 0 6px 16px -7px rgb(3 107 251 / 0.5);
+
+  position: relative;
+  isolation: isolate; /* the layers sit at z-index -1: behind the label, inside the host */
+  border-radius: 9999px;
+  /* The label's colour changes at once (a colour transition repaints every
+     frame); the glass behind it fades. */
+  color: var(--fg-muted);
+  -webkit-tap-highlight-color: transparent;
+}
+:global(.dark) .navGlass {
+  --n-clear-fill: linear-gradient(180deg, rgb(255 255 255 / 0.11), rgb(255 255 255 / 0.04));
+  --n-clear-edge: inset 0 0 0 1px rgb(255 255 255 / 0.1), inset 0 1px 0 rgb(255 255 255 / 0.16);
+  --n-clear-shadow: 0 6px 14px -8px rgb(0 0 0 / 0.7);
+  --n-sky-shadow: 0 0 0 0.5px rgb(104 212 251 / 0.35), 0 0 16px -3px rgb(104 212 251 / 0.5),
+    0 8px 18px -10px rgb(0 0 0 / 0.8);
+}
+/* No-JS dark (globals.css's fallback): the same values. */
+@media (prefers-color-scheme: dark) {
+  :global(:root:not(.light):not(.dark)) .navGlass {
+    --n-clear-fill: linear-gradient(180deg, rgb(255 255 255 / 0.11), rgb(255 255 255 / 0.04));
+    --n-clear-edge: inset 0 0 0 1px rgb(255 255 255 / 0.1), inset 0 1px 0 rgb(255 255 255 / 0.16);
+    --n-clear-shadow: 0 6px 14px -8px rgb(0 0 0 / 0.7);
+    --n-sky-shadow: 0 0 0 0.5px rgb(104 212 251 / 0.35), 0 0 16px -3px rgb(104 212 251 / 0.5),
+      0 8px 18px -10px rgb(0 0 0 / 0.8);
+  }
+}
+
+/* The clear glass: a frosted white pill on the light page, a breath of
+   light on the dark one. .navRound (the theme toggle) draws it as a circle
+   inside its 44px square. */
+.navGlass::before {
+  content: "";
+  position: absolute;
+  inset: var(--n-inset, 0);
+  z-index: -1;
+  border-radius: 9999px;
+  background: var(--n-clear-fill);
+  box-shadow: var(--n-clear-edge), var(--n-clear-shadow);
+  opacity: 0;
+  transition: opacity var(--dur-micro) linear;
+  pointer-events: none;
+}
+.navRound {
+  --n-inset: 4px;
+}
+/* 44px tall to the touch (a 36px pill gains 4px above and below). */
+.navGlass::after {
+  content: "";
+  position: absolute;
+  inset: min(0px, calc(50% - 22px)) 0;
+}
+@media (hover: hover) {
+  .navGlass:hover {
+    color: var(--fg);
+  }
+  .navGlass:hover::before {
+    opacity: 1;
+  }
+}
+/* The focus ring is the global one, rounded to the pill (or circle). */
+.navGlass:focus-visible {
+  color: var(--fg);
+  border-radius: 9999px;
+}
+.navGlass:focus-visible::before {
+  opacity: 1;
+}
+/* The circle's ring 3px outside the glass, as a pill's is (44px box, 4px inset). */
+.navRound:focus-visible {
+  outline-offset: -1px;
+}
+
+/* The current page (or language): the sky pill instead of the clear one. */
+.navGlass[data-active="true"] {
+  color: var(--navy);
+}
+.navGlass[data-active="true"]::before {
+  opacity: 0;
+}
+.navPill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 70% at 24% 8%, rgb(255 255 255 / 0.62), rgb(255 255 255 / 0) 72%),
+    linear-gradient(180deg, rgb(255 255 255 / 0.46) 0%, rgb(255 255 255 / 0.12) 40%, rgb(255 255 255 / 0) 52%),
+    radial-gradient(80% 55% at 50% 115%, rgb(255 255 255 / 0.42), rgb(255 255 255 / 0) 70%),
+    linear-gradient(180deg, rgb(168 233 253 / 0.94) 0%, rgb(112 214 251 / 0.92) 45%, rgb(80 197 246 / 0.94) 100%);
+  box-shadow:
+    inset 0 1px 0.5px rgb(255 255 255 / 0.9),
+    inset 0 -1px 1px rgb(2 41 112 / 0.2),
+    var(--n-sky-shadow);
+  opacity: 0;
+  transform: scale(0.92);
+  transition:
+    opacity var(--dur-ui) var(--ease-silk),
+    transform var(--dur-ui) var(--ease-silk);
+}
+.navGlass[data-active="true"] > .navPill {
+  opacity: 1;
+  transform: none;
+}
+/* The rim: the button's chrome, still and 1px. Light along the top (white
+   and ice glints, the D's light stripe at the ends), the metal's darker
+   stripes only along the bottom, with a band of reflected light in the
+   middle: navy metal below on the light page, where it also draws the
+   pill's lower edge; royal on the dark one. The stops are set for a wide
+   pill: the left end at 0°, the top edge from ~20° to ~160°, the right end
+   at 180°, the bottom from ~200° to ~340°. */
+.navPill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from 270deg,
+    var(--metal-d-hi) 0deg,
+    var(--button-metal-ice) 22deg,
+    var(--button-metal-glint) 44deg,
+    var(--button-metal-ice) 92deg,
+    var(--metal-d-hi) 146deg,
+    var(--metal-hand-hi) 178deg,
+    var(--metal-d-lo) 214deg,
+    var(--metal-d-hi) 268deg,
+    var(--metal-d-lo) 318deg,
+    var(--metal-d-hi) 356deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+/* Hover or focus on the current one: a little more light along the top. */
+.navPill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.4), rgb(255 255 255 / 0) 62%);
+  opacity: 0;
+  transition: opacity var(--dur-micro) linear;
+}
+@media (hover: hover) {
+  .navGlass:hover > .navPill::after {
+    opacity: 1;
+  }
+}
+.navGlass:focus-visible > .navPill::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .navGlass::before {
+    background: var(--bg-sunk);
+  }
+  .navPill {
+    background: var(--sky);
+  }
+  .navPill::after {
+    display: none;
+  }
+}
+
+/* Forced colours: no glass; the current one is ringed in Highlight. */
+@media (forced-colors: active) {
+  .navGlass::before,
+  .navPill::before,
+  .navPill::after {
+    display: none;
+  }
+  .navPill {
+    background: none;
+    box-shadow: none;
+    border: 2px solid Highlight;
+    transform: none;
   }
 }

@@ -10,9 +10,9 @@ export type SampleService = "dashboards" | "automation" | "ai-agents";
 
 /**
  * The plate inside a service page's sample band (see SampleBand). A client
- * component for the same reason as the dashboards views: as server output
- * its SVG was sent twice, as HTML and again in the React payload. It still
- * renders into the server HTML; only `ctx` (plain data) crosses over.
+ * component on purpose: as server output its SVG was sent twice, as HTML and
+ * again in the React payload. It still renders into the server HTML; only
+ * `ctx` (plain data) crosses over.
  *
  *   dashboards  View 1 KPI strip + Fig. 02.1 + Fig. 02.2
  *   automation  View 4 KPI strip + Fig. 02.10 + Fig. 02.11

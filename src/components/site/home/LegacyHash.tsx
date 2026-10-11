@@ -11,6 +11,10 @@ import { withCampaign } from "../MobileMenu";
  * has no such section any more; it is forwarded to the page, campaign tag
  * kept — on arrival, and if a fragment link on the page changes the hash.
  * Fragments never reach the server, so this cannot be a redirect.
+ *
+ * `#dashboards` is not here and must never be: the home page's live sample
+ * dashboard is that section, and /dashboards itself redirects to it
+ * (iteration-5 §I).
  */
 const HOME_MOVED: Readonly<Record<string, string>> = {
   estimator: "/services#estimator",

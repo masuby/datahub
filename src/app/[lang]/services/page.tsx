@@ -7,7 +7,6 @@ import { LangHint } from "@/components/system/LangHint";
 import { Header } from "@/components/site/Header";
 import { Services } from "@/components/site/Services";
 import { HoursEstimator } from "@/components/site/HoursEstimator";
-import { CtaBand } from "@/components/site/home/CtaBand";
 import { Footer } from "@/components/site/Footer";
 import { ActionRail } from "@/components/site/ActionRail";
 import { pageMetadata } from "@/lib/seo";
@@ -15,8 +14,7 @@ import { pageMetadata } from "@/lib/seo";
 /**
  * Services (/services, /sw/services): the three services, each linking to
  * its own page, then the hours estimator, whose "Add this to my message"
- * opens /contact with the sentence. The services title is the page's h1;
- * the closing band leads to /contact.
+ * opens /contact with the sentence. The services title is the page's h1.
  */
 
 // Dynamic so the per-request CSP nonce reaches the framework scripts (see
@@ -54,7 +52,6 @@ export default async function ServicesPage({ params }: Props) {
       <main id="main" className="flex-1">
         <Services lang={lang} headingLevel={1} />
         <HoursEstimator lang={lang} />
-        <CtaBand lang={lang} />
       </main>
       <Footer lang={lang} />
       <ActionRail lang={lang} />

@@ -8,16 +8,15 @@ import { JsonLd } from "@/components/system/JsonLd";
 import { LangHint } from "@/components/system/LangHint";
 import { Header } from "@/components/site/Header";
 import { Faq } from "@/components/site/Faq";
-import { CtaBand } from "@/components/site/home/CtaBand";
 import { Footer } from "@/components/site/Footer";
 import { ActionRail } from "@/components/site/ActionRail";
 import { absoluteUrl, faqSchema, pageMetadata } from "@/lib/seo";
 
 /**
- * Questions (/faq, /sw/faq). Its section title is the page's h1; the closing
- * band leads to /contact. The FAQPage JSON-LD lives here, built from the
- * same dictionary array the section renders, so the markup can never
- * describe questions the page does not show.
+ * Questions (/faq, /sw/faq). Its section title is the page's h1. The FAQPage
+ * JSON-LD lives here, built from the same dictionary array the section
+ * renders, so the markup can never describe questions the page does not
+ * show.
  */
 
 // Dynamic so the per-request CSP nonce reaches the framework scripts and the
@@ -57,7 +56,6 @@ export default async function FaqPage({ params }: Props) {
       <LangHint lang={lang} />
       <main id="main" className="flex-1">
         <Faq lang={lang} headingLevel={1} />
-        <CtaBand lang={lang} />
       </main>
       <Footer lang={lang} />
       <ActionRail lang={lang} />

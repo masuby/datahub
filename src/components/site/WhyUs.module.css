@@ -1,6 +1,6 @@
 /*
- * 05 — Security (WhyUs): the ledger strike-through and column divider, the
- * practice and colophon row rules, the policy block.
+ * 04 — Security (WhyUs): the centred practices, the ledger strike-through
+ * and column divider, the colophon row rules, the policy block.
  *
  * The strike is drawn as a 1px background line on the inline text run (with
  * box-decoration-break: clone, so every wrapped line of a long Kiswahili item
@@ -64,7 +64,7 @@
   }
 }
 
-/* R1 on top of a row whose element cannot hold a <Rule> child (dl > div). */
+/* R1 on top of a colophon row (an <li> of running text). */
 .rowRule {
   background: linear-gradient(var(--rule), var(--rule)) top / 100% 1px no-repeat;
 }
@@ -73,4 +73,83 @@
 .policyBlock {
   padding-left: 16px;
   background: linear-gradient(var(--rule-strong), var(--rule-strong)) left / 1px 100% no-repeat;
+}
+
+/*
+ * The practices: short term + definition pairs, centred (iteration-5 §B).
+ * Phones: one column, a fading hairline between. From 640px two across and
+ * from 1024px three, with a fading vertical hairline in the middle of the gap
+ * between neighbours. Lines stop; nothing closes into a box.
+ */
+.practices {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.practice {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block: 1.5rem;
+  text-align: center;
+}
+.practice:first-child {
+  padding-top: 0;
+}
+.practice:last-child {
+  padding-bottom: 0;
+}
+.practice + .practice::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rule) 18%, var(--rule) 82%, transparent);
+}
+.practice::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--col-gap) / -2);
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--rule) 18%, var(--rule) 82%, transparent);
+  display: none;
+}
+@media (min-width: 640px) {
+  .practices {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    row-gap: 2.5rem;
+  }
+  .practice,
+  .practice:first-child,
+  .practice:last-child {
+    padding: 0.25rem 1rem;
+  }
+  .practice + .practice::before {
+    display: none;
+  }
+  .practice:nth-child(2n)::after {
+    display: block;
+  }
+}
+@media (min-width: 1024px) {
+  .practices {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .practice:nth-child(2n)::after {
+    display: none;
+  }
+  .practice:not(:nth-child(3n + 1))::after {
+    display: block;
+  }
+}
+@media (forced-colors: active) {
+  .practice::before,
+  .practice::after {
+    background: CanvasText;
+  }
 }

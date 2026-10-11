@@ -13,13 +13,13 @@ const SECTION = "03";
 
 /**
  * The sample band on service pages ("03 — See it in a sample", spec §7.4):
- * no tabs. The same figures as /dashboards, with read-mode notes always
+ * a few figures of the sample dashboards, with read-mode notes always
  * shown as numbered lists; `service` picks the figures (see SamplePlate).
  * It sits on the page background and follows the visitor's theme, like
  * every other section (iteration 2, §C): no ink surface.
  *
- * Same SAMPLE stamp, honesty notice and credit lines as /dashboards. The
- * plate sits in <Reveal> so its charts draw when scrolled to.
+ * SAMPLE stamp, honesty notice and credit lines on every plate. The plate
+ * sits in <Reveal> so its charts draw when scrolled to.
  */
 export async function SampleBand({
   lang,
@@ -32,7 +32,7 @@ export async function SampleBand({
   total?: number;
 }) {
   const dict = await getDictionary(lang);
-  const ctx = await makeDashCtx(lang, `sb-${service}`, false);
+  const ctx = await makeDashCtx(lang, `sb-${service}`);
   const s = dict.servicePage.sample;
 
   return (
@@ -45,7 +45,8 @@ export async function SampleBand({
           className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12"
           style={{ columnGap: "var(--col-gap)" }}
         >
-          <div className={`${styles.root} col-span-4 sm:col-span-8 lg:col-span-9 lg:col-start-4`} data-read="on">
+          {/* Centred under the centred header (iteration-5 §B). */}
+          <div className={`${styles.root} col-span-4 sm:col-span-8 lg:col-span-10 lg:col-start-2`}>
             <Reveal>
               <SamplePlate ctx={ctx} service={service} section={SECTION} />
             </Reveal>

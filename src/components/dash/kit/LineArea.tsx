@@ -5,17 +5,14 @@ import styles from "../dash.module.css";
 
 /**
  * Line (+ optional area) against a dashed reference: the revenue target
- * (Fig. 02.1) or the PAR30 limit with a hatched breach zone above it
- * (Fig. 02.4). 2px series in --s1, area --s-fill, reference 1.5px dashed
+ * (Fig. 02.1). 2px series in --s1, area --s-fill, reference 1.5px dashed
  * --s-ref. The series and the reference are labelled at their right ends
  * (≥640px; the readout line carries the same values on phones).
  */
 export function LineArea({
   ctx,
   id,
-  label,
   summary,
-  readoutId,
   values,
   xLabels,
   min = 0,
@@ -26,16 +23,12 @@ export function LineArea({
   area = false,
   seriesLabel,
   reference,
-  breachAbove = false,
-  reads,
   marks,
   height = 240,
 }: {
   ctx: DashCtx;
   id: string;
-  label: string;
   summary: string;
-  readoutId: string;
   values: readonly number[];
   xLabels: string[];
   min?: number;
@@ -46,9 +39,6 @@ export function LineArea({
   area?: boolean;
   seriesLabel: string;
   reference: { value: number; label: string };
-  /** Hatch the zone above the reference (a limit) instead of treating it as a target. */
-  breachAbove?: boolean;
-  reads: string[];
   marks: Mark[];
   height?: number;
 }) {
@@ -68,7 +58,6 @@ export function LineArea({
   // on --bg (3.48:1 light) instead of half under the fill (2.87:1).
   const floor = (100 - 50 / (PB - PT)).toFixed(2);
   const areaPath = `${line}L${xs[last].toFixed(2)} ${floor}L${xs[0].toFixed(2)} ${floor}Z`;
-  const hatchId = `${id}-hatch`;
   const tickValues = ticks(min, max, step);
   const tickText = (v: number) => v.toFixed(tickDecimals);
   const refAbove = yLast > yRef;
@@ -76,29 +65,8 @@ export function LineArea({
   const seriesLabelY = Math.abs(yLast + 4 - refLabelY) < 14 ? (refAbove ? yLast + 16 : yLast - 8) : yLast + 4;
 
   return (
-    <ChartArea
-      ctx={ctx}
-      label={label}
-      readoutId={readoutId}
-      cross={{
-        axis: "x",
-        pos: xs,
-        dots: values.map((v, i) => [xs[i], y(v)] as const),
-        reads,
-        idle: last,
-      }}
-    >
-      <ChartSvg ctx={ctx} titleId={`${id}-title`} summary={summary} height={height} crosshair={[PT - 6, PB]}>
-        {breachAbove && (
-          <>
-            <defs>
-              <pattern id={hatchId} patternUnits="userSpaceOnUse" width={6} height={6} patternTransform="rotate(45)">
-                <line x1={0} y1={0} x2={0} y2={6} strokeWidth={3} style={{ stroke: "var(--s-hatch)" }} />
-              </pattern>
-            </defs>
-            <rect x="0%" width="100%" y={PT} height={Math.max(0, yRef - PT)} fill={`url(#${hatchId})`} />
-          </>
-        )}
+    <ChartArea>
+      <ChartSvg ctx={ctx} titleId={`${id}-title`} summary={summary} height={height}>
         <YGrid layer="lines" values={tickValues} y={y} label={tickText} />
         <line
           x1="0%"
@@ -132,7 +100,7 @@ export function LineArea({
           />
         </svg>
         <circle cx={`${xs[last]}%`} cy={yLast} r={3.5} className={styles.fadeLate} style={{ fill: "var(--s1)" }} />
-        {/* Tick labels over the fill and the hatch, on a --bg halo. */}
+        {/* Tick labels over the fill, on a --bg halo. */}
         <YGrid layer="labels" values={tickValues} y={y} label={tickText} unit={unit} avoid={yRef} />
         <g aria-hidden="true" className="max-sm:hidden">
           <text x={`${R + 2.5}%`} y={seriesLabelY} style={{ fill: "var(--fg)" }}>
@@ -144,7 +112,7 @@ export function LineArea({
         </g>
         <XLabels xs={xs} labels={xLabels} y={height - 6} thin={values.length > 9} />
       </ChartSvg>
-      <Markers ctx={ctx} marks={marks} at={(i) => [xs[i], y(values[i])]} />
+      <Markers marks={marks} at={(i) => [xs[i], y(values[i])]} />
     </ChartArea>
   );
 }

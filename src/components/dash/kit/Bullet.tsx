@@ -16,26 +16,20 @@ const W_MIN = 320;
 export function Bullet({
   ctx,
   id,
-  label,
   summary,
-  readoutId,
   rows,
   watchBelow,
   max = 110,
   targetLabel,
-  reads,
   marks,
 }: {
   ctx: DashCtx;
   id: string;
-  label: string;
   summary: string;
-  readoutId: string;
   rows: readonly { name: string; value: number }[];
   watchBelow: number;
   max?: number;
   targetLabel: string;
-  reads: string[];
   marks: Mark[];
 }) {
   const PT = 34;
@@ -51,12 +45,7 @@ export function Bullet({
   const bottom = PT + rows.length * ROW;
 
   return (
-    <ChartArea
-      ctx={ctx}
-      label={label}
-      readoutId={readoutId}
-      cross={{ axis: "y", pos: rows.map((_, i) => cy(i)), reads, idle: rows.length - 1 }}
-    >
+    <ChartArea>
       <ChartSvg ctx={ctx} titleId={`${id}-title`} summary={summary} height={height}>
         <line
           x1={`${BL}%`}
@@ -74,7 +63,6 @@ export function Bullet({
                 {r.name}
               </text>
               <rect
-                data-k={i}
                 x={`${BL}%`}
                 width={`${x(r.value) - BL}%`}
                 y={cy(i) - 7}
@@ -112,15 +100,7 @@ export function Bullet({
         </g>
       </ChartSvg>
       {marks.map((m, k) => (
-        <ReadMarker
-          key={m.n}
-          ctx={ctx}
-          n={m.n}
-          noteId={m.noteId}
-          order={k}
-          left={Math.min(x(rows[m.i].value) + 5, 94)}
-          top={cy(m.i)}
-        />
+        <ReadMarker key={m.n} n={m.n} order={k} left={Math.min(x(rows[m.i].value) + 5, 94)} top={cy(m.i)} />
       ))}
     </ChartArea>
   );

@@ -36,8 +36,6 @@ const en = {
     "skip": "Skip to content",
     "opensNewTab": "(opens in a new tab)",
     "external": "external link",
-    "sampleFigure": "Sample chart. All figures are invented.",
-    "chartKeys": "Use the left and right arrow keys to move through the data.",
     "today": "Today:",
     "withDataHub": "With DataHub:"
   },
@@ -48,7 +46,6 @@ const en = {
   "nav": {
     "label": "Main",
     "services": "Services",
-    "dashboards": "Dashboards",
     "process": "Process",
     "security": "Security",
     "team": "Team",
@@ -58,13 +55,11 @@ const en = {
     "cta": "Start a conversation",
     "menuOpen": "Menu",
     "menuClose": "Close",
-    "menuLabel": "Site menu",
-    "progressLabel": "Reading progress"
+    "menuLabel": "Site menu"
   },
   "menu": {
     "items": [
       "Services",
-      "Sample dashboards",
       "Your numbers",
       "How we work",
       "Security",
@@ -116,24 +111,7 @@ const en = {
   },
   "hero": {
     "ctaPrimary": "Start a conversation",
-    "ctaSecondary": "See sample dashboards"
-  },
-  "serviceIndex": {
-    "label": "Our services",
-    "items": [
-      {
-        "index": "01.1",
-        "label": "Dashboards & BI"
-      },
-      {
-        "index": "01.2",
-        "label": "Reporting automation"
-      },
-      {
-        "index": "01.3",
-        "label": "AI agents"
-      }
-    ]
+    "ctaSecondary": "See a live sample"
   },
   "services": {
     "eyebrow": "01 — What we do",
@@ -145,46 +123,34 @@ const en = {
         "index": "01.1",
         "title": "Dashboards & business intelligence",
         "tagline": "One place your team decides from",
-        "description": "Current figures against target, by branch, department or officer.",
-        "glyphLabel": "A line rising towards a target mark"
+        "description": "Current figures against target, by branch, department or officer."
       },
       "automation": {
         "index": "01.2",
         "title": "Reporting automation",
         "tagline": "Hours of manual work, done in seconds",
-        "description": "Your weekly Excel and PowerPoint reports, generated for you.",
-        "glyphLabel": "Three lines merging into one"
+        "description": "Your weekly Excel and PowerPoint reports, generated for you."
       },
       "aiAgents": {
         "index": "01.3",
         "title": "AI agents",
         "tagline": "Reads your data, drafts the next step",
-        "description": "Agents that watch your data, summarise what changed and wait for a person to approve.",
-        "glyphLabel": "Three connected points, one marked for approval"
+        "description": "Agents that watch your data, summarise what changed and wait for a person to approve."
       }
     }
   },
   "dash": {
-    "eyebrow": "02 — Sample dashboards",
+    "eyebrow": "Sample dashboard",
     "title": "See what Monday morning could look like.",
-    "lead": "Four views, built the way we build for clients.",
     "notice": "Sample data — we never publish client dashboards",
     "stamp": "SAMPLE DATA",
     "footnote": "Every name and number here is invented.",
     "credit": "Source: DataHub sample data · TZS · {period}",
     "figPrefix": "Fig.",
-    "tablistLabel": "Sample dashboard views",
     "showTable": "View as table",
-    "readHint": "Shows what each chart is for, and the decision it supports.",
     "read": {
-      "on": "Explain this view",
-      "off": "Hide explanations",
       "listLabel": "What this chart tells you",
-      "markerLabel": "Explanation {n}",
       "decisionPrefix": "Decision:"
-    },
-    "readout": {
-      "idle": "Move across the chart to read values"
     },
     "status": {
       "onTarget": "On target",
@@ -194,14 +160,6 @@ const en = {
       "sent": "Sent",
       "awaiting": "Awaiting approval",
       "queued": "Queued for review"
-    },
-    "units": {
-      "bn": "bn",
-      "mn": "mn",
-      "hours": "h",
-      "seconds": "s",
-      "minutes": "min",
-      "percent": "%"
     },
     "months": [
       "Jan",
@@ -218,15 +176,10 @@ const en = {
       "Dec"
     ],
     "table": {
-      "month": "Month",
-      "value": "Value",
-      "target": "Target"
+      "month": "Month"
     },
     "views": {
       "overview": {
-        "index": "02.1",
-        "tab": "Executive overview",
-        "tabDescription": "The month on one screen, for leadership.",
         "entity": "Sample lender (microfinance)",
         "period": "Jan–Sep 2026",
         "creditPeriod": "Jan–Sep 2026",
@@ -264,17 +217,6 @@ const en = {
             "axis": "% of target",
             "readout": "{branch} · {pct}% of target",
             "summary": "Only Kariakoo is above target, at 104%."
-          },
-          "exceptions": {
-            "number": "02.3",
-            "title": "Exceptions",
-            "items": [
-              "Mbeya PAR30 7.2% (limit 5.0%)",
-              "Dodoma PAR30 5.4% (limit 5.0%)",
-              "Dodoma disbursements 18% below plan",
-              "Board pack generated 05:58, sent to 9 recipients"
-            ],
-            "summary": "Two PAR30 breaches, one branch behind plan, and the board pack on time."
           }
         },
         "changed": {
@@ -298,200 +240,10 @@ const en = {
             "anchor": "Mbeya",
             "shows": "Mbeya is lowest, at 84% of target.",
             "decision": "Regional managers know where to go first."
-          },
-          {
-            "figure": "exceptions",
-            "anchor": "0",
-            "shows": "Two branches are above the 5% PAR30 limit.",
-            "decision": "The Head of Credit sees breaches the same morning."
-          }
-        ]
-      },
-      "loans": {
-        "index": "02.2",
-        "tab": "Loan portfolio",
-        "tabDescription": "Arrears, ageing and officers, for the credit team.",
-        "entity": "Sample lender (microfinance)",
-        "period": "As at 30 Sep 2026",
-        "creditPeriod": "Sep 2026",
-        "kpis": [
-          {
-            "label": "Gross loan portfolio",
-            "context": "+2.1% since August"
-          },
-          {
-            "label": "PAR30",
-            "context": "Limit 5.0%"
-          },
-          {
-            "label": "Non-performing (90+ days)",
-            "context": "Share of portfolio"
-          },
-          {
-            "label": "Disbursed in September",
-            "context": "Plan TZS 6.1 bn"
-          }
-        ],
-        "figures": {
-          "par": {
-            "number": "02.4",
-            "title": "PAR30, last 12 months",
-            "axis": "% of portfolio",
-            "limit": "Limit 5.0%",
-            "readout": "{month} · PAR30 {value}%",
-            "summary": "PAR30 was over the 5% limit from May to July."
-          },
-          "ageing": {
-            "number": "02.5",
-            "title": "Ageing of the portfolio",
-            "buckets": [
-              "Current",
-              "1–30 days",
-              "31–60 days",
-              "61–90 days",
-              "90+ days"
-            ],
-            "summary": "91.2% of the portfolio is current."
-          },
-          "mix": {
-            "number": "02.6",
-            "title": "Portfolio by product",
-            "products": [
-              "Group loans",
-              "SME",
-              "Salary",
-              "Agriculture"
-            ],
-            "summary": "Group loans are the largest product: TZS 21.8 bn of TZS 64.2 bn."
-          },
-          "flows": {
-            "number": "02.7",
-            "title": "Disbursed and repaid, Apr–Sep",
-            "axis": "TZS bn",
-            "seriesDisbursed": "Disbursed",
-            "seriesRepaid": "Repaid",
-            "readout": "{month} · disbursed TZS {a} bn · repaid TZS {b} bn",
-            "summary": "Disbursements ran at TZS 5.2–5.9 bn a month."
-          }
-        },
-        "officers": {
-          "title": "Loan officers",
-          "caption": "Officers are shown by code only.",
-          "columns": {
-            "code": "Officer",
-            "branch": "Branch",
-            "portfolio": "Portfolio",
-            "par": "PAR30",
-            "trend": "12 months"
-          }
-        },
-        "read": [
-          {
-            "figure": "par",
-            "anchor": "Jul",
-            "shows": "PAR30 peaked at 5.4% in July.",
-            "decision": "A breach is flagged the same day, so collections start early."
-          },
-          {
-            "figure": "ageing",
-            "anchor": "90+ days",
-            "shows": "1.5% is over 90 days overdue.",
-            "decision": "Finance and credit discuss provisions from the same number."
-          },
-          {
-            "figure": "officers",
-            "anchor": "LO-047",
-            "shows": "Two officers are above the limit.",
-            "decision": "Follow-up goes to two portfolios, not the whole branch."
-          },
-          {
-            "figure": "flows",
-            "anchor": "Jul",
-            "shows": "In July, repayments overtook disbursements for the first time.",
-            "decision": "Treasury plans cash from the trend, not last month’s estimate."
-          }
-        ]
-      },
-      "sales": {
-        "index": "02.3",
-        "tab": "Sales by region",
-        "tabDescription": "Where sales come from and where they grow.",
-        "entity": "Sample distributor (consumer goods)",
-        "period": "Q3 2026 (Jul–Sep)",
-        "creditPeriod": "Q3 2026",
-        "kpis": [
-          {
-            "label": "Sales, Q3",
-            "context": "+11.3% on Q3 2025"
-          },
-          {
-            "label": "Active outlets",
-            "context": "Ordered in Q3"
-          },
-          {
-            "label": "Average order",
-            "context": "Per outlet order"
-          },
-          {
-            "label": "Regions above plan",
-            "value": "6 of 10",
-            "context": "Q3 plan"
-          }
-        ],
-        "figures": {
-          "map": {
-            "number": "02.8",
-            "title": "Sales by region",
-            "legendTitle": "Growth on Q3 2025",
-            "legend": [
-              "up to 6%",
-              "7–9%",
-              "10–13%",
-              "14–17%",
-              "18% or more"
-            ],
-            "ringNote": "Circle size shows sales.",
-            "summary": "Dar es Salaam sells most; Dodoma, Mwanza and Arusha grew fastest."
-          },
-          "ranked": {
-            "number": "02.9",
-            "title": "Regions ranked by sales",
-            "columns": {
-              "region": "Region",
-              "sales": "Sales",
-              "share": "Share",
-              "growth": "Growth"
-            },
-            "other": "Other regions",
-            "readout": "{region} · TZS {value} bn · {share}% of sales · {growth}% growth",
-            "summary": "Dar es Salaam is 30.6% of sales."
-          }
-        },
-        "read": [
-          {
-            "figure": "map",
-            "anchor": "Dodoma",
-            "shows": "Dodoma grew fastest: 21% year on year.",
-            "decision": "Test moving stock and staff to the central corridor."
-          },
-          {
-            "figure": "ranked",
-            "anchor": "Dar es Salaam",
-            "shows": "Dar es Salaam grew 8%, below the overall 11.3%.",
-            "decision": "Watch the largest region for market share, not volume."
-          },
-          {
-            "figure": "ranked",
-            "anchor": "Tanga",
-            "shows": "Tanga grew 4%, the slowest region.",
-            "decision": "Check outlet coverage before setting next quarter’s targets."
           }
         ]
       },
       "operations": {
-        "index": "02.4",
-        "tab": "Automation & operations",
-        "tabDescription": "Reports that run themselves, and the agent’s log.",
         "entity": "Sample lender’s reporting system",
         "period": "September 2026 · schedule for a sample Monday",
         "creditPeriod": "Sep 2026",
@@ -539,15 +291,6 @@ const en = {
             "readout": "Run {n} · {value} s",
             "slowLabel": "Slow run",
             "summary": "Most runs took 35–41 seconds."
-          },
-          "pack": {
-            "number": "02.12",
-            "title": "Monthly management pack",
-            "before": "By hand",
-            "after": "Automated",
-            "beforeValue": "14 h",
-            "afterValue": "4 min",
-            "summary": "The monthly pack: 14 hours by hand, 4 minutes automated."
           }
         },
         "log": {
@@ -599,19 +342,13 @@ const en = {
             "anchor": "07:02",
             "shows": "The agent drafted the note; a person approved it seven minutes later.",
             "decision": "You choose which steps stay with a person."
-          },
-          {
-            "figure": "pack",
-            "anchor": "after",
-            "shows": "From 14 hours to 4 minutes.",
-            "decision": "Analysts explain the numbers instead of copying them."
           }
         ]
       }
     }
   },
   "estimator": {
-    "eyebrow": "03 — Your numbers",
+    "eyebrow": "02 — Your numbers",
     "title": "Where do the hours go?",
     "lead": "Enter one report’s numbers to see what it costs your team.",
     "sentence": [
@@ -683,31 +420,31 @@ const en = {
     }
   },
   "process": {
-    "eyebrow": "04 — How we work",
+    "eyebrow": "03 — How we work",
     "title": "How a project runs.",
     "lead": "Every system differs; the way we build it does not.",
     "receivePrefix": "You receive:",
     "steps": [
       {
-        "index": "04.1",
+        "index": "03.1",
         "title": "Discover",
         "description": "We learn your workflow and find the manual work.",
         "receive": "the figures that matter, and an honest view on whether to build."
       },
       {
-        "index": "04.2",
+        "index": "03.2",
         "title": "Design",
         "description": "We plan the system around how you work.",
         "receive": "a plan you approve before we build."
       },
       {
-        "index": "04.3",
+        "index": "03.3",
         "title": "Build",
         "description": "We build it securely, in formats your team already uses.",
         "receive": "a working system, ready to use."
       },
       {
-        "index": "04.4",
+        "index": "03.4",
         "title": "Support",
         "description": "We train your team and adapt the system as needs change.",
         "receive": "training, and changes when you need them."
@@ -789,26 +526,26 @@ const en = {
     }
   },
   "team": {
-    "eyebrow": "06 — Team",
+    "eyebrow": "05 — Team",
     "title": "The people you will work with.",
     "lead": "Here is who does what on your project.",
     "members": {
       "cto": {
-        "index": "06.1",
+        "index": "05.1",
         "name": "Daniel C. Masubi",
         "role": "Chief Technology Officer",
         "bio": "Builds the systems, from pipelines to agents, and owns your data’s security.",
         "alt": "Daniel C. Masubi, Chief Technology Officer, DataHub"
       },
       "operations": {
-        "index": "06.2",
+        "index": "05.2",
         "name": "Kanuda L. Sasi",
         "role": "Head of Operations",
         "bio": "Runs delivery, from scoping to support, so what was agreed is what arrives.",
         "alt": "Kanuda L. Sasi, Head of Operations, DataHub"
       },
       "marketing": {
-        "index": "06.3",
+        "index": "05.3",
         "name": "Yohana K. Mussa",
         "role": "Head of Marketing",
         "bio": "Usually your first contact: scopes the problem you actually have and keeps you informed.",
@@ -817,7 +554,7 @@ const en = {
     }
   },
   "faq": {
-    "eyebrow": "07 — Questions",
+    "eyebrow": "06 — Questions",
     "title": "What people ask before they start.",
     "aside": "Not answered here?",
     "asideWhatsapp": "Ask us on WhatsApp",
@@ -847,7 +584,7 @@ const en = {
     ]
   },
   "contact": {
-    "eyebrow": "08 — Contact",
+    "eyebrow": "07 — Contact",
     "title": "Start with one report.",
     "lead": "Tell us what you work with today and what you want instead.",
     "lines": {
@@ -992,8 +729,7 @@ const en = {
       "email": "{email}",
       "location": "Dar es Salaam, Tanzania"
     },
-    "legal": "© {year} DataHub · Dashboards on this site use sample data.",
-    "backToTop": "Back to top"
+    "legal": "© {year} DataHub"
   },
   "servicePage": {
     "breadcrumbLabel": "Breadcrumb",

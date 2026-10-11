@@ -3,9 +3,12 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 /**
- * Secondary action: a text link with a typographic arrow and a royal→sky
- * thread underline that grows from the left on hover/focus. Internal hrefs use
- * next/link; external ones open in a new tab with an announced suffix.
+ * Secondary action: a standalone text link with a typographic arrow, its
+ * label set like the primary button's (the display face, 14px semibold:
+ * a UI label, iteration-5 §F). No underline (iteration-5 §A): hover and
+ * focus turn it accent and nudge the arrow. For a link inside a sentence use a plain link with `.link-inline`
+ * (globals.css) instead. Internal hrefs use next/link; external ones open in
+ * a new tab with an announced suffix.
  */
 export function LinkArrow({
   href,
@@ -26,12 +29,12 @@ export function LinkArrow({
   className?: string;
 } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "children" | "className">) {
   const classes = cn(
-    "group inline-flex min-h-12 items-center gap-2 font-sans text-[0.9375rem] font-semibold text-fg transition-colors duration-[160ms] hover:text-accent",
+    "group inline-flex min-h-12 items-center gap-2 font-display text-sm font-semibold tracking-[0.01em] text-fg transition-colors duration-[160ms] hover:text-accent focus-visible:text-accent",
     className,
   );
   const inner = (
     <>
-      <span className="link-thread pb-0.5">{children}</span>
+      <span>{children}</span>
       {arrow && (
         <span
           aria-hidden="true"

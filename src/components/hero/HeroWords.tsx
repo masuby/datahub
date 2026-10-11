@@ -156,7 +156,7 @@ function subscribeForced(onChange: () => void) {
 }
 
 /**
- * The canvas draws the real Outfit outlines where the browser laid out the
+ * The canvas draws the real Poppins 600 outlines where the browser laid out the
  * text; if the web font never arrived, the text is in a fallback face and
  * the two would not match, so the writer stays off.
  */

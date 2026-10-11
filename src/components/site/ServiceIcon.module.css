@@ -1,0 +1,32 @@
+/*
+  A service's 3D icon: a soft brand glow under and around it (drop-shadow
+  follows the cut-out's alpha, so the glow takes the icon's own shape).
+  Light: a royal haze that reads as depth on the pale page. Dark: a sky
+  glow, a little wider, so the glass catches light on the navy page.
+  Tokens only.
+*/
+.icon {
+  --icon-glow: color-mix(in srgb, var(--royal) 24%, transparent);
+  --icon-glow-near: color-mix(in srgb, var(--royal) 12%, transparent);
+  display: block;
+  height: auto;
+  filter: drop-shadow(0 10px 18px var(--icon-glow)) drop-shadow(0 2px 4px var(--icon-glow-near));
+}
+:global(.dark) .icon,
+:global(.surface-ink) .icon {
+  --icon-glow: color-mix(in srgb, var(--sky) 30%, transparent);
+  --icon-glow-near: color-mix(in srgb, var(--royal) 30%, transparent);
+}
+/* No-JS fallback, mirrors globals.css (ThemeScript sets .light/.dark when JS runs). */
+@media (prefers-color-scheme: dark) {
+  :global(:root:not(.light):not(.dark)) .icon {
+    --icon-glow: color-mix(in srgb, var(--sky) 30%, transparent);
+    --icon-glow-near: color-mix(in srgb, var(--royal) 30%, transparent);
+  }
+}
+
+@media (forced-colors: active) {
+  .icon {
+    filter: none;
+  }
+}

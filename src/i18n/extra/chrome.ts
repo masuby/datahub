@@ -6,7 +6,7 @@ import { defineDict } from "../dict";
  * `rail.ctaShort` is the action rail's button label on phones narrower than
  * 360px, where `rail.cta` cannot fit on one line. `footer.*` names the
  * footer links to pages that used to be sections of the home page and had
- * no footer entry of their own, and the label over the social icons.
+ * no footer entry of their own.
  *
  * Iteration 3 (§A): `wordmark` is the footer's living slogan — "From Data
  * to" and one word that writes itself, in Title Case as the brand board
@@ -24,9 +24,7 @@ export const chromeExtra = defineDict({
     },
     footer: {
       allServices: "All services",
-      dashboards: "Sample dashboards",
       contactPage: "Contact form",
-      follow: "Follow us",
     },
     wordmark: {
       line1: "From Data to",
@@ -50,9 +48,7 @@ export const chromeExtra = defineDict({
     },
     footer: {
       allServices: "Huduma zote",
-      dashboards: "Dashibodi za mfano",
       contactPage: "Fomu ya mawasiliano",
-      follow: "Tufuatilie",
     },
     wordmark: {
       line1: "Kutoka Data hadi",

@@ -12,7 +12,6 @@ import { ActionRail } from "@/components/site/ActionRail";
 import { HomeServices } from "@/components/site/home/HomeServices";
 import { HomeDashboards } from "@/components/site/home/HomeDashboards";
 import { HomeReasons } from "@/components/site/home/HomeReasons";
-import { CtaBand } from "@/components/site/home/CtaBand";
 import { LegacyHash } from "@/components/site/home/LegacyHash";
 import { organizationSchema, websiteSchema, alternatesFor, shareCard } from "@/lib/seo";
 
@@ -20,8 +19,15 @@ import { organizationSchema, websiteSchema, alternatesFor, shareCard } from "@/l
  * The home page, short (about three screens on a phone): the hero, then one
  * teaser per idea, each pointing at the page that holds the rest —
  *
- *   hero · 01 what we do → /services · 02 a sample dashboard → /dashboards ·
- *   three reasons → /process, /security, /team · start a conversation → /contact
+ *   hero · 01 what we do → /services · the live sample dashboard →
+ *   /services/dashboards · three reasons → /process, /security, /team
+ *
+ * The sample dashboard replaces the old /dashboards page (iteration-5 §I):
+ * that URL redirects to its section, #dashboards.
+ *
+ * No closing band (iteration-5 §G): the header's "Start a conversation", the
+ * mobile action rail and the floating WhatsApp button carry the call to
+ * action on every page.
  *
  * Organization and WebSite JSON-LD live here; the FAQPage markup moved to
  * /faq with the questions it describes.
@@ -71,7 +77,6 @@ export default async function Home({ params }: Props) {
         <HomeServices lang={lang} />
         <HomeDashboards lang={lang} />
         <HomeReasons lang={lang} />
-        <CtaBand lang={lang} />
       </main>
       <Footer lang={lang} />
       <ActionRail lang={lang} />

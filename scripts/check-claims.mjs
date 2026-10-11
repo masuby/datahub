@@ -17,6 +17,9 @@
  *   - Every page, in both languages, has exactly one <h1>.
  *   - Every 404 (unknown page, unknown service, stray file name) is the
  *     server-rendered page in the visitor's language, not an empty shell.
+ *   - A page that moved answers 308 with its new place, query string kept:
+ *     /dashboards and /sw/dashboards go to the home page's live sample
+ *     dashboard (#dashboards), and that section is there.
  *   - Every top-level entry of public/ is still served as a file (src/proxy.ts
  *     keeps a list of them).
  *   - The contact form: JSON only (a disguised media type is refused), no
@@ -43,8 +46,6 @@ const PAGES = [
   "/services/automation",
   "/services/ai-agents",
   "/sw/services/dashboards",
-  "/dashboards",
-  "/sw/dashboards",
   "/process",
   "/sw/process",
   "/security",
@@ -160,6 +161,9 @@ for (const [path, lang] of [
   ["/team/privacy", "en-TZ"],
   ["/team/nope", "en-TZ"],
   ["/sw/faq/nope", "sw-TZ"],
+  // Only /dashboards itself moved; anything under it was never a page.
+  ["/dashboards/nope", "en-TZ"],
+  ["/sw/dashboards/nope", "sw-TZ"],
   ["/brand/services/dashboards", "en-TZ"],
   ["/icon.png", "en-TZ"],
   ["/apple-icon", "en-TZ"],
@@ -177,6 +181,31 @@ for (const [path, lang] of [
   if (/<meta name="robots" content="index/.test(html)) problems.push("also says index");
   if (problems.length) fail(`404 ${path}`, problems.join(", "));
   else pass(`404 ${path}`, `404, server-rendered, ${lang}, noindex`);
+}
+
+// Moved pages: links already shared (posters, WhatsApp, search results) land
+// where the page went, in its language, with their campaign tags. The sample
+// dashboards page became the home page's live sample dashboard.
+for (const [from, to] of [
+  ["/dashboards", "/#dashboards"],
+  ["/dashboards?ref=qr", "/?ref=qr#dashboards"],
+  ["/sw/dashboards", "/sw#dashboards"],
+  ["/sw/dashboards?ref=wa_status&utm_source=whatsapp", "/sw?ref=wa_status&utm_source=whatsapp#dashboards"],
+]) {
+  const res = await fetch(`${base}${from}`, { redirect: "manual" });
+  const location = res.headers.get("location");
+  const got = location ? new URL(location, `${base}/`) : null;
+  const where = `redirect ${from}`;
+  if (res.status !== 308) fail(where, `status ${res.status}, expected 308`);
+  else if (!got || got.host !== new URL(base).host || `${got.pathname}${got.search}${got.hash}` !== to) {
+    fail(where, `Location ${location}, expected ${to}`);
+  } else if (res.headers.get("set-cookie")) fail(where, "Set-Cookie present");
+  else pass(where, `308 → ${to}`);
+}
+for (const path of ["/", "/sw"]) {
+  const html = await (await fetch(`${base}${path}`)).text();
+  if (!/<section\b[^>]*\bid="dashboards"/.test(html)) fail(`${path} #dashboards`, "no section with id=\"dashboards\" for /dashboards to land on");
+  else pass(`${path} #dashboards`, "the redirect's target section is there");
 }
 
 // Static files: every top-level entry of public/ must still be served.

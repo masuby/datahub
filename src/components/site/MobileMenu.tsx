@@ -29,8 +29,8 @@ import styles from "./MobileMenu.module.css";
 import fabStyles from "./FloatingWhatsApp.module.css";
 
 /*
- * Client islands of the site chrome: the header shell (scroll state, progress
- * thread, page-change thread, links that keep the campaign tag), the page
+ * Client islands of the site chrome: the header shell (scroll state,
+ * page-change thread, links that keep the campaign tag), the page
  * links that know which page is showing, the mobile menu sheet, the mobile
  * action rail and the floating WhatsApp button. They share two signals —
  * the menu being open, published as <html data-menu="open"> plus an event,
@@ -172,10 +172,11 @@ function currentOf(here: string, href: string): "page" | undefined {
 
 /**
  * A link to a page of the site that knows whether it is the page showing:
- * `aria-current="page"` and `data-active` (the thread underline) on the
- * current one. `also` lists further locale-free paths that belong to this
- * item — the service pages under Services — which light the underline but
- * are not announced as the current page, because they are not it.
+ * `aria-current="page"` and `data-active` on the current one, which its
+ * styles mark (by colour in the menu and footer, with the sky glass pill in
+ * the header). `also` lists further locale-free paths that belong to
+ * this item — the service pages under Services — which light it but are not
+ * announced as the current page, because they are not it.
  */
 export function NavLink({
   href,
@@ -231,8 +232,9 @@ export function PrimaryLink({
 
 /**
  * The sticky <header>. Transparent at the top of the page; from 8px of scroll
- * it takes the header surface and an R1 bottom hairline. A 2px thread on that
- * hairline shows reading progress (one passive, rAF-throttled listener).
+ * it takes the header surface and an R1 bottom hairline (one passive,
+ * rAF-throttled listener). No reading-progress thread on that hairline any
+ * more (iteration-5 §A).
  *
  * It also handles two kinds of link click for the whole page:
  * - `a[data-hash-link]` pointing at a section of the current page scrolls
@@ -246,8 +248,9 @@ export function PrimaryLink({
  * Page changes. Every page is rendered per request (the CSP nonce), so none
  * is prefetched and a tap waits for the server: on a slow phone network,
  * one to three seconds with nothing on screen changing. While the next page
- * is on its way the header carries `data-navigating`, and a second thread
- * takes the place of the reading-progress one (MobileMenu.module.css). It
+ * is on its way the header carries `data-navigating`, and a thread draws
+ * along its bottom edge (MobileMenu.module.css): a loading state, not a
+ * decoration, so it stays. It
  * covers both ways of leaving: the campaign push above, run as a transition
  * (isPending), and a plain click on a link to another page, which next/link
  * then carries out. That one ends when the path changes; when a newer
@@ -255,8 +258,7 @@ export function PrimaryLink({
  * Back/Forward to an entry the router owns); or, after a full page load,
  * when the browser brings this page back from its cache.
  */
-export function HeaderShell({ children, progressLabel }: { children: ReactNode; progressLabel: string }) {
-  const barRef = useRef<HTMLSpanElement>(null);
+export function HeaderShell({ children }: { children: ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
   const motion = useMotionAllowed();
@@ -272,36 +274,21 @@ export function HeaderShell({ children, progressLabel }: { children: ReactNode; 
   }
   const navigating = isPending || leaving;
 
-  // Scroll state and progress.
+  // Scroll state.
   useEffect(() => {
     let raf = 0;
-    let lastPct = -1;
     const update = () => {
       raf = 0;
-      const y = window.scrollY;
-      setScrolled(y >= 8);
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const p = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
-      const bar = barRef.current;
-      if (bar) {
-        bar.style.transform = `scaleX(${p.toFixed(4)})`;
-        const pct = Math.round(p * 100);
-        if (pct !== lastPct) {
-          bar.setAttribute("aria-valuenow", String(pct));
-          lastPct = pct;
-        }
-      }
+      setScrolled(window.scrollY >= 8);
     };
     const schedule = () => {
       if (!raf) raf = requestAnimationFrame(update);
     };
     schedule();
     window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
     };
   }, []);
 
@@ -408,16 +395,6 @@ export function HeaderShell({ children, progressLabel }: { children: ReactNode; 
         className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-rule transition-opacity duration-[160ms]"
         style={{ opacity: scrolled ? 1 : 0 }}
       />
-      <span
-        ref={barRef}
-        role="progressbar"
-        aria-label={progressLabel}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={0}
-        className={cn("thread pointer-events-none absolute inset-x-0 bottom-0", styles.progress)}
-        style={{ transform: "scaleX(0)" }}
-      />
       {/* The page-change thread. Still (full width) with reduced motion or motion paused. */}
       <span
         aria-hidden="true"
@@ -433,7 +410,7 @@ export function HeaderShell({ children, progressLabel }: { children: ReactNode; 
 export type MenuItem = {
   href: string;
   label: string;
-  /** The chapter number, 01–08. */
+  /** The chapter number, 01–07. */
   index: string;
   /** Locale-free paths that also belong to this item (see NavLink). */
   also?: readonly string[];
@@ -441,8 +418,9 @@ export type MenuItem = {
 
 /**
  * "Menu" text button (below 1024px) that opens a full-screen sheet: links in
- * Outfit 2rem numbered 01–08 by chapter, separated by R1, each a full-row
- * 56px target, the current page underlined and announced; then the primary
+ * the display face at 2rem numbered 01–07 by chapter, separated by R1, each
+ * a full-row 56px target, the current page in the accent colour (number and
+ * label; no underline) and announced; then the primary
  * action, WhatsApp, DataHub's social profiles (`social`, iteration 3) and
  * the language and theme preferences (passed in as `children`).
  *
@@ -573,9 +551,9 @@ export function MobileMenu({
           type="button"
           data-menu-close
           onClick={() => close(true)}
-          className="t-small -mr-1 inline-flex min-h-11 items-center px-1 font-semibold text-fg"
+          className="t-small -mr-1 inline-flex min-h-11 items-center px-1 font-display font-semibold text-fg transition-colors duration-[160ms] hover:text-accent"
         >
-          <span className="link-thread pb-0.5">{labels.close}</span>
+          {labels.close}
         </button>
       </Container>
       <span aria-hidden="true" className="rule-hair shrink-0" />
@@ -597,7 +575,7 @@ export function MobileMenu({
                   <span className="t-mono w-6 shrink-0 text-subtle tnum group-data-[active=true]:text-accent">
                     {it.index}
                   </span>
-                  <span className="link-thread pb-0.5 font-display text-[2rem] font-medium leading-[1.15] tracking-[-0.02em] transition-colors duration-[160ms] group-hover:text-accent group-data-[active=true]:[background-size:100%_2px]">
+                  <span className="font-display text-[2rem] font-medium leading-[1.15] tracking-[-0.02em] transition-colors duration-[160ms] group-hover:text-accent group-data-[active=true]:text-accent">
                     {it.label}
                   </span>
                 </NavLink>
@@ -639,9 +617,9 @@ export function MobileMenu({
         aria-expanded={open}
         aria-controls={open ? sheetId : undefined}
         onClick={() => setOpen(true)}
-        className="t-small -mr-1 inline-flex min-h-11 items-center px-1 font-semibold text-fg sm:px-2 lg:hidden"
+        className="t-small -mr-1 inline-flex min-h-11 items-center px-1 font-display font-semibold text-fg transition-colors duration-[160ms] hover:text-accent sm:px-2 lg:hidden"
       >
-        <span className="link-thread pb-0.5">{labels.open}</span>
+        {labels.open}
       </button>
       {open && createPortal(sheet, document.body)}
     </>
@@ -762,12 +740,12 @@ export function ActionRailBar({
 /* ───────────────────────── Floating WhatsApp ───────────────────────── */
 
 /**
- * Where the hero's pause control can be under the floating button: the
- * control sits just above the hero's bottom edge at every width (16px above
- * the floor rule on desktop, the last row of the hero on phones), so while
- * that edge is between HERO_CLEAR_ABOVE px above the bottom of the screen
- * and HERO_CLEAR_BELOW px below it, the two would overlap — on desktop the
- * label, on phones the circle (FloatingWhatsApp.module.css has the sizes).
+ * Where the hero's pause control can be under the floating button's label:
+ * on desktop the control sits 16px above the floor rule, at the right, so
+ * while the hero's bottom edge is between HERO_CLEAR_ABOVE px above the
+ * bottom of the screen and HERO_CLEAR_BELOW px below it, the two would
+ * overlap (FloatingWhatsApp.module.css has the sizes). Below 1024px the
+ * control is centred, clear of the circle, and the flag changes nothing.
  */
 const HERO_CLEAR_ABOVE = 68;
 const HERO_CLEAR_BELOW = 34;
@@ -782,11 +760,12 @@ const HERO_CLEAR_BELOW = 34;
  * Two things it watches: a text field having focus (on a phone it steps
  * aside for the keyboard), and the hero's pause control passing where it
  * floats (data-clear): then on wide screens the label folds away (and no
- * longer takes clicks) and only the circle shows; on phones the circle
- * rises above the control. The hero's bottom edge is read once a frame
- * while the page scrolls, and only while the hero is on screen. Pages
- * without a hero never need it; the footer's pause control sits at the
- * left, clear of the button.
+ * longer takes clicks) and only the circle shows; on phones and tablets
+ * the control is centred, clear of the circle (iteration-5 §B). The hero's
+ * bottom edge is read once a frame while the page scrolls, and only while
+ * the hero is on screen. Pages without a hero never need it; the footer's
+ * pause control sits at the left on desktop and centred below, clear of
+ * the button either way.
  */
 export function WhatsAppFab({ href, label, name }: { href: string; label: string; name: string }) {
   const typing = useTyping();

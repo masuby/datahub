@@ -1,13 +1,16 @@
 /*
- * 04 — How we work. The step track and its thread.
+ * 03 — How we work. Centred steps, their nodes and the track that joins them.
  *
- * Below 1024px the track is vertical (x = 4px, steps indented 28px); from
- * 1024px it runs across the 12 columns with a node at the start of cols
- * 1, 4, 7, 10 and a hairline dropping from each node.
+ * Below 1024px the steps stack, centred: each step's node sits above its
+ * index, a fading hairline runs between steps, and there is no track. From
+ * 1024px the four steps stand side by side (cols 1–3, 4–6, 7–9, 10–12); the
+ * track runs through their nodes, from the centre of the first step to the
+ * centre of the last, and a fading hairline divides the steps below it.
  *
  * The thread fills the track. Where scroll-driven animation is supported it is
  * tied to the step list's own view timeline (cover 20% → 60%); elsewhere it
- * draws once when the section is revealed. Keyframes are `from` only, so with
+ * draws once when the section is revealed. The nodes light as it reaches
+ * them (on phones, as the list scrolls by). Keyframes are `from` only, so with
  * animation off (reduced motion, print) the thread and nodes show complete.
  */
 
@@ -15,127 +18,102 @@
   position: relative;
   view-timeline-name: --dh-process;
   view-timeline-axis: block;
+  /* The node's size; the track runs through its centre. */
+  --node: 9px;
 }
 
-/* ── Track (R3) ────────────────────────────────────────────── */
+/* ── Track (R3), desktop only ──────────────────────────────── */
 .track {
-  position: absolute;
-  left: 4px;
-  top: calc(0.25rem + 3px);
-  bottom: 0;
-  width: 1px;
-  background: var(--rule-input);
-  pointer-events: none;
+  display: none;
 }
 
 /* ── Thread fill (the section's one live thread) ───────────── */
 .fill {
   position: absolute;
-  left: -0.5px;
-  top: 0;
-  width: 2px;
-  height: 100%;
-  background: linear-gradient(180deg, var(--royal), var(--sky));
-  transform-origin: top;
-  animation: fill-y var(--dur-draw) var(--ease-thread) both;
+  left: 0;
+  top: -0.5px;
+  width: 100%;
+  height: 2px;
+  background: var(--thread);
+  transform-origin: left;
+  animation: fill-x var(--dur-draw) var(--ease-thread) both;
 }
 
 /* ── Step ──────────────────────────────────────────────────── */
 .step {
   position: relative;
-  padding-left: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block: 2rem;
+  text-align: center;
+}
+.step:first-child {
+  padding-top: 0;
+}
+.step:last-child {
+  padding-bottom: 0;
 }
 
 .node {
-  position: absolute;
-  left: 1px;
-  top: 0.25rem;
-  width: 7px;
-  height: 7px;
+  position: relative;
+  flex: none;
+  width: var(--node);
+  height: var(--node);
+  margin-bottom: 1rem;
   border-radius: 9999px;
   border: 1px solid var(--accent-display);
   background: var(--accent-display);
   animation: node-on 160ms linear both;
 }
 
-/* Stacked (mobile/tablet): R1 between steps, 32px either side of it. */
-.step + .step {
-  padding-top: 32px;
-}
-.step:not(:last-child) {
-  padding-bottom: 32px;
-}
-.step + .step .node {
-  top: calc(32px + 0.25rem);
-}
-
-/* R1 between stacked steps (mobile/tablet). */
+/* Stacked: a hairline between steps, fading in and out. */
 .between {
   position: absolute;
-  left: 28px;
+  left: 0;
   right: 0;
   top: 0;
   height: 1px;
-  background: var(--rule);
-}
-
-/* R1 dropping from each node (desktop only). */
-.drop {
-  display: none;
+  background: linear-gradient(90deg, transparent, var(--rule) 18%, var(--rule) 82%, transparent);
+  pointer-events: none;
 }
 
 @media (min-width: 1024px) {
+  /* From the first step's centre to the last's: a step is three of the
+     twelve columns, so its half-width is (100% - 3 gaps) / 8. */
   .track {
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: auto;
-    width: auto;
-    height: 1px;
-  }
-  .fill {
-    left: 0;
-    top: -0.5px;
-    width: 100%;
-    height: 2px;
-    background: var(--thread);
-    transform-origin: left;
-    animation-name: fill-x;
-  }
-  .step,
-  .step:not(:last-child),
-  .step + .step {
-    padding-left: 20px;
-    padding-top: 40px;
-    padding-bottom: 0;
-  }
-  .node,
-  .step + .step .node {
-    left: -3px;
-    top: -3px;
-  }
-  .between {
-    display: none;
-  }
-  .drop {
     display: block;
     position: absolute;
-    left: 0;
-    top: 0;
+    left: calc((100% - 3 * var(--col-gap)) / 8);
+    right: calc((100% - 3 * var(--col-gap)) / 8);
+    top: calc(var(--node) / 2 - 0.5px);
+    height: 1px;
+    background: var(--rule-input);
+    pointer-events: none;
+  }
+  .step,
+  .step:first-child,
+  .step:last-child {
+    padding: 0 1rem;
+  }
+  .node {
+    margin-bottom: 1.75rem;
+  }
+  /* Between the steps, from below the track down. */
+  .between {
+    top: 2.5rem;
     bottom: 0;
+    left: calc(var(--col-gap) / -2);
+    right: auto;
     width: 1px;
-    background: var(--rule);
+    height: auto;
+    background: linear-gradient(180deg, transparent, var(--rule) 18%, var(--rule) 82%, transparent);
   }
 }
 
 @keyframes fill-x {
   from {
     transform: scaleX(0);
-  }
-}
-@keyframes fill-y {
-  from {
-    transform: scaleY(0);
   }
 }
 @keyframes node-on {
@@ -200,5 +178,8 @@
     forced-color-adjust: none;
     background: CanvasText;
     border-color: CanvasText;
+  }
+  .between {
+    background: CanvasText;
   }
 }

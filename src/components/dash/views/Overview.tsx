@@ -3,7 +3,6 @@ import { formatNumber, formatPercent, formatTZS } from "@/lib/format";
 import {
   BRANCHES,
   BRANCH_WATCH_BELOW,
-  EXCEPTION_STATUS,
   KPI_STATUS,
   OVERVIEW,
   REVENUE,
@@ -12,15 +11,18 @@ import {
 } from "@/lib/sample-data";
 import { cn } from "@/lib/utils";
 import { marksFor, notesFor, type DashCtx } from "../context";
-import { Cell, Figure, FigureTitle, PlateRow, StatusMark } from "../Figure";
+import { Figure, FigureTitle } from "../Figure";
 import type { Kpi } from "../KpiStrip";
-import { Plate, monthAnchor, monthLabels } from "../Plate";
-import { ReadMarker } from "../ReadMarker";
+import { monthAnchor, monthLabels } from "../Plate";
 import { Bullet } from "../kit/Bullet";
 import { LineArea } from "../kit/LineArea";
 import styles from "../dash.module.css";
 
-/** View 1 · Executive overview — Sample lender, Jan–Sep 2026. */
+/**
+ * View 1 · Executive overview — Sample lender, Jan–Sep 2026. The parts the
+ * service pages' sample bands show (SamplePlate): the KPIs and two figures
+ * on the dashboards page, "What changed this week" on the AI agents page.
+ */
 
 export function overviewKpis(ctx: DashCtx): Kpi[] {
   const k = ctx.t.views.overview.kpis;
@@ -38,9 +40,7 @@ export function RevenueFigure({ ctx }: { ctx: DashCtx }) {
   const f = v.figures.revenue;
   const id = `${ctx.idp}-revenue`;
   const months = monthLabels(ctx, REVENUE_START_MONTH, REVENUE.length);
-  const reads = REVENUE.map((val, i) =>
-    fill(f.readout, { month: months[i], value: val.toFixed(2), pct: Math.round((val / REVENUE_TARGET) * 100) }),
-  );
+  const last = REVENUE.length - 1;
   const notes = notesFor(ctx, "overview", "revenue");
   return (
     <Figure
@@ -50,7 +50,11 @@ export function RevenueFigure({ ctx }: { ctx: DashCtx }) {
       title={f.title}
       summary={f.summary}
       creditPeriod={v.creditPeriod}
-      readout={reads[reads.length - 1]}
+      readout={fill(f.readout, {
+        month: months[last],
+        value: REVENUE[last].toFixed(2),
+        pct: Math.round((REVENUE[last] / REVENUE_TARGET) * 100),
+      })}
       notes={notes}
       table={{
         head: [ctx.t.table.month, `${f.seriesActual} (${f.axis})`, `${f.seriesTarget} (${f.axis})`],
@@ -61,9 +65,7 @@ export function RevenueFigure({ ctx }: { ctx: DashCtx }) {
       <LineArea
         ctx={ctx}
         id={id}
-        label={f.title}
         summary={f.summary}
-        readoutId={`${id}-readout`}
         values={REVENUE}
         xLabels={months}
         max={2.5}
@@ -73,7 +75,6 @@ export function RevenueFigure({ ctx }: { ctx: DashCtx }) {
         area
         seriesLabel={f.seriesActual}
         reference={{ value: REVENUE_TARGET, label: f.seriesTarget }}
-        reads={reads}
         marks={marksFor(notes, monthAnchor(REVENUE_START_MONTH, REVENUE.length))}
         height={260}
       />
@@ -85,7 +86,7 @@ export function BranchesFigure({ ctx }: { ctx: DashCtx }) {
   const v = ctx.t.views.overview;
   const f = v.figures.branches;
   const id = `${ctx.idp}-branches`;
-  const reads = BRANCHES.map((b) => fill(f.readout, { branch: b.name, pct: b.pct }));
+  const lastBranch = BRANCHES[BRANCHES.length - 1];
   const notes = notesFor(ctx, "overview", "branches");
   return (
     <Figure
@@ -95,7 +96,7 @@ export function BranchesFigure({ ctx }: { ctx: DashCtx }) {
       title={f.title}
       summary={f.summary}
       creditPeriod={v.creditPeriod}
-      readout={reads[reads.length - 1]}
+      readout={fill(f.readout, { branch: lastBranch.name, pct: lastBranch.pct })}
       notes={notes}
       table={{
         head: [ctx.x.columns.branch, f.axis],
@@ -106,45 +107,12 @@ export function BranchesFigure({ ctx }: { ctx: DashCtx }) {
       <Bullet
         ctx={ctx}
         id={id}
-        label={f.title}
         summary={f.summary}
-        readoutId={`${id}-readout`}
         rows={BRANCHES.map((b) => ({ name: b.name, value: b.pct }))}
         watchBelow={BRANCH_WATCH_BELOW}
         targetLabel={v.figures.revenue.seriesTarget}
-        reads={reads}
         marks={marksFor(notes, (a) => BRANCHES.findIndex((b) => b.name === a))}
       />
-    </Figure>
-  );
-}
-
-export function ExceptionsFigure({ ctx }: { ctx: DashCtx }) {
-  const v = ctx.t.views.overview;
-  const f = v.figures.exceptions;
-  const notes = notesFor(ctx, "overview", "exceptions");
-  return (
-    <Figure
-      ctx={ctx}
-      id={`${ctx.idp}-exceptions`}
-      number={f.number}
-      title={f.title}
-      summary={f.summary}
-      creditPeriod={v.creditPeriod}
-      notes={notes}
-    >
-      <ul>
-        {f.items.map((item, i) => {
-          const note = notes.find((n) => Number(n.anchor) === i);
-          return (
-            <li key={i} className={cn(styles.listRow, "flex flex-wrap items-start gap-x-3 gap-y-1 py-3.5 sm:flex-nowrap")}>
-              <StatusMark ctx={ctx} status={EXCEPTION_STATUS[i]} className="t-data w-full shrink-0 pt-0.5 sm:w-[8.5rem]" />
-              <span className="t-small min-w-0 flex-1 font-normal text-fg">{item}</span>
-              {note && <ReadMarker ctx={ctx} n={note.n} noteId={note.noteId} inline />}
-            </li>
-          );
-        })}
-      </ul>
     </Figure>
   );
 }
@@ -155,9 +123,7 @@ export function ChangedBlock({ ctx }: { ctx: DashCtx }) {
   return (
     <section aria-labelledby={`${ctx.idp}-changed`} className="grid gap-x-[var(--col-gap)] gap-y-4 lg:grid-cols-12">
       <div className="lg:col-span-4">
-        <FigureTitle ctx={ctx} id={`${ctx.idp}-changed`}>
-          {c.label}
-        </FigureTitle>
+        <FigureTitle id={`${ctx.idp}-changed`}>{c.label}</FigureTitle>
         <p className="t-small mt-2 font-normal text-subtle">{c.byline}</p>
       </div>
       <ul className="lg:col-span-8">
@@ -171,35 +137,5 @@ export function ChangedBlock({ ctx }: { ctx: DashCtx }) {
         ))}
       </ul>
     </section>
-  );
-}
-
-export function Overview({ ctx }: { ctx: DashCtx }) {
-  return (
-    <Plate
-      ctx={ctx}
-      view="overview"
-      kpis={overviewKpis(ctx)}
-      rows={[
-        <PlateRow key="a">
-          <Cell>
-            <RevenueFigure ctx={ctx} />
-          </Cell>
-        </PlateRow>,
-        <PlateRow key="b">
-          <Cell span={7}>
-            <BranchesFigure ctx={ctx} />
-          </Cell>
-          <Cell span={5}>
-            <ExceptionsFigure ctx={ctx} />
-          </Cell>
-        </PlateRow>,
-        <PlateRow key="c">
-          <Cell>
-            <ChangedBlock ctx={ctx} />
-          </Cell>
-        </PlateRow>,
-      ]}
-    />
   );
 }

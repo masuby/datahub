@@ -37,8 +37,6 @@ const sw = {
     "skip": "Ruka hadi maudhui",
     "opensNewTab": "(inafunguka kwenye kichupo kipya)",
     "external": "kiungo cha nje",
-    "sampleFigure": "Chati ya mfano. Takwimu zote ni za kubuni.",
-    "chartKeys": "Tumia vitufe vya mishale ya kushoto na kulia kusogea kwenye data.",
     "today": "Leo:",
     "withDataHub": "Ukiwa na DataHub:"
   },
@@ -49,7 +47,6 @@ const sw = {
   "nav": {
     "label": "Menyu kuu",
     "services": "Huduma",
-    "dashboards": "Dashibodi",
     "process": "Mchakato",
     "security": "Usalama",
     "team": "Timu",
@@ -59,13 +56,11 @@ const sw = {
     "cta": "Anza mazungumzo",
     "menuOpen": "Menyu",
     "menuClose": "Funga",
-    "menuLabel": "Menyu ya tovuti",
-    "progressLabel": "Maendeleo ya kusoma"
+    "menuLabel": "Menyu ya tovuti"
   },
   "menu": {
     "items": [
       "Huduma",
-      "Dashibodi za mfano",
       "Hesabu zako",
       "Jinsi tunavyofanya kazi",
       "Usalama",
@@ -117,24 +112,7 @@ const sw = {
   },
   "hero": {
     "ctaPrimary": "Anza mazungumzo",
-    "ctaSecondary": "Tazama dashibodi za mfano"
-  },
-  "serviceIndex": {
-    "label": "Huduma zetu",
-    "items": [
-      {
-        "index": "01.1",
-        "label": "Dashibodi na BI"
-      },
-      {
-        "index": "01.2",
-        "label": "Otomatiki ya ripoti"
-      },
-      {
-        "index": "01.3",
-        "label": "Mawakala wa AI"
-      }
-    ]
+    "ctaSecondary": "Tazama onyesho la moja kwa moja"
   },
   "services": {
     "eyebrow": "01 — Tunachofanya",
@@ -146,46 +124,34 @@ const sw = {
         "index": "01.1",
         "title": "Dashibodi na takwimu za biashara (BI)",
         "tagline": "Sehemu moja ya kufanyia maamuzi",
-        "description": "Takwimu za sasa dhidi ya lengo, kwa kila tawi, idara au afisa.",
-        "glyphLabel": "Mstari unaopanda kuelekea alama ya lengo"
+        "description": "Takwimu za sasa dhidi ya lengo, kwa kila tawi, idara au afisa."
       },
       "automation": {
         "index": "01.2",
         "title": "Otomatiki ya ripoti",
         "tagline": "Kazi ya saa nyingi, kwa sekunde",
-        "description": "Ripoti zako za kila wiki za Excel na PowerPoint, zinajitengeneza zenyewe.",
-        "glyphLabel": "Mistari mitatu inayoungana kuwa mmoja"
+        "description": "Ripoti zako za kila wiki za Excel na PowerPoint, zinajitengeneza zenyewe."
       },
       "aiAgents": {
         "index": "01.3",
         "title": "Mawakala wa AI",
         "tagline": "Husoma data, huandaa hatua ijayo",
-        "description": "Mawakala wanaofuatilia data yako, kufupisha kilichobadilika na kusubiri mtu aidhinishe.",
-        "glyphLabel": "Nukta tatu zilizounganishwa, moja ikiwa na alama ya kuidhinishwa"
+        "description": "Mawakala wanaofuatilia data yako, kufupisha kilichobadilika na kusubiri mtu aidhinishe."
       }
     }
   },
   "dash": {
-    "eyebrow": "02 — Dashibodi za mfano",
+    "eyebrow": "Dashibodi ya mfano",
     "title": "Jumatatu yako inaweza kuonekana hivi.",
-    "lead": "Mionekano minne, iliyojengwa kama tunavyojenga kwa wateja.",
     "notice": "Data ya mfano — hatuchapishi dashibodi za wateja",
     "stamp": "DATA YA MFANO",
     "footnote": "Majina na namba zote hapa ni za kubuni.",
     "credit": "Chanzo: data ya mfano ya DataHub · TZS · {period}",
     "figPrefix": "Kielelezo",
-    "tablistLabel": "Mionekano ya dashibodi za mfano",
     "showTable": "Tazama kama jedwali",
-    "readHint": "Inaonyesha lengo la kila chati na uamuzi inaousaidia.",
     "read": {
-      "on": "Eleza mwonekano huu",
-      "off": "Ficha maelezo",
       "listLabel": "Chati hii inakuambia nini",
-      "markerLabel": "Maelezo {n}",
       "decisionPrefix": "Uamuzi:"
-    },
-    "readout": {
-      "idle": "Sogeza juu ya chati ili kusoma thamani"
     },
     "status": {
       "onTarget": "Imefikia lengo",
@@ -195,14 +161,6 @@ const sw = {
       "sent": "Imetumwa",
       "awaiting": "Inasubiri idhini",
       "queued": "Inasubiri kukaguliwa"
-    },
-    "units": {
-      "bn": "bilioni",
-      "mn": "milioni",
-      "hours": "h",
-      "seconds": "s",
-      "minutes": "dk",
-      "percent": "%"
     },
     "months": [
       "Jan",
@@ -219,15 +177,10 @@ const sw = {
       "Des"
     ],
     "table": {
-      "month": "Mwezi",
-      "value": "Thamani",
-      "target": "Lengo"
+      "month": "Mwezi"
     },
     "views": {
       "overview": {
-        "index": "02.1",
-        "tab": "Muhtasari kwa uongozi",
-        "tabDescription": "Mwezi mzima kwenye skrini moja, kwa ajili ya uongozi.",
         "entity": "Mkopeshaji wa mfano (mikopo midogo)",
         "period": "Jan–Sep 2026",
         "creditPeriod": "Jan–Sep 2026",
@@ -265,17 +218,6 @@ const sw = {
             "axis": "% ya lengo",
             "readout": "{branch} · {pct}% ya lengo",
             "summary": "Kariakoo pekee iko juu ya lengo, kwa 104%."
-          },
-          "exceptions": {
-            "number": "02.3",
-            "title": "Yasiyo ya kawaida",
-            "items": [
-              "Mbeya PAR30 7.2% (kikomo 5.0%)",
-              "Dodoma PAR30 5.4% (kikomo 5.0%)",
-              "Mikopo iliyotolewa Dodoma iko 18% chini ya mpango",
-              "Ripoti ya bodi imetengenezwa saa 05:58, imetumwa kwa wapokeaji 9"
-            ],
-            "summary": "Matawi mawili yamevuka kikomo cha PAR30, moja liko nyuma ya mpango, na ripoti ya bodi ilitumwa kwa wakati."
           }
         },
         "changed": {
@@ -299,200 +241,10 @@ const sw = {
             "anchor": "Mbeya",
             "shows": "Mbeya iko chini zaidi, kwa 84% ya lengo.",
             "decision": "Mameneja wa kanda wanajua waanzie wapi."
-          },
-          {
-            "figure": "exceptions",
-            "anchor": "0",
-            "shows": "Matawi mawili yamevuka kikomo cha PAR30 cha 5%.",
-            "decision": "Mkuu wa Mikopo anaona ukiukaji asubuhi ileile."
-          }
-        ]
-      },
-      "loans": {
-        "index": "02.2",
-        "tab": "Jalada la mikopo",
-        "tabDescription": "Malimbikizo, umri wa madeni na maafisa, kwa timu ya mikopo.",
-        "entity": "Mkopeshaji wa mfano (mikopo midogo)",
-        "period": "Kufikia 30 Sep 2026",
-        "creditPeriod": "Sep 2026",
-        "kpis": [
-          {
-            "label": "Jumla ya jalada la mikopo",
-            "context": "+2.1% tangu Agosti"
-          },
-          {
-            "label": "PAR30",
-            "context": "Kikomo 5.0%"
-          },
-          {
-            "label": "Mikopo chechefu (siku 90+)",
-            "context": "Sehemu ya jalada"
-          },
-          {
-            "label": "Mikopo iliyotolewa Septemba",
-            "context": "Mpango TZS bilioni 6.1"
-          }
-        ],
-        "figures": {
-          "par": {
-            "number": "02.4",
-            "title": "PAR30, miezi 12 iliyopita",
-            "axis": "% ya jalada",
-            "limit": "Kikomo 5.0%",
-            "readout": "{month} · PAR30 {value}%",
-            "summary": "PAR30 ilizidi kikomo cha 5% kuanzia Mei hadi Julai."
-          },
-          "ageing": {
-            "number": "02.5",
-            "title": "Umri wa madeni katika jalada",
-            "buckets": [
-              "Hayajachelewa",
-              "Siku 1–30",
-              "Siku 31–60",
-              "Siku 61–90",
-              "Siku 90+"
-            ],
-            "summary": "91.2% ya jalada haijachelewa."
-          },
-          "mix": {
-            "number": "02.6",
-            "title": "Jalada kwa aina ya mkopo",
-            "products": [
-              "Mikopo ya vikundi",
-              "Biashara ndogo na za kati",
-              "Mishahara",
-              "Kilimo"
-            ],
-            "summary": "Mikopo ya vikundi ndiyo bidhaa kubwa zaidi: TZS bilioni 21.8 kati ya TZS bilioni 64.2."
-          },
-          "flows": {
-            "number": "02.7",
-            "title": "Mikopo iliyotolewa na marejesho, Apr–Sep",
-            "axis": "TZS bilioni",
-            "seriesDisbursed": "Mikopo iliyotolewa",
-            "seriesRepaid": "Marejesho",
-            "readout": "{month} · mikopo iliyotolewa TZS bilioni {a} · marejesho TZS bilioni {b}",
-            "summary": "Mikopo iliyotolewa ilikuwa TZS bilioni 5.2–5.9 kwa mwezi."
-          }
-        },
-        "officers": {
-          "title": "Maafisa mikopo",
-          "caption": "Maafisa wanaonyeshwa kwa namba ya utambulisho pekee.",
-          "columns": {
-            "code": "Afisa",
-            "branch": "Tawi",
-            "portfolio": "Jalada",
-            "par": "PAR30",
-            "trend": "Miezi 12"
-          }
-        },
-        "read": [
-          {
-            "figure": "par",
-            "anchor": "Jul",
-            "shows": "PAR30 ilifikia kilele cha 5.4% Julai.",
-            "decision": "Ukiukaji unaripotiwa siku ileile, hivyo makusanyo yanaanza mapema."
-          },
-          {
-            "figure": "ageing",
-            "anchor": "90+ days",
-            "shows": "1.5% imechelewa zaidi ya siku 90.",
-            "decision": "Idara za fedha na mikopo zinajadili tengo la hasara kwa namba ileile."
-          },
-          {
-            "figure": "officers",
-            "anchor": "LO-047",
-            "shows": "Maafisa wawili wamevuka kikomo.",
-            "decision": "Ufuatiliaji unaelekezwa kwenye majalada mawili, si tawi zima."
-          },
-          {
-            "figure": "flows",
-            "anchor": "Jul",
-            "shows": "Julai, marejesho yalizidi mikopo iliyotolewa kwa mara ya kwanza.",
-            "decision": "Idara ya hazina inapanga fedha kwa kufuata mwenendo, si makadirio ya mwezi uliopita."
-          }
-        ]
-      },
-      "sales": {
-        "index": "02.3",
-        "tab": "Mauzo kwa mkoa",
-        "tabDescription": "Mauzo yanatoka wapi na yanakua wapi.",
-        "entity": "Msambazaji wa mfano (bidhaa za walaji)",
-        "period": "Robo ya 3, 2026 (Jul–Sep)",
-        "creditPeriod": "Robo ya 3, 2026",
-        "kpis": [
-          {
-            "label": "Mauzo, robo ya 3",
-            "context": "+11.3% ukilinganisha na robo ya 3, 2025"
-          },
-          {
-            "label": "Maduka hai",
-            "context": "Yaliyoagiza katika robo ya 3"
-          },
-          {
-            "label": "Wastani wa oda",
-            "context": "Kwa kila oda ya duka"
-          },
-          {
-            "label": "Mikoa iliyovuka mpango",
-            "value": "6 kati ya 10",
-            "context": "Mpango wa robo ya 3"
-          }
-        ],
-        "figures": {
-          "map": {
-            "number": "02.8",
-            "title": "Mauzo kwa mkoa",
-            "legendTitle": "Ukuaji ukilinganisha na robo ya 3, 2025",
-            "legend": [
-              "hadi 6%",
-              "7–9%",
-              "10–13%",
-              "14–17%",
-              "18% au zaidi"
-            ],
-            "ringNote": "Ukubwa wa duara unaonyesha mauzo.",
-            "summary": "Dar es Salaam ina mauzo makubwa zaidi; Dodoma, Mwanza na Arusha zilikua kwa kasi zaidi."
-          },
-          "ranked": {
-            "number": "02.9",
-            "title": "Mikoa kwa mpangilio wa mauzo",
-            "columns": {
-              "region": "Mkoa",
-              "sales": "Mauzo",
-              "share": "Sehemu",
-              "growth": "Ukuaji"
-            },
-            "other": "Mikoa mingine",
-            "readout": "{region} · TZS bilioni {value} · {share}% ya mauzo · ukuaji {growth}%",
-            "summary": "Dar es Salaam ni 30.6% ya mauzo."
-          }
-        },
-        "read": [
-          {
-            "figure": "map",
-            "anchor": "Dodoma",
-            "shows": "Dodoma ilikua kwa kasi zaidi: 21% ukilinganisha na mwaka jana.",
-            "decision": "Jaribu kuhamishia bidhaa na wauzaji kwenye ukanda wa kati."
-          },
-          {
-            "figure": "ranked",
-            "anchor": "Dar es Salaam",
-            "shows": "Dar es Salaam ilikua kwa 8%, chini ya wastani wa jumla wa 11.3%.",
-            "decision": "Fuatilia mkoa mkubwa zaidi kwa hisa ya soko, si kwa wingi wa mauzo."
-          },
-          {
-            "figure": "ranked",
-            "anchor": "Tanga",
-            "shows": "Tanga ilikua kwa 4%, mkoa uliokua polepole zaidi.",
-            "decision": "Kagua ufikiaji wa maduka kabla ya kuweka malengo ya robo ijayo."
           }
         ]
       },
       "operations": {
-        "index": "02.4",
-        "tab": "Otomatiki na uendeshaji",
-        "tabDescription": "Ripoti zinazojiendesha zenyewe, na kumbukumbu za wakala.",
         "entity": "Mfumo wa ripoti wa mkopeshaji wa mfano",
         "period": "Septemba 2026 · ratiba ya Jumatatu ya mfano",
         "creditPeriod": "Sep 2026",
@@ -540,15 +292,6 @@ const sw = {
             "readout": "Mzunguko {n} · sekunde {value}",
             "slowLabel": "Mzunguko wa polepole",
             "summary": "Mizunguko mingi ilichukua sekunde 35–41."
-          },
-          "pack": {
-            "number": "02.12",
-            "title": "Ripoti ya menejimenti ya kila mwezi",
-            "before": "Kwa mkono",
-            "after": "Kiotomatiki",
-            "beforeValue": "saa 14",
-            "afterValue": "dakika 4",
-            "summary": "Ripoti ya kila mwezi: saa 14 kwa mkono, dakika 4 kiotomatiki."
           }
         },
         "log": {
@@ -600,19 +343,13 @@ const sw = {
             "anchor": "07:02",
             "shows": "Wakala aliandaa rasimu ya ujumbe; mtu aliuidhinisha dakika saba baadaye.",
             "decision": "Unachagua hatua zipi zibaki mikononi mwa mtu."
-          },
-          {
-            "figure": "pack",
-            "anchor": "after",
-            "shows": "Kutoka saa 14 hadi dakika 4.",
-            "decision": "Wachambuzi wanafafanua namba badala ya kuzinakili."
           }
         ]
       }
     }
   },
   "estimator": {
-    "eyebrow": "03 — Hesabu zako",
+    "eyebrow": "02 — Hesabu zako",
     "title": "Saa za kazi zinakwenda wapi?",
     "lead": "Weka namba za ripoti moja uone inavyoigharimu timu yako.",
     "sentence": [
@@ -684,31 +421,31 @@ const sw = {
     }
   },
   "process": {
-    "eyebrow": "04 — Tunavyofanya kazi",
+    "eyebrow": "03 — Tunavyofanya kazi",
     "title": "Jinsi mradi unavyoendeshwa.",
     "lead": "Kila mfumo ni tofauti; njia yetu ya kuujenga haibadiliki.",
     "receivePrefix": "Unapokea:",
     "steps": [
       {
-        "index": "04.1",
+        "index": "03.1",
         "title": "Kuchunguza",
         "description": "Tunaelewa mtiririko wako wa kazi na kubaini kazi ya mkono.",
         "receive": "takwimu muhimu, na tathmini ya wazi kama mfumo unastahili kujengwa."
       },
       {
-        "index": "04.2",
+        "index": "03.2",
         "title": "Kusanifu",
         "description": "Tunapanga mfumo kulingana na jinsi unavyofanya kazi.",
         "receive": "mpango unaouidhinisha kabla hatujaanza kujenga."
       },
       {
-        "index": "04.3",
+        "index": "03.3",
         "title": "Kujenga",
         "description": "Tunaujenga kwa usalama, katika miundo ambayo timu yako tayari inaitumia.",
         "receive": "mfumo unaofanya kazi, tayari kutumika."
       },
       {
-        "index": "04.4",
+        "index": "03.4",
         "title": "Kusaidia",
         "description": "Tunaifundisha timu yako na kurekebisha mfumo kadri mahitaji yanavyobadilika.",
         "receive": "mafunzo, na mabadiliko unapoyahitaji."
@@ -790,26 +527,26 @@ const sw = {
     }
   },
   "team": {
-    "eyebrow": "06 — Timu",
+    "eyebrow": "05 — Timu",
     "title": "Watu utakaofanya nao kazi.",
     "lead": "Hivi ndivyo tunavyogawana kazi kwenye mradi wako.",
     "members": {
       "cto": {
-        "index": "06.1",
+        "index": "05.1",
         "name": "Daniel C. Masubi",
         "role": "Afisa Mkuu wa Teknolojia",
         "bio": "Anajenga mifumo, kuanzia mitiririko ya data hadi mawakala, na anawajibika kwa usalama wa data yako.",
         "alt": "Daniel C. Masubi, Afisa Mkuu wa Teknolojia, DataHub"
       },
       "operations": {
-        "index": "06.2",
+        "index": "05.2",
         "name": "Kanuda L. Sasi",
         "role": "Mkuu wa Uendeshaji",
         "bio": "Anasimamia utekelezaji, kuanzia wigo wa kazi hadi msaada, ili kilichokubaliwa ndicho kifike.",
         "alt": "Kanuda L. Sasi, Mkuu wa Uendeshaji, DataHub"
       },
       "marketing": {
-        "index": "06.3",
+        "index": "05.3",
         "name": "Yohana K. Mussa",
         "role": "Mkuu wa Masoko",
         "bio": "Mara nyingi ndiye utakayezungumza naye kwanza: anabainisha tatizo lako halisi na anakujulisha maendeleo.",
@@ -818,7 +555,7 @@ const sw = {
     }
   },
   "faq": {
-    "eyebrow": "07 — Maswali",
+    "eyebrow": "06 — Maswali",
     "title": "Maswali ambayo watu huuliza kabla ya kuanza.",
     "aside": "Hujapata jibu hapa?",
     "asideWhatsapp": "Tuulize kupitia WhatsApp",
@@ -848,7 +585,7 @@ const sw = {
     ]
   },
   "contact": {
-    "eyebrow": "08 — Mawasiliano",
+    "eyebrow": "07 — Mawasiliano",
     "title": "Anza na ripoti moja.",
     "lead": "Tueleze unachotumia sasa na unachotaka badala yake.",
     "lines": {
@@ -993,8 +730,7 @@ const sw = {
       "email": "{email}",
       "location": "Dar es Salaam, Tanzania"
     },
-    "legal": "© {year} DataHub · Dashibodi kwenye tovuti hii zinatumia data ya mfano.",
-    "backToTop": "Rudi juu"
+    "legal": "© {year} DataHub"
   },
   "servicePage": {
     "breadcrumbLabel": "Njia ya ukurasa",

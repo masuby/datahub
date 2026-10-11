@@ -42,6 +42,8 @@ export const PRESETS = {
   "hero-desktop": { W: 1440, H: 900, N: 40, tol: 0.75, sinkX: 0.8, sinkY: 0.46, leftY: 0.86, spreadIn: 0.3, spreadPinch: 0.1, spreadOut: 0.34, amp: 0.09, decision: 19 },
   "hero-mobile": { W: 390, H: 300, N: 24, tol: 0.6, sinkX: 0.5, sinkY: 0.5, leftY: 0.6, spreadIn: 0.7, spreadPinch: 0.2, spreadOut: 0.6, amp: 0.1, decision: 11 },
   plate: { W: 1440, H: 420, N: 22, tol: 1, sinkX: 0.85, sinkY: 0.4, leftY: 0.7, spreadIn: 0.8, spreadPinch: 0.3, spreadOut: 0.7, amp: 0.08, decision: -1 },
+  // The footer's band below 1024px: the plate with its sink in the middle, where the mark is centred.
+  "plate-band": { W: 780, H: 216, N: 18, tol: 0.8, sinkX: 0.5, sinkY: 0.4, leftY: 0.7, spreadIn: 0.8, spreadPinch: 0.3, spreadOut: 0.7, amp: 0.08, decision: -1 },
   service: { W: 1440, H: 520, N: 28, tol: 0.9, sinkX: 0.88, sinkY: 0.45, leftY: 0.75, spreadIn: 0.6, spreadPinch: 0.18, spreadOut: 0.4, amp: 0.07, decision: -1 },
 } satisfies Record<string, SilkPreset>;
 

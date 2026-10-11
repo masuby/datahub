@@ -5,17 +5,17 @@ import { defineDict } from "../dict";
  * Strings the pages need that the main dictionary does not carry:
  *
  * - `meta` — title and description of each page that used to be a section
- *   of the single home page (/services, /dashboards …). Titles run through
+ *   of the single home page (/services, /process …). Titles run through
  *   the "%s · DataHub" template.
  * - `home` — the short home page's teaser sections: the link lines under
- *   them and the three reasons, each pointing at the page that proves it
- *   (keyed by that page; HomeReasons sets their order and chapter numbers),
- *   and the credit of the tiles' 3D icons (ArtCredit; the licence itself is
- *   quoted in English).
+ *   them (the live sample dashboard's goes to the dashboards service page:
+ *   its own page is gone, iteration-5 §I) and the three reasons, each
+ *   pointing at the page that proves it (keyed by that page; HomeReasons
+ *   sets their order and chapter numbers),
+ *   and the "Credits and licences" disclosure under the tiles (ArtCredit;
+ *   the notices themselves are quoted in English).
  * - `security` — the eyebrow of /security, which opens on "Your data stays
  *   yours" (the dictionary's old "Why DataHub" eyebrow was removed).
- * - `cta` — the one line of the closing band that ends the home page, the
- *   service pages and the other standalone pages.
  *
  * Every statement here must stay true to the pages it summarises.
  */
@@ -26,11 +26,6 @@ export const pagesExtra = defineDict({
         title: "Dashboards, reporting automation and AI agents",
         description:
           "Dashboards, reports that build themselves and AI agents for organisations in Tanzania. Estimate the hours you could save.",
-      },
-      dashboards: {
-        title: "Sample dashboards",
-        description:
-          "Four sample dashboards, built the way we build for clients. Every name and number is invented.",
       },
       process: {
         title: "How we work",
@@ -58,7 +53,7 @@ export const pagesExtra = defineDict({
     },
     home: {
       servicesAll: "All services",
-      dashboardsExplore: "Explore the sample dashboards",
+      dashboardsService: "How we build dashboards",
       reasons: {
         title: "Why DataHub",
         items: {
@@ -73,10 +68,7 @@ export const pagesExtra = defineDict({
       },
     },
     security: {
-      eyebrow: "05 — Security",
-    },
-    cta: {
-      title: "Which report takes your team longest?",
+      eyebrow: "04 — Security",
     },
   },
   sw: {
@@ -85,11 +77,6 @@ export const pagesExtra = defineDict({
         title: "Dashibodi, otomatiki ya ripoti na mawakala wa AI",
         description:
           "Dashibodi, ripoti zinazojitengeneza zenyewe na mawakala wa AI kwa taasisi za Tanzania. Kadiria saa ambazo timu yako inaweza kuokoa.",
-      },
-      dashboards: {
-        title: "Dashibodi za mfano",
-        description:
-          "Dashibodi nne za mfano, zilizojengwa kama tunavyojenga kwa wateja. Majina na namba zote ni za kubuni.",
       },
       process: {
         title: "Jinsi tunavyofanya kazi",
@@ -119,7 +106,7 @@ export const pagesExtra = defineDict({
     },
     home: {
       servicesAll: "Huduma zote",
-      dashboardsExplore: "Chunguza dashibodi za mfano",
+      dashboardsService: "Jinsi tunavyojenga dashibodi",
       reasons: {
         title: "Kwa nini DataHub",
         items: {
@@ -140,10 +127,7 @@ export const pagesExtra = defineDict({
       },
     },
     security: {
-      eyebrow: "05 — Usalama",
-    },
-    cta: {
-      title: "Ripoti ipi inachukua muda mwingi zaidi?",
+      eyebrow: "04 — Usalama",
     },
   },
 });

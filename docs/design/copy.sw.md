@@ -37,8 +37,6 @@ Conventions:
 - `a11y.skip` → Ruka hadi maudhui
 - `a11y.opensNewTab` → (inafunguka kwenye kichupo kipya)
 - `a11y.external` → kiungo cha nje
-- `a11y.sampleFigure` → Chati ya mfano. Takwimu zote ni za kubuni.
-- `a11y.chartKeys` → Tumia vitufe vya mishale ya kushoto na kulia kusogea kwenye data.
 - `a11y.today` → Leo:
 - `a11y.withDataHub` → Ukiwa na DataHub:
 
@@ -51,7 +49,6 @@ Conventions:
 
 - `nav.label` → Menyu kuu
 - `nav.services` → Huduma
-- `nav.dashboards` → Dashibodi
 - `nav.process` → Mchakato
 - `nav.security` → Usalama
 - `nav.team` → Timu
@@ -63,18 +60,16 @@ Conventions:
 - `header.menuOpen` → Menyu
 - `header.menuClose` → Funga
 - `header.menuLabel` → Menyu ya tovuti
-- `header.progressLabel` → Maendeleo ya kusoma
 
-## menu (mobile sheet, numbered 01–08)
+## menu (mobile sheet, numbered 01–07)
 
 - `menu.items[0]` → Huduma
-- `menu.items[1]` → Dashibodi za mfano
-- `menu.items[2]` → Hesabu zako
-- `menu.items[3]` → Jinsi tunavyofanya kazi
-- `menu.items[4]` → Usalama
-- `menu.items[5]` → Timu
-- `menu.items[6]` → Maswali
-- `menu.items[7]` → Mawasiliano
+- `menu.items[1]` → Hesabu zako
+- `menu.items[2]` → Jinsi tunavyofanya kazi
+- `menu.items[3]` → Usalama
+- `menu.items[4]` → Timu
+- `menu.items[5]` → Maswali
+- `menu.items[6]` → Mawasiliano
 - `menu.whatsapp` → Tutumie ujumbe WhatsApp
 - `menu.preferences` → Mipangilio
 
@@ -120,17 +115,7 @@ The suggestion is shown in the target language on purpose, so these values are i
 ## hero (00)
 
 - `hero.ctaPrimary` → Anza mazungumzo
-- `hero.ctaSecondary` → Tazama dashibodi za mfano
-
-## serviceIndex (hero bottom links)
-
-- `serviceIndex.label` → Huduma zetu
-- `serviceIndex.items[0].index` → 01.1
-- `serviceIndex.items[0].label` → Dashibodi na BI
-- `serviceIndex.items[1].index` → 01.2
-- `serviceIndex.items[1].label` → Otomatiki ya ripoti
-- `serviceIndex.items[2].index` → 01.3
-- `serviceIndex.items[2].label` → Mawakala wa AI
+- `hero.ctaSecondary` → Tazama onyesho la moja kwa moja
 
 ---
 
@@ -144,43 +129,33 @@ The suggestion is shown in the target language on purpose, so these values are i
 - `services.items.dashboards.title` → Dashibodi na takwimu za biashara (BI)
 - `services.items.dashboards.tagline` → Sehemu moja ya kufanyia maamuzi
 - `services.items.dashboards.description` → Takwimu za sasa dhidi ya lengo, kwa kila tawi, idara au afisa.
-- `services.items.dashboards.glyphLabel` → Mstari unaopanda kuelekea alama ya lengo
 - `services.items.automation.index` → 01.2
 - `services.items.automation.title` → Otomatiki ya ripoti
 - `services.items.automation.tagline` → Kazi ya saa nyingi, kwa sekunde
 - `services.items.automation.description` → Ripoti zako za kila wiki za Excel na PowerPoint, zinajitengeneza zenyewe.
-- `services.items.automation.glyphLabel` → Mistari mitatu inayoungana kuwa mmoja
 - `services.items.aiAgents.index` → 01.3
 - `services.items.aiAgents.title` → Mawakala wa AI
 - `services.items.aiAgents.tagline` → Husoma data, huandaa hatua ijayo
 - `services.items.aiAgents.description` → Mawakala wanaofuatilia data yako, kufupisha kilichobadilika na kusubiri mtu aidhinishe.
-- `services.items.aiAgents.glyphLabel` → Nukta tatu zilizounganishwa, moja ikiwa na alama ya kuidhinishwa
 
 Deliverable labels under each row are read from `services.ts` (`deliverables[].title`) and are not repeated here.
 
 ---
 
-## dash (02, sample dashboards)
+## dash (sample data: the home page's showcase and the service pages' sample bands)
 
 ### Shared
 
-- `dash.eyebrow` → 02 — Dashibodi za mfano
+- `dash.eyebrow` → Dashibodi ya mfano
 - `dash.title` → Jumatatu yako inaweza kuonekana hivi.
-- `dash.lead` → Mionekano minne, iliyojengwa kama tunavyojenga kwa wateja.
 - `dash.notice` → Data ya mfano — hatuchapishi dashibodi za wateja
 - `dash.stamp` → DATA YA MFANO
 - `dash.footnote` → Majina na namba zote hapa ni za kubuni.
 - `dash.credit` → Chanzo: data ya mfano ya DataHub · TZS · {period}
 - `dash.figPrefix` → Kielelezo
-- `dash.tablistLabel` → Mionekano ya dashibodi za mfano
 - `dash.showTable` → Tazama kama jedwali
-- `dash.readHint` → Inaonyesha lengo la kila chati na uamuzi inaousaidia.
-- `dash.read.on` → Eleza mwonekano huu
-- `dash.read.off` → Ficha maelezo
 - `dash.read.listLabel` → Chati hii inakuambia nini
-- `dash.read.markerLabel` → Maelezo {n}
 - `dash.read.decisionPrefix` → Uamuzi:
-- `dash.readout.idle` → Sogeza juu ya chati ili kusoma thamani
 - `dash.status.onTarget` → Imefikia lengo
 - `dash.status.watch` → Angalizo
 - `dash.status.breach` → Imevuka kikomo
@@ -188,12 +163,6 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.status.sent` → Imetumwa
 - `dash.status.awaiting` → Inasubiri idhini
 - `dash.status.queued` → Inasubiri kukaguliwa
-- `dash.units.bn` → bilioni
-- `dash.units.mn` → milioni
-- `dash.units.hours` → h
-- `dash.units.seconds` → s
-- `dash.units.minutes` → dk
-- `dash.units.percent` → %
 - `dash.months[0]` → Jan
 - `dash.months[1]` → Feb
 - `dash.months[2]` → Mac
@@ -207,14 +176,9 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.months[10]` → Nov
 - `dash.months[11]` → Des
 - `dash.table.month` → Mwezi
-- `dash.table.value` → Thamani
-- `dash.table.target` → Lengo
 
-### View 1: overview
+### Overview figures (the dashboards service page; "What changed" on the AI agents page)
 
-- `dash.views.overview.index` → 02.1
-- `dash.views.overview.tab` → Muhtasari kwa uongozi
-- `dash.views.overview.tabDescription` → Mwezi mzima kwenye skrini moja, kwa ajili ya uongozi.
 - `dash.views.overview.entity` → Mkopeshaji wa mfano (mikopo midogo)
 - `dash.views.overview.period` → Jan–Sep 2026
 - `dash.views.overview.creditPeriod` → Jan–Sep 2026
@@ -238,13 +202,6 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.overview.figures.branches.axis` → % ya lengo
 - `dash.views.overview.figures.branches.readout` → {branch} · {pct}% ya lengo
 - `dash.views.overview.figures.branches.summary` → Kariakoo pekee iko juu ya lengo, kwa 104%.
-- `dash.views.overview.figures.exceptions.number` → 02.3
-- `dash.views.overview.figures.exceptions.title` → Yasiyo ya kawaida
-- `dash.views.overview.figures.exceptions.items[0]` → Mbeya PAR30 7.2% (kikomo 5.0%)
-- `dash.views.overview.figures.exceptions.items[1]` → Dodoma PAR30 5.4% (kikomo 5.0%)
-- `dash.views.overview.figures.exceptions.items[2]` → Mikopo iliyotolewa Dodoma iko 18% chini ya mpango
-- `dash.views.overview.figures.exceptions.items[3]` → Ripoti ya bodi imetengenezwa saa 05:58, imetumwa kwa wapokeaji 9
-- `dash.views.overview.figures.exceptions.summary` → Matawi mawili yamevuka kikomo cha PAR30, moja liko nyuma ya mpango, na ripoti ya bodi ilitumwa kwa wakati.
 - `dash.views.overview.changed.label` → Kilichobadilika wiki hii
 - `dash.views.overview.changed.byline` → Imeandikwa na wakala wa ripoti · mfano
 - `dash.views.overview.changed.items[0]` → PAR30 ya Mbeya imepanda kwa pointi 0.8 hadi 7.2%, hasa kutokana na maafisa mikopo wawili.
@@ -258,133 +215,9 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.overview.read[1].anchor` → Mbeya
 - `dash.views.overview.read[1].shows` → Mbeya iko chini zaidi, kwa 84% ya lengo.
 - `dash.views.overview.read[1].decision` → Mameneja wa kanda wanajua waanzie wapi.
-- `dash.views.overview.read[2].figure` → exceptions
-- `dash.views.overview.read[2].anchor` → 0
-- `dash.views.overview.read[2].shows` → Matawi mawili yamevuka kikomo cha PAR30 cha 5%.
-- `dash.views.overview.read[2].decision` → Mkuu wa Mikopo anaona ukiukaji asubuhi ileile.
 
-### View 2: loans
+### Operations figures (the automation and AI agents service pages)
 
-- `dash.views.loans.index` → 02.2
-- `dash.views.loans.tab` → Jalada la mikopo
-- `dash.views.loans.tabDescription` → Malimbikizo, umri wa madeni na maafisa, kwa timu ya mikopo.
-- `dash.views.loans.entity` → Mkopeshaji wa mfano (mikopo midogo)
-- `dash.views.loans.period` → Kufikia 30 Sep 2026
-- `dash.views.loans.creditPeriod` → Sep 2026
-- `dash.views.loans.kpis[0].label` → Jumla ya jalada la mikopo
-- `dash.views.loans.kpis[0].context` → +2.1% tangu Agosti
-- `dash.views.loans.kpis[1].label` → PAR30
-- `dash.views.loans.kpis[1].context` → Kikomo 5.0%
-- `dash.views.loans.kpis[2].label` → Mikopo chechefu (siku 90+)
-- `dash.views.loans.kpis[2].context` → Sehemu ya jalada
-- `dash.views.loans.kpis[3].label` → Mikopo iliyotolewa Septemba
-- `dash.views.loans.kpis[3].context` → Mpango TZS bilioni 6.1
-- `dash.views.loans.figures.par.number` → 02.4
-- `dash.views.loans.figures.par.title` → PAR30, miezi 12 iliyopita
-- `dash.views.loans.figures.par.axis` → % ya jalada
-- `dash.views.loans.figures.par.limit` → Kikomo 5.0%
-- `dash.views.loans.figures.par.readout` → {month} · PAR30 {value}%
-- `dash.views.loans.figures.par.summary` → PAR30 ilizidi kikomo cha 5% kuanzia Mei hadi Julai.
-- `dash.views.loans.figures.ageing.number` → 02.5
-- `dash.views.loans.figures.ageing.title` → Umri wa madeni katika jalada
-- `dash.views.loans.figures.ageing.buckets[0]` → Hayajachelewa
-- `dash.views.loans.figures.ageing.buckets[1]` → Siku 1–30
-- `dash.views.loans.figures.ageing.buckets[2]` → Siku 31–60
-- `dash.views.loans.figures.ageing.buckets[3]` → Siku 61–90
-- `dash.views.loans.figures.ageing.buckets[4]` → Siku 90+
-- `dash.views.loans.figures.ageing.summary` → 91.2% ya jalada haijachelewa.
-- `dash.views.loans.figures.mix.number` → 02.6
-- `dash.views.loans.figures.mix.title` → Jalada kwa aina ya mkopo
-- `dash.views.loans.figures.mix.products[0]` → Mikopo ya vikundi
-- `dash.views.loans.figures.mix.products[1]` → Biashara ndogo na za kati
-- `dash.views.loans.figures.mix.products[2]` → Mishahara
-- `dash.views.loans.figures.mix.products[3]` → Kilimo
-- `dash.views.loans.figures.mix.summary` → Mikopo ya vikundi ndiyo bidhaa kubwa zaidi: TZS bilioni 21.8 kati ya TZS bilioni 64.2.
-- `dash.views.loans.figures.flows.number` → 02.7
-- `dash.views.loans.figures.flows.title` → Mikopo iliyotolewa na marejesho, Apr–Sep
-- `dash.views.loans.figures.flows.axis` → TZS bilioni
-- `dash.views.loans.figures.flows.seriesDisbursed` → Mikopo iliyotolewa
-- `dash.views.loans.figures.flows.seriesRepaid` → Marejesho
-- `dash.views.loans.figures.flows.readout` → {month} · mikopo iliyotolewa TZS bilioni {a} · marejesho TZS bilioni {b}
-- `dash.views.loans.figures.flows.summary` → Mikopo iliyotolewa ilikuwa TZS bilioni 5.2–5.9 kwa mwezi.
-- `dash.views.loans.officers.title` → Maafisa mikopo
-- `dash.views.loans.officers.caption` → Maafisa wanaonyeshwa kwa namba ya utambulisho pekee.
-- `dash.views.loans.officers.columns.code` → Afisa
-- `dash.views.loans.officers.columns.branch` → Tawi
-- `dash.views.loans.officers.columns.portfolio` → Jalada
-- `dash.views.loans.officers.columns.par` → PAR30
-- `dash.views.loans.officers.columns.trend` → Miezi 12
-- `dash.views.loans.read[0].figure` → par
-- `dash.views.loans.read[0].anchor` → Jul
-- `dash.views.loans.read[0].shows` → PAR30 ilifikia kilele cha 5.4% Julai.
-- `dash.views.loans.read[0].decision` → Ukiukaji unaripotiwa siku ileile, hivyo makusanyo yanaanza mapema.
-- `dash.views.loans.read[1].figure` → ageing
-- `dash.views.loans.read[1].anchor` → 90+ days
-- `dash.views.loans.read[1].shows` → 1.5% imechelewa zaidi ya siku 90.
-- `dash.views.loans.read[1].decision` → Idara za fedha na mikopo zinajadili tengo la hasara kwa namba ileile.
-- `dash.views.loans.read[2].figure` → officers
-- `dash.views.loans.read[2].anchor` → LO-047
-- `dash.views.loans.read[2].shows` → Maafisa wawili wamevuka kikomo.
-- `dash.views.loans.read[2].decision` → Ufuatiliaji unaelekezwa kwenye majalada mawili, si tawi zima.
-- `dash.views.loans.read[3].figure` → flows
-- `dash.views.loans.read[3].anchor` → Jul
-- `dash.views.loans.read[3].shows` → Julai, marejesho yalizidi mikopo iliyotolewa kwa mara ya kwanza.
-- `dash.views.loans.read[3].decision` → Idara ya hazina inapanga fedha kwa kufuata mwenendo, si makadirio ya mwezi uliopita.
-
-### View 3: sales
-
-- `dash.views.sales.index` → 02.3
-- `dash.views.sales.tab` → Mauzo kwa mkoa
-- `dash.views.sales.tabDescription` → Mauzo yanatoka wapi na yanakua wapi.
-- `dash.views.sales.entity` → Msambazaji wa mfano (bidhaa za walaji)
-- `dash.views.sales.period` → Robo ya 3, 2026 (Jul–Sep)
-- `dash.views.sales.creditPeriod` → Robo ya 3, 2026
-- `dash.views.sales.kpis[0].label` → Mauzo, robo ya 3
-- `dash.views.sales.kpis[0].context` → +11.3% ukilinganisha na robo ya 3, 2025
-- `dash.views.sales.kpis[1].label` → Maduka hai
-- `dash.views.sales.kpis[1].context` → Yaliyoagiza katika robo ya 3
-- `dash.views.sales.kpis[2].label` → Wastani wa oda
-- `dash.views.sales.kpis[2].context` → Kwa kila oda ya duka
-- `dash.views.sales.kpis[3].label` → Mikoa iliyovuka mpango
-- `dash.views.sales.kpis[3].value` → 6 kati ya 10
-- `dash.views.sales.kpis[3].context` → Mpango wa robo ya 3
-- `dash.views.sales.figures.map.number` → 02.8
-- `dash.views.sales.figures.map.title` → Mauzo kwa mkoa
-- `dash.views.sales.figures.map.legendTitle` → Ukuaji ukilinganisha na robo ya 3, 2025
-- `dash.views.sales.figures.map.legend[0]` → hadi 6%
-- `dash.views.sales.figures.map.legend[1]` → 7–9%
-- `dash.views.sales.figures.map.legend[2]` → 10–13%
-- `dash.views.sales.figures.map.legend[3]` → 14–17%
-- `dash.views.sales.figures.map.legend[4]` → 18% au zaidi
-- `dash.views.sales.figures.map.ringNote` → Ukubwa wa duara unaonyesha mauzo.
-- `dash.views.sales.figures.map.summary` → Dar es Salaam ina mauzo makubwa zaidi; Dodoma, Mwanza na Arusha zilikua kwa kasi zaidi.
-- `dash.views.sales.figures.ranked.number` → 02.9
-- `dash.views.sales.figures.ranked.title` → Mikoa kwa mpangilio wa mauzo
-- `dash.views.sales.figures.ranked.columns.region` → Mkoa
-- `dash.views.sales.figures.ranked.columns.sales` → Mauzo
-- `dash.views.sales.figures.ranked.columns.share` → Sehemu
-- `dash.views.sales.figures.ranked.columns.growth` → Ukuaji
-- `dash.views.sales.figures.ranked.other` → Mikoa mingine
-- `dash.views.sales.figures.ranked.readout` → {region} · TZS bilioni {value} · {share}% ya mauzo · ukuaji {growth}%
-- `dash.views.sales.figures.ranked.summary` → Dar es Salaam ni 30.6% ya mauzo.
-- `dash.views.sales.read[0].figure` → map
-- `dash.views.sales.read[0].anchor` → Dodoma
-- `dash.views.sales.read[0].shows` → Dodoma ilikua kwa kasi zaidi: 21% ukilinganisha na mwaka jana.
-- `dash.views.sales.read[0].decision` → Jaribu kuhamishia bidhaa na wauzaji kwenye ukanda wa kati.
-- `dash.views.sales.read[1].figure` → ranked
-- `dash.views.sales.read[1].anchor` → Dar es Salaam
-- `dash.views.sales.read[1].shows` → Dar es Salaam ilikua kwa 8%, chini ya wastani wa jumla wa 11.3%.
-- `dash.views.sales.read[1].decision` → Fuatilia mkoa mkubwa zaidi kwa hisa ya soko, si kwa wingi wa mauzo.
-- `dash.views.sales.read[2].figure` → ranked
-- `dash.views.sales.read[2].anchor` → Tanga
-- `dash.views.sales.read[2].shows` → Tanga ilikua kwa 4%, mkoa uliokua polepole zaidi.
-- `dash.views.sales.read[2].decision` → Kagua ufikiaji wa maduka kabla ya kuweka malengo ya robo ijayo.
-
-### View 4: operations
-
-- `dash.views.operations.index` → 02.4
-- `dash.views.operations.tab` → Otomatiki na uendeshaji
-- `dash.views.operations.tabDescription` → Ripoti zinazojiendesha zenyewe, na kumbukumbu za wakala.
 - `dash.views.operations.entity` → Mfumo wa ripoti wa mkopeshaji wa mfano
 - `dash.views.operations.period` → Septemba 2026 · ratiba ya Jumatatu ya mfano
 - `dash.views.operations.creditPeriod` → Sep 2026
@@ -414,13 +247,6 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.operations.figures.runs.readout` → Mzunguko {n} · sekunde {value}
 - `dash.views.operations.figures.runs.slowLabel` → Mzunguko wa polepole
 - `dash.views.operations.figures.runs.summary` → Mizunguko mingi ilichukua sekunde 35–41.
-- `dash.views.operations.figures.pack.number` → 02.12
-- `dash.views.operations.figures.pack.title` → Ripoti ya menejimenti ya kila mwezi
-- `dash.views.operations.figures.pack.before` → Kwa mkono
-- `dash.views.operations.figures.pack.after` → Kiotomatiki
-- `dash.views.operations.figures.pack.beforeValue` → saa 14
-- `dash.views.operations.figures.pack.afterValue` → dakika 4
-- `dash.views.operations.figures.pack.summary` → Ripoti ya kila mwezi: saa 14 kwa mkono, dakika 4 kiotomatiki.
 - `dash.views.operations.log.title` → Kumbukumbu za wakala
 - `dash.views.operations.log.caption` → Wakala anaandaa rasimu. Mtu anaidhinisha chochote kinachotoka nje ya taasisi.
 - `dash.views.operations.log.items[0].time` → 05:30
@@ -450,18 +276,14 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.operations.read[2].anchor` → 07:02
 - `dash.views.operations.read[2].shows` → Wakala aliandaa rasimu ya ujumbe; mtu aliuidhinisha dakika saba baadaye.
 - `dash.views.operations.read[2].decision` → Unachagua hatua zipi zibaki mikononi mwa mtu.
-- `dash.views.operations.read[3].figure` → pack
-- `dash.views.operations.read[3].anchor` → after
-- `dash.views.operations.read[3].shows` → Kutoka saa 14 hadi dakika 4.
-- `dash.views.operations.read[3].decision` → Wachambuzi wanafafanua namba badala ya kuzinakili.
 
 ---
 
-## estimator (03, advanced feature B)
+## estimator (02, advanced feature B)
 
 Word order differs from English: Kiswahili puts the noun before the number ("ripoti 3", "watu 2", "saa 4"). The slot order of `sentence[]` is unchanged; `{personWord}` moves into `sentence[4]` so it lands before `{people}`.
 
-- `estimator.eyebrow` → 03 — Hesabu zako
+- `estimator.eyebrow` → 02 — Hesabu zako
 - `estimator.title` → Saa za kazi zinakwenda wapi?
 - `estimator.lead` → Weka namba za ripoti moja uone inavyoigharimu timu yako.
 - `estimator.sentence[0]` → Tunaandaa ripoti␠
@@ -510,25 +332,25 @@ Word order differs from English: Kiswahili puts the noun before the number ("rip
 
 ---
 
-## process (04)
+## process (03)
 
-- `process.eyebrow` → 04 — Tunavyofanya kazi
+- `process.eyebrow` → 03 — Tunavyofanya kazi
 - `process.title` → Jinsi mradi unavyoendeshwa.
 - `process.lead` → Kila mfumo ni tofauti; njia yetu ya kuujenga haibadiliki.
 - `process.receivePrefix` → Unapokea:
-- `process.steps[0].index` → 04.1
+- `process.steps[0].index` → 03.1
 - `process.steps[0].title` → Kuchunguza
 - `process.steps[0].description` → Tunaelewa mtiririko wako wa kazi na kubaini kazi ya mkono.
 - `process.steps[0].receive` → takwimu muhimu, na tathmini ya wazi kama mfumo unastahili kujengwa.
-- `process.steps[1].index` → 04.2
+- `process.steps[1].index` → 03.2
 - `process.steps[1].title` → Kusanifu
 - `process.steps[1].description` → Tunapanga mfumo kulingana na jinsi unavyofanya kazi.
 - `process.steps[1].receive` → mpango unaouidhinisha kabla hatujaanza kujenga.
-- `process.steps[2].index` → 04.3
+- `process.steps[2].index` → 03.3
 - `process.steps[2].title` → Kujenga
 - `process.steps[2].description` → Tunaujenga kwa usalama, katika miundo ambayo timu yako tayari inaitumia.
 - `process.steps[2].receive` → mfumo unaofanya kazi, tayari kutumika.
-- `process.steps[3].index` → 04.4
+- `process.steps[3].index` → 03.4
 - `process.steps[3].title` → Kusaidia
 - `process.steps[3].description` → Tunaifundisha timu yako na kurekebisha mfumo kadri mahitaji yanavyobadilika.
 - `process.steps[3].receive` → mafunzo, na mabadiliko unapoyahitaji.
@@ -536,7 +358,7 @@ Word order differs from English: Kiswahili puts the noun before the number ("rip
 
 ---
 
-## security (05)
+## security (04)
 
 - `security.title` → Kutoka kazi ya mkono iliyotawanyika hadi mfumo wa kiotomatiki ulio wazi.
 - `security.ledger.todayHeading` → Leo
@@ -578,22 +400,22 @@ Word order differs from English: Kiswahili puts the noun before the number ("rip
 
 ---
 
-## team (06)
+## team (05)
 
-- `team.eyebrow` → 06 — Timu
+- `team.eyebrow` → 05 — Timu
 - `team.title` → Watu utakaofanya nao kazi.
 - `team.lead` → Hivi ndivyo tunavyogawana kazi kwenye mradi wako.
-- `team.members.cto.index` → 06.1
+- `team.members.cto.index` → 05.1
 - `team.members.cto.name` → Daniel C. Masubi
 - `team.members.cto.role` → Afisa Mkuu wa Teknolojia
 - `team.members.cto.bio` → Anajenga mifumo, kuanzia mitiririko ya data hadi mawakala, na anawajibika kwa usalama wa data yako.
 - `team.members.cto.alt` → Daniel C. Masubi, Afisa Mkuu wa Teknolojia, DataHub
-- `team.members.operations.index` → 06.2
+- `team.members.operations.index` → 05.2
 - `team.members.operations.name` → Kanuda L. Sasi
 - `team.members.operations.role` → Mkuu wa Uendeshaji
 - `team.members.operations.bio` → Anasimamia utekelezaji, kuanzia wigo wa kazi hadi msaada, ili kilichokubaliwa ndicho kifike.
 - `team.members.operations.alt` → Kanuda L. Sasi, Mkuu wa Uendeshaji, DataHub
-- `team.members.marketing.index` → 06.3
+- `team.members.marketing.index` → 05.3
 - `team.members.marketing.name` → Yohana K. Mussa
 - `team.members.marketing.role` → Mkuu wa Masoko
 - `team.members.marketing.bio` → Mara nyingi ndiye utakayezungumza naye kwanza: anabainisha tatizo lako halisi na anakujulisha maendeleo.
@@ -601,9 +423,9 @@ Word order differs from English: Kiswahili puts the noun before the number ("rip
 
 ---
 
-## faq (07)
+## faq (06)
 
-- `faq.eyebrow` → 07 — Maswali
+- `faq.eyebrow` → 06 — Maswali
 - `faq.title` → Maswali ambayo watu huuliza kabla ya kuanza.
 - `faq.aside` → Hujapata jibu hapa?
 - `faq.asideWhatsapp` → Tuulize kupitia WhatsApp
@@ -622,9 +444,9 @@ Word order differs from English: Kiswahili puts the noun before the number ("rip
 
 ---
 
-## contact (08)
+## contact (07)
 
-- `contact.eyebrow` → 08 — Mawasiliano
+- `contact.eyebrow` → 07 — Mawasiliano
 - `contact.title` → Anza na ripoti moja.
 - `contact.lead` → Tueleze unachotumia sasa na unachotaka badala yake.
 - `contact.lines.whatsapp.label` → WhatsApp
@@ -718,8 +540,7 @@ Word order differs from English: Kiswahili puts the noun before the number ("rip
 - `footer.contact.whatsapp` → WhatsApp {number}
 - `footer.contact.email` → {email}
 - `footer.contact.location` → Dar es Salaam, Tanzania
-- `footer.legal` → © {year} DataHub · Dashibodi kwenye tovuti hii zinatumia data ya mfano.
-- `footer.backToTop` → Rudi juu
+- `footer.legal` → © {year} DataHub
 
 ---
 

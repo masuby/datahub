@@ -16,7 +16,6 @@ import { RefScript } from "@/components/system/RefScript";
 import { ThemeScript } from "@/components/system/ThemeScript";
 import { Container } from "@/components/ui/Container";
 import { Grid } from "@/components/ui/Grid";
-import { Rule } from "@/components/ui/Rule";
 import { ButtonPrimary } from "@/components/ui/Button";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { SITE_URL } from "@/lib/seo";
@@ -114,22 +113,29 @@ export default async function GlobalNotFound() {
   );
 }
 
+/**
+ * The 404's words, like a service page's hero: no rule above the eyebrow
+ * (iteration-5 §A), centred on phones and tablets and left of the silk from
+ * 1024px (§B).
+ */
 function NotFoundCopy({ lang, t }: { lang: Locale; t: Dictionary }) {
   const nf = t.notFound;
   const home = localePath(lang, "/");
   return (
-    <section aria-labelledby="not-found-title">
-      <Rule variant="section" animate />
-      <p className="t-eyebrow mt-6 a-rise" style={{ animationDelay: "120ms" }}>
+    <section aria-labelledby="not-found-title" className="text-center lg:text-left">
+      <p className="t-eyebrow a-rise" style={{ animationDelay: "120ms" }}>
         {nf.eyebrow}
       </p>
       <h1 id="not-found-title" className="t-h1-page mt-6 a-rise" style={{ animationDelay: "180ms" }}>
         {nf.title}
       </h1>
-      <p className="t-lead mt-6 a-rise" style={{ animationDelay: "240ms" }}>
+      <p className="t-lead mx-auto mt-6 a-rise lg:mx-0" style={{ animationDelay: "240ms" }}>
         {nf.body}
       </p>
-      <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 a-rise" style={{ animationDelay: "300ms" }}>
+      <div
+        className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 a-rise lg:justify-start"
+        style={{ animationDelay: "300ms" }}
+      >
         <ButtonPrimary href={home}>{nf.home}</ButtonPrimary>
         <LinkArrow href={localePath(lang, "/contact")}>{nf.contact}</LinkArrow>
       </div>

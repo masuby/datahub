@@ -7,21 +7,24 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
-import { Rule } from "@/components/ui/Rule";
-import { ServiceGlyph, type GlyphKind } from "./ServiceGlyph";
+import { bindAmpersands, cn } from "@/lib/utils";
+import { ServiceIcon } from "./ServiceIcon";
+import styles from "./Services.module.css";
 
 /**
  * 01 — What we do: the head of /services (`headingLevel` 1 there, where its
- * title is the page's h1 and the row titles step up to h2).
+ * title is the page's h1 and the service titles step up to h2).
  *
- * The three services as one ledger of links: rows between an R2 above and an
- * R2 below, R1 hairlines between them. Each row is a single <a> (the whole row
- * is the hit area) containing its heading; the link's name comes from its content,
- * so every screen reader hears the tagline, description and deliverables too.
- * The section reveal comes only from <Reveal> (§4.3: rows move on hover/focus
- * only). On hover/focus a thread draws over the row's top rule, the index
- * turns accent, the arrow moves 6px and the glyph strokes draw. No boxes: the
- * only lines are the horizontal rules, never more than one per row.
+ * The three services as three centred columns (iteration-5 §B, §D): the
+ * service's 3D icon, its index, title, tagline, description, deliverables
+ * and "Read more →", divided by vertical hairlines from 1024px and stacked
+ * with a hairline between them below (layout in Services.module.css). Each
+ * column is a single <a> (the whole column is the hit area) containing its
+ * heading; the link's name comes from its content, so every screen reader
+ * hears the tagline, description and deliverables too. The icon and the
+ * "Read more" label are decorative. The section reveal comes only from
+ * <Reveal>; on hover/focus the index and title turn accent, the icon's glow
+ * lifts and the arrow moves 6px. No underlines, no threads.
  *
  * Home-page summaries come from the dictionary; deliverable labels come from
  * the locale's service content (`servicesFor(lang)`), so both languages list
@@ -38,16 +41,13 @@ export const SERVICE_ITEM_KEY = {
   "ai-agents": "aiAgents",
 } as const satisfies Record<ServiceSlug, keyof Dictionary["services"]["items"]>;
 
-const isGlyphKind = (slug: string): slug is GlyphKind => slug in SERVICE_ITEM_KEY;
-
-const ARROW_MOVE =
-  "inline-block transition-transform duration-[280ms] ease-[var(--ease-silk)] group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5";
+const isListed = (slug: string): slug is ServiceSlug => slug in SERVICE_ITEM_KEY;
 
 export async function Services({ lang, headingLevel = 2 }: { lang: Locale; headingLevel?: 1 | 2 }) {
   const t = await getDictionary(lang);
   const s = t.services;
-  const rows = servicesFor(lang).filter((svc) => isGlyphKind(svc.slug));
-  const RowHeading = headingLevel === 1 ? "h2" : "h3";
+  const rows = servicesFor(lang).filter((svc) => isListed(svc.slug));
+  const ColumnHeading = headingLevel === 1 ? "h2" : "h3";
 
   return (
     <Section id="services" labelledBy="services-title">
@@ -62,78 +62,38 @@ export async function Services({ lang, headingLevel = 2 }: { lang: Locale; headi
         />
 
         <Reveal>
-          <ol className="list-none p-0" role="list">
+          <ol className={styles.list} role="list">
             {rows.map((svc, i) => {
-              const kind = svc.slug as GlyphKind;
-              const item = s.items[SERVICE_ITEM_KEY[kind]];
-              const titleId = `service-${svc.slug}-title`;
+              const slug = svc.slug as ServiceSlug;
+              const item = s.items[SERVICE_ITEM_KEY[slug]];
               return (
-                <li key={svc.slug}>
-                  {/* Top rule of the row: R2 for the first row, R1 between rows. */}
-                  <Rule variant={i === 0 ? "section" : "hair"} />
-                  <Link
-                    href={localePath(lang, `/services/${svc.slug}`)}
-                    className="group relative grid grid-cols-4 py-8 text-fg sm:grid-cols-8 sm:py-10 lg:grid-cols-12"
-                    style={{ columnGap: "var(--col-gap)" }}
-                  >
-                    {/* "You are here" thread: draws over the row's top rule. */}
-                    <span
-                      aria-hidden="true"
-                      className="thread pointer-events-none absolute inset-x-0 top-[-1.5px] scale-x-0 transition-transform duration-[280ms] ease-[var(--ease-thread)] group-hover:scale-x-100 group-focus-visible:scale-x-100"
-                    />
-
-                    {/* Index (+ arrow on phones) */}
-                    <p className="col-span-4 flex items-baseline justify-between sm:col-span-2 sm:block sm:pt-2">
-                      <span className="t-eyebrow transition-colors duration-[160ms] group-hover:text-accent group-focus-visible:text-accent">
-                        {item.index}
-                      </span>
-                      <span aria-hidden="true" className={`${ARROW_MOVE} t-small font-semibold sm:hidden`}>
-                        →
-                      </span>
-                    </p>
-
-                    {/* Title */}
-                    <RowHeading
-                      id={titleId}
-                      className="t-h3 col-span-4 mt-4 sm:col-span-6 sm:mt-0 lg:col-span-4 lg:pr-6"
-                    >
-                      {item.title}
-                    </RowHeading>
-
-                    {/* Tagline, description, deliverables */}
-                    <div className="col-span-4 mt-6 sm:col-span-4 sm:col-start-3 sm:mt-6 lg:col-span-4 lg:col-start-7 lg:mt-2">
-                      <p className="t-body font-semibold text-fg">
-                        {item.tagline}
-                      </p>
-                      <p className="t-body mt-2 text-muted">{item.description}</p>
-                      {svc.deliverables.length > 0 && (
-                        <ul className="t-data mt-4 list-none p-0" role="list">
-                          {svc.deliverables.map((d) => (
-                            <li
-                              key={d.title}
-                              className="relative pl-[1.5ch] before:absolute before:left-0 before:content-['–'] sm:inline sm:pl-0 sm:before:content-none sm:[&:not(:last-child)]:after:content-['\00a0·_']"
-                            >
-                              {d.title}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-
-                    {/* Glyph above "Read more →" (tablet and up) */}
-                    <div className="hidden sm:col-span-2 sm:col-start-7 sm:mt-6 sm:flex sm:flex-col sm:items-end sm:justify-between sm:gap-6 lg:col-span-2 lg:col-start-11 lg:mt-2">
-                      <ServiceGlyph kind={kind} label={item.glyphLabel} />
-                      <span aria-hidden="true" className="t-small inline-flex items-center gap-2 font-semibold whitespace-nowrap text-fg">
-                        {s.readMore}
-                        <span className={ARROW_MOVE}>→</span>
-                      </span>
-                    </div>
+                <li key={slug} className={cn(styles.item, "a-rise")} style={{ animationDelay: `${i * 60}ms` }}>
+                  <Link href={localePath(lang, `/services/${slug}`)} className={cn("group", styles.link)}>
+                    <span aria-hidden="true" className={styles.visual}>
+                      <ServiceIcon slug={slug} size={96} eager={headingLevel === 1} className={styles.icon} />
+                    </span>
+                    <span className={cn("t-eyebrow", styles.index)}>{item.index}</span>
+                    <ColumnHeading className={cn("t-h3", styles.title)}>{bindAmpersands(item.title)}</ColumnHeading>
+                    <span className={cn("t-body font-bold text-fg", styles.tagline)}>{item.tagline}</span>
+                    <span className={cn("t-body text-muted", styles.description)}>{item.description}</span>
+                    {svc.deliverables.length > 0 ? (
+                      <ul className={cn("t-data list-none p-0", styles.deliverables)} role="list">
+                        {svc.deliverables.map((d) => (
+                          <li key={d.title}>{d.title}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <span className={styles.deliverables} />
+                    )}
+                    <span aria-hidden="true" className={styles.more}>
+                      {s.readMore}
+                      <span className={styles.arrow}>→</span>
+                    </span>
                   </Link>
                 </li>
               );
             })}
           </ol>
-          <Rule variant="section" />
         </Reveal>
       </Container>
     </Section>

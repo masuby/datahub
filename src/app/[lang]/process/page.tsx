@@ -6,14 +6,13 @@ import { pagesExtra } from "@/i18n/extra/pages";
 import { LangHint } from "@/components/system/LangHint";
 import { Header } from "@/components/site/Header";
 import { Process } from "@/components/site/Process";
-import { CtaBand } from "@/components/site/home/CtaBand";
 import { Footer } from "@/components/site/Footer";
 import { ActionRail } from "@/components/site/ActionRail";
 import { pageMetadata } from "@/lib/seo";
 
 /**
  * How we work (/process, /sw/process): the four steps, one page. Its section
- * title is the page's h1; the closing band leads to /contact.
+ * title is the page's h1.
  */
 
 // Dynamic so the per-request CSP nonce reaches the framework scripts (see
@@ -50,7 +49,6 @@ export default async function ProcessPage({ params }: Props) {
       <LangHint lang={lang} />
       <main id="main" className="flex-1">
         <Process lang={lang} headingLevel={1} />
-        <CtaBand lang={lang} />
       </main>
       <Footer lang={lang} />
       <ActionRail lang={lang} />

@@ -14,6 +14,7 @@ import {
   type FormEvent,
   type ReactNode,
 } from "react";
+import Link from "next/link";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import type { FormExtra } from "@/i18n/extra/form";
 import { CONTACT_EMAIL, WHATSAPP_DISPLAY } from "@/lib/contact-info";
@@ -21,8 +22,6 @@ import { formatNumber } from "@/lib/format";
 import { readRef } from "@/components/system/RefKeeper";
 import { takePrefill } from "@/components/system/prefill";
 import { ButtonPrimary, ButtonText } from "@/components/ui/Button";
-import { LinkArrow } from "@/components/ui/LinkArrow";
-import { Rule } from "@/components/ui/Rule";
 import { cn } from "@/lib/utils";
 import styles from "./ContactForm.module.css";
 
@@ -201,6 +200,10 @@ function fillNode(
   });
 }
 
+
+/** A link inside a sentence (the line under the button, the privacy note):
+ *  the quiet static underline is its non-colour cue (iteration-5 §A). */
+const INLINE_LINK = "link-inline font-bold text-fg hover:text-accent";
 
 const INPUT =
   "peer block w-full rounded-none border-0 border-b border-rule-input bg-transparent px-0 font-sans text-lg text-fg " +
@@ -486,7 +489,7 @@ export function ContactForm({
       href={whatsappHref}
       target="_blank"
       rel="noopener noreferrer"
-      className="link-thread font-semibold text-fg transition-colors duration-[160ms] hover:text-accent"
+      className={INLINE_LINK}
     >
       <span className="tnum whitespace-nowrap">{WHATSAPP_DISPLAY}</span>
       <span className="sr-only"> {newTabLabel}</span>
@@ -495,7 +498,7 @@ export function ContactForm({
   const emailLink = (
     <a
       href={`mailto:${CONTACT_EMAIL}`}
-      className="link-thread font-semibold text-fg transition-colors duration-[160ms] hover:text-accent"
+      className={INLINE_LINK}
     >
       {CONTACT_EMAIL}
     </a>
@@ -516,11 +519,10 @@ export function ContactForm({
       <div>
         {politeRegion}
         <div>
-          <Rule variant="section" animate />
           <SuccessHeading
             ref={successRef}
             tabIndex={-1}
-            className="t-h2 mt-8 a-rise focus:outline-none"
+            className="t-h2 a-rise focus:outline-none"
           >
             <span aria-hidden="true" className="mr-3 text-accent-display">
               ✓
@@ -783,7 +785,7 @@ export function ContactForm({
                   <span
                     className={cn(
                       "font-sans text-base transition-colors duration-[160ms] group-hover:text-fg",
-                      on ? "font-semibold text-fg" : "text-muted",
+                      on ? "font-bold text-fg" : "text-muted",
                     )}
                   >
                     {F.service.options[SERVICE_LABEL_KEY[value]]}
@@ -892,9 +894,9 @@ export function ContactForm({
         </p>
         <p className="t-small mt-2 text-muted">
           {privacy.text}{" "}
-          <LinkArrow href={privacy.href} className="min-h-0 text-[0.875rem]">
+          <Link href={privacy.href} className={INLINE_LINK}>
             {privacy.linkLabel}
-          </LinkArrow>
+          </Link>
         </p>
       </form>
     </div>

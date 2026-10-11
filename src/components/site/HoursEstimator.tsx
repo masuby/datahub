@@ -7,7 +7,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { HoursEstimatorClient } from "./HoursEstimatorClient";
 
 /**
- * 03 — Where do the hours go? (spec §6.4, §10.2), on /services under the
+ * 02 — Where do the hours go? (spec §6.4, §10.2), on /services under the
  * three services.
  *
  * Server shell: the section, its header and the strings. Everything that
@@ -21,7 +21,7 @@ export async function HoursEstimator({ lang }: { lang: Locale }) {
   return (
     <Section id="estimator" labelledBy="estimator-title">
       <Container>
-        <SectionHeader index="03" eyebrow={eyebrow} title={title} titleId="estimator-title" lead={lead} />
+        <SectionHeader index="02" eyebrow={eyebrow} title={title} titleId="estimator-title" lead={lead} />
         <Reveal>
           <HoursEstimatorClient s={strings} contactHref={localePath(lang, "/contact")} />
         </Reveal>

@@ -7,33 +7,32 @@ import { ArtCredit } from "./ArtCredit";
 import { REASON_ICON, TEAM_AVATARS } from "./home-art";
 import { HOME_SECTION_Y, HomeOpener, HomeTiles, type Tile } from "./HomeTiles";
 
-/**
- * The reasons in chapter order, each with the page it links to and that
- * page's chapter number (as in the menu), so the row reads 04 · 05 · 06.
- */
+/** The reasons in chapter order, each with the page it links to. */
 const REASONS = [
-  { key: "process", path: "/process", index: "04" },
-  { key: "security", path: "/security", index: "05" },
-  { key: "team", path: "/team", index: "06" },
+  { key: "process", path: "/process" },
+  { key: "security", path: "/security" },
+  { key: "team", path: "/team" },
 ] as const;
 
 /**
  * Home · three short reasons in one row, each a link to the page that backs
  * it up: a clear process → /process, security first → /security, a team in
- * Dar es Salaam → /team. Each carries the chapter number of that page.
+ * Dar es Salaam → /team. No index: the pages' chapter numbers (03–05) would
+ * follow 01 with no 02 on this page (02 is the estimator on /services), and
+ * the showcase between them carries none either.
  *
- * The same tiles as "What we do" (iteration-3 §C): a notepad for the
- * process, a shield for security and, for the team, the three real
- * portraits as overlapping avatars, in the /team order. Under the last
- * row of tiles, the 3D icons' credit and licence (ArtCredit).
+ * The same centred tiles as "What we do" (iteration-5 §B, §D): the owner's
+ * notepad for the process, the shield for security and, for the team, the
+ * three real portraits as overlapping avatars, in the /team order. Under
+ * the last row of tiles, the credits and licences of the open-source work
+ * the home page uses (ArtCredit).
  */
 export function HomeReasons({ lang }: { lang: Locale }) {
   const r = pagesExtra[lang].home.reasons;
 
-  const tiles: Tile[] = REASONS.map(({ key, path, index }) => ({
+  const tiles: Tile[] = REASONS.map(({ key, path }) => ({
     key,
     href: localePath(lang, path),
-    index,
     title: r.items[key].title,
     line: r.items[key].body,
     ...(key === "team" ? { avatars: TEAM_AVATARS } : { icon: REASON_ICON[key] }),

@@ -11,7 +11,7 @@ import { SilkField } from "@/components/silk/SilkField";
 import { HeroLive } from "@/components/hero/HeroLive";
 import { HeroShaders } from "@/components/hero/HeroShaders";
 import { HeroWords } from "@/components/hero/HeroWords";
-import { OUTFIT_ADVANCE, OUTFIT_UPM } from "@/components/hero/outfit-metrics";
+import { DISPLAY_ADVANCE, DISPLAY_UPM } from "@/components/hero/font-metrics";
 import { PRESETS } from "@/lib/silk";
 import { cn } from "@/lib/utils";
 import { HeroPause, HeroSilk } from "./HeroMotion";
@@ -19,18 +19,18 @@ import styles from "./Hero.module.css";
 
 const DESKTOP = PRESETS["hero-desktop"];
 
-/** .t-display tracking (-0.04em), applied after every character. */
-const TRACKING = -0.04;
+/** .t-display tracking (-0.02em), applied after every character. */
+const TRACKING = -0.02;
 
 /**
- * Width of a line of the headline in em, from Outfit 700's advances, plus a
+ * Width of a line of the headline in em, from Poppins 600's advances, plus a
  * little for ink beyond the last advance. The headline sizes itself so its
  * widest line (the first line or the longest word) fits its column, down to
  * a 320px phone: the word line never wraps.
  */
 function lineEm(text: string): number {
   let em = 0.08;
-  for (const ch of text) em += (OUTFIT_ADVANCE[ch] ?? 0.6 * OUTFIT_UPM) / OUTFIT_UPM + TRACKING;
+  for (const ch of text) em += (DISPLAY_ADVANCE[ch] ?? 0.6 * DISPLAY_UPM) / DISPLAY_UPM + TRACKING;
   return em;
 }
 
@@ -44,9 +44,9 @@ function lineEm(text: string): number {
  * (static SVG, then the Canvas2D drift — with its travelling lights and a
  * few twinkling dots of the field — when the device can afford it), a soft
  * glow behind the mark, the mark at the silk's sink, the text, the pause
- * control, the floor rule the decision filament lands on. Phones stack the
- * text on plain background, then a 300px band with the field, the silk and
- * the mark.
+ * control, the floor rule the decision filament lands on. Phones and
+ * tablets stack the text, centred (iteration-5 §B), on plain background,
+ * then a 300px band with the field, the silk and the mark at its centre.
  *
  * The services are not listed here: the home page's next section does that
  * (iteration-2 §D, no claim twice).
@@ -114,7 +114,7 @@ export async function Hero({ lang }: { lang: Locale }) {
           <Grid className={styles.text}>
             <h1
               id="hero-title"
-              className={cn("col-span-4 text-fg sm:col-span-8 lg:col-span-8", styles.title)}
+              className={cn("col-span-4 text-center text-fg sm:col-span-8 lg:col-span-8 lg:text-left", styles.title)}
               style={{ "--fit-em": fitEm } as CSSProperties}
             >
               <span className="sr-only">{x.title.name}</span>
@@ -128,12 +128,19 @@ export async function Hero({ lang }: { lang: Locale }) {
                 </span>
               </span>
             </h1>
-            <p className="t-lead col-span-4 mt-6 sm:col-span-7 lg:col-span-6">{x.lead}</p>
-            <div className="col-span-4 mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 sm:col-span-8">
+            {/* Below 1024px the text block centres over the band (iteration-5 §B). */}
+            <p className="t-lead col-span-4 mx-auto mt-6 text-center sm:col-span-8 lg:col-span-6 lg:mx-0 lg:text-left">
+              {x.lead}
+            </p>
+            <div className="col-span-4 mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 sm:col-span-8 lg:justify-start">
               <ButtonPrimary href={localePath(lang, "/contact")} id="hero-cta" glass="zone">
                 {h.ctaPrimary}
               </ButtonPrimary>
-              <LinkArrow href={localePath(lang, "/dashboards")}>{h.ctaSecondary}</LinkArrow>
+              {/* Down to the live sample dashboard on this page (iteration-5 §I):
+                  an in-page jump, so a ?ref= tag stays in the address bar. */}
+              <LinkArrow href="#dashboards" arrow="↓">
+                {h.ctaSecondary}
+              </LinkArrow>
             </div>
           </Grid>
         </Container>
@@ -145,7 +152,9 @@ export async function Hero({ lang }: { lang: Locale }) {
         </div>
       </div>
 
-      {/* Mobile and tablet: the band — field, silk and mark — with no text over it. */}
+      {/* Mobile and tablet: the band — field, silk and mark — with no text over
+          it, the mark at its centre; the pause control centred under it, clear
+          of the floating WhatsApp button at the bottom right. */}
       <div className="lg:hidden">
         <div className={cn("relative h-[300px] overflow-hidden", styles.band, styles.scope)}>
           <div aria-hidden="true" data-mesh-host="sm" className={cn("pointer-events-none absolute inset-0", styles.mesh, styles.meshBand)} />
@@ -164,7 +173,7 @@ export async function Hero({ lang }: { lang: Locale }) {
             <HeroMark id="hero-mark-sm" metal className="size-full" />
           </div>
         </div>
-        <Container className="flex min-h-11 justify-end">
+        <Container className="flex min-h-11 justify-center">
           <HeroPause labels={motionLabels} />
         </Container>
       </div>

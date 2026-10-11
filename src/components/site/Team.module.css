@@ -1,10 +1,10 @@
 /*
   06 Team — line-up on one shared floor rule.
 
-  Mobile (<640): one row per person. Portrait (40%) on its own short floor,
-  index/name/role to its right, the bio full width under the row (Kiswahili
-  bios are long; a 60% column on a 360px phone would be ~16 lines).
-  Tablet (640–1023): portrait 3/8, name block and bio stacked to its right.
+  Every member is centred (iteration-5 §B): portrait, index, name, role and
+  the short bio.
+  Phones and tablets (<1024): one person after another, the portrait on its
+  own short floor, the name block and bio under it.
   Desktop (>=1024): 3 columns (1–4, 5–8, 9–12) on a subgrid of three rows —
   portrait / name block / bio — so the floor rule sits exactly where the
   portraits end and names, roles and bios line up across the columns. The
@@ -44,24 +44,22 @@
 
 /* ── Member ─────────────────────────────────────────────────────────────── */
 .member {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  grid-template-areas:
-    "photo head"
-    "bio   bio";
-  column-gap: var(--col-gap);
-  align-items: end;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-/* R1 between rows (mobile/tablet). A sibling of the members. */
+/* R1 between people (mobile/tablet), fading out at both ends. A sibling of
+   the members. */
 .lineup > .sep {
   margin-block: 2.5rem;
+  background: linear-gradient(90deg, transparent, var(--rule) 18%, var(--rule) 82%, transparent);
 }
 
 .photo {
-  grid-area: photo;
   position: relative;
-  align-self: end;
+  width: min(62%, 15rem);
 }
 
 .frame {
@@ -122,14 +120,12 @@
 }
 
 .head {
-  grid-area: head;
-  align-self: end;
-  padding-bottom: 1rem;
+  padding-top: 1.25rem;
 }
 
 .bio {
-  grid-area: bio;
-  margin-top: 1.25rem;
+  max-width: 36ch;
+  margin-top: 0.75rem;
 }
 
 /* The shared floor and the column dividers only exist on desktop. */
@@ -139,19 +135,8 @@
 }
 
 @media (min-width: 640px) {
-  .member {
-    grid-template-columns: minmax(0, 3fr) minmax(0, 5fr);
-    grid-template-rows: 1fr auto;
-    grid-template-areas:
-      "photo head"
-      "photo bio";
-  }
-  .head {
-    padding-bottom: 0;
-  }
-  .bio {
-    margin-top: 0.75rem;
-    padding-bottom: 1rem;
+  .photo {
+    width: min(40%, 17rem);
   }
 }
 
@@ -192,10 +177,10 @@
   .member {
     grid-column: var(--col) / span 4;
     grid-row: 1 / span 3;
+    display: grid;
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: subgrid;
-    grid-template-areas: none;
-    column-gap: 0;
+    justify-items: center;
   }
 
   .lineup > .sep,
@@ -204,8 +189,8 @@
   }
 
   .photo {
-    grid-area: auto;
     grid-row: 1;
+    width: 100%;
   }
   .frame {
     max-width: 360px;
@@ -213,20 +198,17 @@
   }
 
   .head {
-    grid-area: auto;
     grid-row: 2;
     align-self: start;
     padding-top: 1.5rem;
-    padding-right: 1rem;
+    padding-inline: 1rem;
   }
   .bio {
-    grid-area: auto;
     grid-row: 3;
     align-self: stretch;
     margin-top: 0;
     padding-top: 1rem;
-    padding-right: 1rem;
-    padding-bottom: 0;
+    padding-inline: 1rem;
   }
 }
 

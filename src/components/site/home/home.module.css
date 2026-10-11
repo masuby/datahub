@@ -1,47 +1,58 @@
 /*
-  The home page after the hero (iteration-3 §C): a vertical rhythm instead of
-  horizontal row rules.
+  The home page after the hero (iteration-3 §C, centred in iteration-5 §B):
+  a vertical rhythm instead of horizontal row rules.
 
-  Desktop and tablet (>=640): three tiles side by side, each a link, divided
-  by vertical hairlines that fade out at both ends (lines that stop; nothing
-  runs across and nothing closes into a box). The tiles have no gap of their
-  own, so the dividers sit at exactly one and two thirds of the container:
-  from 1440px the dashboard teaser's divider below lands on the first of
-  them, and the three sections read as one set of columns. Inside a row the
-  tiles share their rows (subgrid): icon, index, title, line and arrow line
-  up across the three even when one title wraps.
-  Phones (<640): the tiles stack as rows — visual, title and line, arrow —
-  with space between them and no rules.
+  Every tile is centred: its picture on top, then the title and its one
+  line. Desktop and tablet (>=640): three tiles side by side, each a link,
+  divided by vertical hairlines that fade out at both ends (lines that stop;
+  nothing runs across and nothing closes into a box). The tiles have no gap
+  of their own, so the dividers sit at exactly one and two thirds of the
+  container and each tile is centred in its third. The tiles share their
+  rows (subgrid, as on /services): picture, index, title and line line up
+  across the three, so a title that wraps to two lines does not push its
+  own line below its neighbours'. The reasons have no index: their title
+  sits a little further under the picture instead.
+  Phones (<640): the tiles stack, still centred, with space between them and
+  no rules; the index is left out and the pictures are smaller, so the rows
+  stay short.
 
-  Each tile carries a real 3D icon (Fluent Emoji 3D, src/assets/fluent-3d)
-  or, for the team, the three portraits as overlapping avatars. Hover and
-  keyboard focus give gentle depth: the icon lifts a few pixels over its
-  contact shadow, the glow behind it brightens and grows, the title's thread
-  underline draws and the arrow moves 6px. Hover only where hover is real
-  (no sticky lift after a tap). Under reduced motion nothing moves or
-  scales: the glow only brightens and the underline appears. Nothing moves
-  on its own.
+  Each tile carries one of the owner's 3D icons (src/assets/icons, their
+  backgrounds removed) or, for the team, the three portraits as overlapping
+  avatars, both with a soft brand glow (a drop-shadow, tuned per theme) and
+  nothing behind them. The arrow follows the title's last word. Hover and
+  keyboard focus: the title takes the accent colour, the glow brightens,
+  the icon lifts a few pixels and the arrow moves 6px. Hover only where
+  hover is real (no sticky lift after a tap). Under reduced motion nothing
+  moves or scales: only the colour and the glow change. Nothing moves on
+  its own.
 */
 
 /* ── Theme ─────────────────────────────────────────────────────────────── */
+/* .visual too: the dashboards section shows the icon outside the tiles. */
 .tiles,
-.teaser {
-  /* The contact shadow under a lifted icon, and the avatars' backdrop. */
-  --tile-shadow: rgb(2 41 112 / 0.22);
+.visual {
+  /* The pictures' glow, at rest and on hover/focus: royal, falling a little
+     below the icon, as light from the page would. */
+  --icon-glow: drop-shadow(0 0.5rem 0.875rem rgb(3 107 251 / 0.2));
+  --icon-glow-on: drop-shadow(0 0.625rem 1.25rem rgb(3 107 251 / 0.36));
+  /* The avatars' backdrop. */
   --avatar-bg: color-mix(in srgb, var(--sky) 22%, var(--bg-sunk));
   /* Hairline dividers fade in and out over this length. */
   --fade: 18%;
 }
+/* Dark: sky, all around the icon, as if it gave off light. */
 :global(.dark) .tiles,
-:global(.dark) .teaser {
-  --tile-shadow: rgb(0 0 0 / 0.7);
+:global(.dark) .visual {
+  --icon-glow: drop-shadow(0 0.25rem 1rem rgb(104 212 251 / 0.24));
+  --icon-glow-on: drop-shadow(0 0.25rem 1.5rem rgb(104 212 251 / 0.42));
   --avatar-bg: color-mix(in srgb, var(--royal) 22%, var(--bg-sunk));
 }
 /* No-JS fallback, mirrors globals.css (ThemeScript sets .light/.dark when JS runs). */
 @media (prefers-color-scheme: dark) {
   :global(:root:not(.light):not(.dark)) .tiles,
-  :global(:root:not(.light):not(.dark)) .teaser {
-    --tile-shadow: rgb(0 0 0 / 0.7);
+  :global(:root:not(.light):not(.dark)) .visual {
+    --icon-glow: drop-shadow(0 0.25rem 1rem rgb(104 212 251 / 0.24));
+    --icon-glow-on: drop-shadow(0 0.25rem 1.5rem rgb(104 212 251 / 0.42));
     --avatar-bg: color-mix(in srgb, var(--royal) 22%, var(--bg-sunk));
   }
 }
@@ -51,68 +62,32 @@
 .tiles {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  row-gap: 1.25rem;
+  row-gap: 1.5rem;
 }
 .tile {
   position: relative;
 }
 
+/* Phones: picture, title, line, one under the other, centred. */
 .link {
-  /* Phones: visual | title over line | arrow. 4rem: a 56px icon, or the
-     64px avatar stack. */
-  display: grid;
-  grid-template-columns: 4rem minmax(0, 1fr) auto;
-  grid-template-areas:
-    "visual title arrow"
-    "visual line  arrow";
-  column-gap: 1rem;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  min-height: 3.5rem;
+  text-align: center;
   color: var(--fg);
 }
 
+/* A fixed box at every width, so nothing shifts when the picture arrives. */
 .visual {
-  grid-area: visual;
-  position: relative;
-  isolation: isolate;
   display: flex;
   align-items: center;
-  width: 3.5rem;
-  height: 3.5rem;
-}
-/* The glow behind the icon: the hero mark's, quieter until hover/focus. */
-.visual::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: -45%;
-  background: radial-gradient(closest-side, var(--hero-glow-a), var(--hero-glow-b) 50%, transparent 100%);
-  opacity: 0.45;
-  transition:
-    opacity var(--dur-ui) var(--ease-silk),
-    transform var(--dur-ui) var(--ease-silk);
-}
-/* The contact shadow the icon stands over; it tightens as the icon lifts. */
-.visual::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  left: 16%;
-  right: 16%;
-  bottom: -9%;
-  height: 14%;
-  background: radial-gradient(closest-side, var(--tile-shadow), transparent);
-  transition:
-    opacity var(--dur-ui) var(--ease-silk),
-    transform var(--dur-ui) var(--ease-silk);
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
 }
 /* The avatars set their own width, at every size. */
 .visual.avatarsVisual {
   width: auto;
-}
-/* Portraits are not objects standing on the page: no contact shadow. */
-.avatarsVisual::after {
-  display: none;
 }
 
 /* The <img> itself is the box's child (TileImage wraps it in <picture>). */
@@ -123,19 +98,25 @@
   display: block;
   width: 100%;
   height: 100%;
-  transition: transform var(--dur-ui) var(--ease-silk);
+  filter: var(--icon-glow);
+  transition:
+    transform var(--dur-ui) var(--ease-silk),
+    filter var(--dur-ui) var(--ease-silk);
 }
 
-/* The team: three portraits overlapping, each cut out of the page colour.
-   Each <img> sits in its own <picture> (display: contents, above). */
+/* The team: three portraits overlapping, each cut out of the page colour,
+   glowing as one group. Each <img> sits in its own <picture> (display:
+   contents, above). */
 .avatars {
   display: flex;
   align-items: center;
+  filter: var(--icon-glow);
+  transition: filter var(--dur-ui) var(--ease-silk);
 }
 .avatar {
   display: block;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 2.75rem;
+  height: 2.75rem;
   flex: none;
   border: 2px solid var(--bg);
   border-radius: 9999px;
@@ -143,114 +124,92 @@
   object-fit: cover;
   transition: transform var(--dur-ui) var(--ease-silk);
 }
-/* Phones: three 28px portraits, 10px overlap: 64px, the visual column. */
+/* Phones: three 44px portraits, 12px overlap. */
 .avatars > picture + picture .avatar {
-  margin-left: -0.625rem;
+  margin-left: -0.75rem;
 }
 
 .index {
   display: none;
 }
 .title {
-  grid-area: title;
-  align-self: end;
+  margin-top: 0.5rem;
+  transition: color var(--dur-ui) var(--ease-silk);
 }
-/* The title's thread underline, drawn while the tile is hovered or focused. */
-.titleText {
-  background-image: var(--thread);
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 0% 2px;
-  padding-bottom: 0.125rem;
-  transition: background-size var(--dur-ui) var(--ease-thread);
+/* After the last word, on its line (TitleWithArrow keeps the two together),
+   centred with the words. */
+.arrow {
+  display: inline-block;
+  margin-left: 0.3em;
+  font-family: var(--font-sans);
+  color: var(--accent);
+  transition: transform var(--dur-ui) var(--ease-silk);
 }
 .line {
-  grid-area: line;
-  align-self: start;
   margin-top: 0.125rem;
+  max-width: 32ch;
   color: var(--fg-muted);
 }
-/* Phones: a step under t-body, so the line sits below its title rather than
-   beside it, and the rows stay short. */
+/* Phones: a step under t-body, so the rows stay short. */
 @media (max-width: 639.98px) {
   .line {
     font-size: 0.9375rem;
     line-height: 1.5;
   }
 }
-.arrow {
-  grid-area: arrow;
-  display: inline-block;
-  font-family: var(--font-sans);
-  font-size: 1.25rem;
-  line-height: 1;
-  color: var(--accent);
-  transition: transform var(--dur-ui) var(--ease-silk);
-}
 
 /* ── States ──────────────────────────────────────────────────────────────
-   At every motion setting: the underline and the brighter glow. */
-.link:focus-visible .titleText {
-  background-size: 100% 2px;
+   At every motion setting: the accent title and the brighter glow. */
+.link:focus-visible .title {
+  color: var(--accent);
 }
-.link:focus-visible .visual::before {
-  opacity: 1;
+.link:focus-visible .icon,
+.link:focus-visible .avatars {
+  filter: var(--icon-glow-on);
 }
 @media (hover: hover) {
-  .link:hover .titleText {
-    background-size: 100% 2px;
+  .link:hover .title {
+    color: var(--accent);
   }
-  .link:hover .visual::before {
-    opacity: 1;
+  .link:hover .icon,
+  .link:hover .avatars {
+    filter: var(--icon-glow-on);
   }
 }
-/* Without reduced motion only: the lift, the growing glow, the arrow. */
+/* Without reduced motion only: the lift, the arrow. The avatars part a
+   little, evenly, so the group stays centred. */
 @media (prefers-reduced-motion: no-preference) {
-  .link:focus-visible .visual::before {
-    transform: scale(1.12);
-  }
   .link:focus-visible .arrow {
     transform: translateX(6px);
   }
   .link:focus-visible .icon {
     transform: translateY(-6px) scale(1.04);
   }
-  .link:focus-visible .visual::after {
-    opacity: 0.55;
-    transform: scaleX(0.82);
-  }
   .link:focus-visible .avatar {
     transform: translateY(-3px);
   }
-  .link:focus-visible .avatars > picture:nth-child(2) .avatar {
-    transform: translate(5px, -3px);
+  .link:focus-visible .avatars > picture:first-child .avatar {
+    transform: translate(-5px, -3px);
   }
   .link:focus-visible .avatars > picture:nth-child(3) .avatar {
-    transform: translate(10px, -3px);
+    transform: translate(5px, -3px);
   }
 }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .link:hover .visual::before {
-    transform: scale(1.12);
-  }
   .link:hover .arrow {
     transform: translateX(6px);
   }
   .link:hover .icon {
     transform: translateY(-6px) scale(1.04);
   }
-  .link:hover .visual::after {
-    opacity: 0.55;
-    transform: scaleX(0.82);
-  }
   .link:hover .avatar {
     transform: translateY(-3px);
   }
-  .link:hover .avatars > picture:nth-child(2) .avatar {
-    transform: translate(5px, -3px);
+  .link:hover .avatars > picture:first-child .avatar {
+    transform: translate(-5px, -3px);
   }
   .link:hover .avatars > picture:nth-child(3) .avatar {
-    transform: translate(10px, -3px);
+    transform: translate(5px, -3px);
   }
 }
 
@@ -258,7 +217,15 @@
 @media (min-width: 640px) {
   .tiles {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* picture · index · title · line (a list without indices leaves the
+       last row empty) */
+    grid-template-rows: repeat(4, auto);
     row-gap: 0;
+  }
+  .tile {
+    grid-row: span 4;
+    display: grid;
+    grid-template-rows: subgrid;
   }
   /* Dividers between columns only: none at the outer edges. */
   .tile + .tile::before {
@@ -277,169 +244,64 @@
     pointer-events: none;
   }
 
-  /* Where subgrid is missing (see below): each tile a column of its own,
-     the arrow at its foot. */
+  /* The same padding on both sides of every tile, so each is centred in
+     its third. */
   .link {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    height: 100%;
-    padding: 0.75rem clamp(1.25rem, 0.2rem + 2.6vw, 2.5rem) 0.5rem;
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-rows: subgrid;
+    /* Each item at the top of its row, centred across. */
+    align-items: start;
+    justify-items: center;
+    padding: 0.75rem clamp(0.75rem, 0.1rem + 1.6vw, 2rem) 0.5rem;
   }
-  .tile:first-child .link {
-    padding-left: 0;
-  }
-  .tile:last-child .link {
-    padding-right: 0;
+  /* No index between them (the reasons). */
+  .visual + .title {
+    margin-top: 1.25rem;
   }
 
   .visual {
-    width: 5rem;
-    height: 5rem;
+    width: 5.5rem;
+    height: 5.5rem;
   }
   .index {
     display: block;
-    margin-top: 1.75rem;
-  }
-  .title {
-    align-self: auto;
-    margin-top: 0.5rem;
+    margin-top: 1.25rem;
   }
   .line {
     margin-top: 0.5rem;
-    max-width: 32ch;
-  }
-  .arrow {
-    margin-top: auto;
-    padding-top: 1.25rem;
   }
 
   .avatar {
-    width: 3.25rem;
-    height: 3.25rem;
+    width: 3.75rem;
+    height: 3.75rem;
     border-width: 3px;
   }
   .avatars > picture + picture .avatar {
     margin-left: -1rem;
   }
 }
-/* The three tiles share five rows — visual, index, title, line, arrow — so
-   a title that wraps in one tile moves the lines of all three together. */
-@supports (grid-template-rows: subgrid) {
-  @media (min-width: 640px) {
-    .tiles {
-      grid-template-rows: repeat(5, auto);
-    }
-    .tile {
-      display: grid;
-      grid-row: span 5;
-      grid-template-rows: subgrid;
-    }
-    .link {
-      display: grid;
-      grid-row: span 5;
-      grid-template-rows: subgrid;
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-areas: none;
-      align-items: start;
-      justify-items: start;
-      height: auto;
-    }
-    .visual,
-    .title,
-    .line,
-    .arrow {
-      grid-area: auto;
-    }
-    .arrow {
-      margin-top: 0;
-      align-self: end;
-    }
-  }
-}
 @media (min-width: 1024px) {
   .visual {
-    width: 6rem;
-    height: 6rem;
+    width: 6.5rem;
+    height: 6.5rem;
   }
   .avatar {
-    width: 4rem;
-    height: 4rem;
+    width: 4.5rem;
+    height: 4.5rem;
   }
   .avatars > picture + picture .avatar {
-    margin-left: -1.125rem;
+    margin-left: -1.25rem;
   }
 }
 
-/* ── The dashboard teaser ──────────────────────────────────────────────────
-   Below 1440px: title, notice, plate, link, stacked. Two thirds of a
-   narrower page squeeze the KPI strip ("TZS bilioni 18.4" breaks below
-   about 1390px), so the side-by-side form starts where the page is at its
-   full width and only ever renders at that one size (plate 880px): the bar
-   chart, title, notice and link in the first third, one under the other,
-   and the plate in the other two thirds behind a vertical hairline on the
-   line of the first tile divider. */
-.teaser {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas:
-    "text"
-    "plate"
-    "link";
+/* ── Credits and licences (ArtCredit) ───────────────────────────────────────
+   As the dashboards' "View as table": + / −, muted until hovered. The
+   summary is centred like the tiles above it; the notices are reading text,
+   left-aligned in a centred column. */
+.credit {
+  text-align: center;
 }
-.teaserText {
-  grid-area: text;
-}
-.teaserPlate {
-  grid-area: plate;
-  position: relative;
-  min-width: 0;
-  margin-top: 1.5rem;
-}
-.teaserLink {
-  grid-area: link;
-  justify-self: start;
-}
-@media (min-width: 90rem) {
-  .teaser {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-    /* The last row takes the rest of the plate's height, so the link sits
-       right under the notice. */
-    grid-template-rows: auto auto 1fr;
-    grid-template-areas:
-      "text plate"
-      "link plate"
-      ".    plate";
-  }
-  .teaserText {
-    padding-right: 2.5rem;
-  }
-  .teaserLink {
-    margin-top: 1.75rem;
-  }
-  .teaserPlate {
-    margin-top: 0;
-    padding-left: 2.5rem;
-  }
-  .teaserPlate::before {
-    content: "";
-    position: absolute;
-    inset-block: 0;
-    left: 0;
-    width: 1px;
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      var(--rule-strong) 8%,
-      var(--rule-strong) 92%,
-      transparent
-    );
-    pointer-events: none;
-  }
-}
-
-/* ── The icons' credit and licence (ArtCredit) ─────────────────────────────
-   As the dashboards' "View as table": + / −, muted until hovered. */
 /* Baseline, so the sign stays on the first line when the label wraps. */
 .credit > summary {
   display: inline-flex;
@@ -454,13 +316,18 @@
 .credit > summary::-webkit-details-marker {
   display: none;
 }
-.credit > summary::before {
-  content: "+";
+/* The sign is decorative, on an aria-hidden span (ArtCredit): generated
+   content on the summary itself would join its accessible name ("+ Credits
+   and licences", then "− …" once open). */
+.sign {
   display: inline-block;
   width: 1ch;
   font-family: var(--font-mono);
 }
-.credit[open] > summary::before {
+.sign::before {
+  content: "+";
+}
+.credit[open] > summary > .sign::before {
   content: "−";
 }
 .credit > summary:hover {
@@ -468,16 +335,17 @@
 }
 .licence {
   max-width: 72ch;
+  margin-inline: auto;
+  text-align: start;
   color: var(--fg-muted);
 }
 
 @media (forced-colors: active) {
-  .visual::before,
-  .visual::after {
-    display: none;
+  .icon,
+  .avatars {
+    filter: none;
   }
-  .tile + .tile::before,
-  .teaserPlate::before {
+  .tile + .tile::before {
     background: CanvasText;
   }
   /* The cut-out stays the page colour, not a ring in the link colour. */

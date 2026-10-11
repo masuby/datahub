@@ -3,73 +3,36 @@
 What the site ships that it did not make itself: where it came from, its
 licence, and what was done to it. One section per part of the site.
 
-## Home page tiles (iteration-3 §C)
+## Home page tiles (iteration-3 §C, iteration-5 §D)
 
-**Microsoft Fluent Emoji — 3D style** (MIT licence)
-Source: https://github.com/microsoft/fluentui-emoji at commit
-`1ffb34c752ecf5d402f04cfb4b392c77f57c54bc` (`main` on 11 Oct 2026), fetched
-over HTTPS from
-`https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/assets/<Name>/3D/<name>_3d.png`
-(`<Name>` URL-encoded, e.g. `Bar%20chart`), and the licence from the same
-commit's `/LICENSE`. The SHA-256 of each upstream file is recorded in
-`scripts/make-home-art.mjs`, which refuses a file that differs.
+Nothing third-party any more. The Microsoft Fluent Emoji 3D icons (MIT)
+that the tiles carried in iterations 3 and 4 were replaced on 11 Oct 2026 by
+the owner's own 3D icons, and removed: `src/assets/fluent-3d/` is deleted,
+`scripts/make-home-art.mjs` no longer fetches or re-encodes them, and their
+credit and MIT notice are gone from the home page's "Credits and licences"
+(`ArtCredit`).
 
-| File in the repo | Source asset | Used for |
-|---|---|---|
-| `src/assets/fluent-3d/chart-increasing.png` | Chart increasing / `chart_increasing_3d.png` | "Dashboards & business intelligence" tile |
-| `src/assets/fluent-3d/gear.png` | Gear / `gear_3d.png` | "Reporting automation" tile |
-| `src/assets/fluent-3d/robot.png` | Robot / `robot_3d.png` | "AI agents" tile |
-| `src/assets/fluent-3d/bar-chart.png` | Bar chart / `bar_chart_3d.png` | Dashboard teaser (from 1440px) |
-| `src/assets/fluent-3d/spiral-notepad.png` | Spiral notepad / `spiral_notepad_3d.png` | "A clear process" tile |
-| `src/assets/fluent-3d/shield.png` | Shield / `shield_3d.png` | "Security first" tile |
+**The owner's icons** (`src/assets/icons/*.png`) are DataHub's own artwork,
+supplied by the owner, with their backgrounds removed (384×384 RGBA PNG),
+placed by hand; no script makes them. Served first-party through next/image
+(AVIF/WebP); decorative (`alt=""`), the titles carry the meaning.
 
-Treatment: decoded to raw RGBA pixels with sharp and written as new PNGs
-(256×256, nothing of the source file but its pixels kept — no metadata).
-Unmodified otherwise. Served first-party through next/image (AVIF/WebP);
-decorative (`alt=""`), the tile titles carry the meaning.
+| File in the repo | Used for |
+|---|---|
+| `src/assets/icons/dashboards.png` | "Dashboards & business intelligence": its home tile, /services and its service page; and the home dashboards section |
+| `src/assets/icons/automation.png` | "Reporting automation": its home tile, /services and its service page |
+| `src/assets/icons/agent.png` | "AI agents": its home tile, /services and its service page |
+| `src/assets/icons/process.png` | "A clear process" home tile |
+| `src/assets/icons/security.png` | "Security first" home tile |
 
-On the site: the home page, which serves the icons, carries their credit
-and the licence below the "Why DataHub" tiles — "+ 3D icons: Microsoft
-Fluent Emoji, MIT licence" / "+ Aikoni za 3D: Microsoft Fluent Emoji, leseni
-ya MIT", a disclosure that opens on the notice below, word for word
-(`src/components/site/home/ArtCredit.tsx`, text in `home-art.ts`).
-
-Licence text (MIT), verbatim as published with the source (only the file's
-four-space indent removed):
-
-```
-MIT License
-
-Copyright (c) Microsoft Corporation.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE
-```
+All from `src/components/site/home/home-art.ts` (`SERVICE_ICON`,
+`DASHBOARDS_ICON`, `REASON_ICON`), so the same thing has the same icon
+everywhere.
 
 **Team avatars** (`src/assets/team-avatars/*.png`) are not third-party: they
 are crops of DataHub's own portraits in `public/team/` (one 540px square from
 y = 105, x = 100 of each aligned 740×990 portrait, resized to 192×192 with
-transparency kept).
-
-To rebuild or audit both sets: fetch the six PNGs above from the pinned
-commit into an empty folder, then run
-`node scripts/make-home-art.mjs <that folder>`. It checks each file's
-SHA-256, re-encodes the icons and cuts the avatars into `src/assets/`; on
+transparency kept). To rebuild them: `node scripts/make-home-art.mjs`; on
 11 Oct 2026 its output was byte-identical to the committed files.
 
 
@@ -104,11 +67,12 @@ trademarks of Meta (Instagram, Facebook, WhatsApp), ByteDance (TikTok) and
 Microsoft (LinkedIn); the site shows them only to link to DataHub's own
 profiles and chat.
 
-**Outfit** (SIL Open Font License 1.1), already in `assets/fonts/`: the
-footer wordmark's word is written with the outlines of its capitals and
-lower case, generated from `Outfit-700.ttf` by `scripts/make-glyphs.mjs`
-into `src/components/hero/glyphs.ts` (a–z, as the hero's word already was)
-and `src/components/hero/glyphs-upper.ts` (A–Z, loaded only by the footer).
+**Poppins** (SIL Open Font License 1.1; see "Type" below): the footer
+wordmark's word is written with the outlines of its capitals and lower case,
+generated from `assets/fonts/Poppins-SemiBold.ttf` by
+`scripts/make-glyphs.mjs` into `src/components/hero/glyphs.ts` (a–z, as the
+hero's word is) and `src/components/hero/glyphs-upper.ts` (A–Z, loaded only
+by the footer). Until iteration 5 these were Outfit 700 outlines.
 
 
 ## Liquid glass and liquid metal (iteration 4)
@@ -133,3 +97,32 @@ flat mark) and the logo maps are precomputed at build time by
 `src/assets/metal/`. The NOTICE text and the licence link are shown on the
 home page under "Credits and licences". Pinned exactly; an upgrade needs the
 shader patch re-checked.
+
+
+## Type (iteration-5 §F)
+
+**Poppins** — SIL Open Font License 1.1, Copyright 2020 The Poppins Project
+Authors (github.com/itfoundry/Poppins). The display face: headings, UI
+labels and the wordmark, weights 500, 600 and 700.
+
+**Lato** — SIL Open Font License 1.1, Copyright 2010–2011 tyPoland Łukasz
+Dziedzic, with Reserved Font Name "Lato" (version 1.104, as Google Fonts
+serves it). The body face, weights 400 and 700.
+
+Both are self-hosted by `next/font/google` (`src/app/fonts.ts`): fetched at
+build time, served from the site's own origin as subsetted WOFF2 (latin),
+unmodified apart from that subsetting, so the CSP keeps `font-src 'self'`.
+Geist Mono (OFL 1.1, Vercel) is served the same way, as before.
+
+**`assets/fonts/Poppins-SemiBold.ttf`** (Poppins 600, version 4.004, the
+same version Google Fonts serves: every advance width matches the served
+font) with its licence beside it, `assets/fonts/OFL-Poppins.txt`. Not
+served: `scripts/make-glyphs.mjs` reads it to generate the outlines of a–z
+and A–Z (`src/components/hero/glyphs.ts`, `glyphs-upper.ts`, overlaps
+removed) and the advance widths (`src/components/hero/font-metrics.ts`) that
+the hero's and the footer's words that write themselves trace and size by.
+The generated files carry the OFL notice in their header.
+
+**Outfit** (SIL Open Font License 1.1, `assets/fonts/Outfit-*.ttf`) is no
+longer a site face; the share posters (`/api/poster`) and the Open Graph
+image still render with it, as published.

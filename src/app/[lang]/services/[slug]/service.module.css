@@ -32,6 +32,160 @@
   translate: -50% -50%;
 }
 
+/*
+ * Centred short items (iteration-5 §B). Lines that separate them fade out at
+ * both ends, so nothing closes into a box.
+ *
+ * .stack: one centred column of short lines (01 signs), a hairline between.
+ * .cards: centred cards (02 what you get, 05 also from DataHub). Phones: one
+ * column, a hairline between. From 640px: two columns, a vertical hairline in
+ * the middle of the gap; .cards4 runs four across from 1024px. A .cell is the
+ * grid item that carries the lines; a .card is the centred content (the same
+ * element, or the link inside the cell).
+ */
+.stack > li {
+  position: relative;
+}
+.stack > li + li::before,
+.cell + .cell::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rule) 18%, var(--rule) 82%, transparent);
+  pointer-events: none;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.cell {
+  position: relative;
+  --pad-top: 2rem;
+  --pad-bottom: 2rem;
+}
+.cards > .cell:first-child {
+  --pad-top: 0;
+}
+.cards > .cell:last-child {
+  --pad-bottom: 0;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding-top: var(--pad-top);
+  padding-bottom: var(--pad-bottom);
+  text-align: center;
+  color: var(--fg);
+}
+.cardIcon {
+  display: block;
+  width: 4.5rem;
+  height: 4.5rem;
+}
+/* "Read more →": a UI label in the display face, on the card's last line. */
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1.25rem;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    row-gap: 2.5rem;
+  }
+  .cards > .cell,
+  .cards > .cell:first-child,
+  .cards > .cell:last-child {
+    --pad-top: 0.5rem;
+    --pad-bottom: 0.5rem;
+  }
+  .card {
+    padding-inline: 1.5rem;
+  }
+  .cell + .cell::before {
+    display: none;
+  }
+  .cardIcon {
+    width: 5rem;
+    height: 5rem;
+  }
+  /* The vertical hairline between two cards, in the middle of the gap. */
+  .cell:nth-child(2n)::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--col-gap) / -2);
+    width: 1px;
+    background: linear-gradient(180deg, transparent, var(--rule) 18%, var(--rule) 82%, transparent);
+    pointer-events: none;
+  }
+  .cards2 {
+    max-width: 60rem;
+    margin-inline: auto;
+  }
+  /* Side by side, the cards share their rows (subgrid), so titles, lines
+     and "Read more" line up even when one title wraps. */
+  .cards4 {
+    --rows: 3; /* index · title · description */
+  }
+  .cards2 {
+    --rows: 5; /* icon · index · title · tagline · more */
+  }
+  .cards > .cell {
+    display: grid;
+    grid-row: span var(--rows);
+    grid-template-rows: subgrid;
+    row-gap: 0;
+    justify-items: center;
+    align-items: start;
+    align-content: start;
+  }
+  .cell > .card {
+    display: grid;
+    grid-row: 1 / -1;
+    grid-template-rows: subgrid;
+    justify-items: center;
+    align-items: start;
+  }
+}
+@media (min-width: 1024px) {
+  .cards4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .cards4 > .cell:nth-child(n + 2)::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--col-gap) / -2);
+    width: 1px;
+    background: linear-gradient(180deg, transparent, var(--rule) 18%, var(--rule) 82%, transparent);
+    pointer-events: none;
+  }
+}
+@media (forced-colors: active) {
+  .stack > li + li::before,
+  .cell + .cell::before,
+  .cell::after {
+    background: CanvasText;
+  }
+}
+
 /* FAQ rows: native <details>, a "+" made of two 1.5px lines, no circle. */
 .faq > summary {
   list-style: none;

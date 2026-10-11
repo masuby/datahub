@@ -2,6 +2,8 @@
 
 Status: final design call. Build from this file and `copy.en.md` (same folder). Where this spec and a proposal disagree, this spec wins. Where this spec is silent, choose the option that is lighter, quieter and has fewer boxes.
 
+Later briefs in this folder (`iteration-2.md` to `iteration-5.md`) override this spec where they disagree (the newest wins). Iteration 5 in particular removed the `/dashboards` page (it redirects to the home page's live sample dashboard, §H/§I), the closing call-to-action band (§G) and every short decorative thread and hover underline (§A), centred the section headers (§B), and moved the type to Poppins over Lato (§F).
+
 Repository: `C:\Users\Daniel\Desktop\code\Masubi\Desktop\My_project\Datahub` (Next 16.2.9, React 19.2, Tailwind v4). Read `node_modules/next/dist/docs/` before writing routing, metadata, font or image code (AGENTS.md). The brief's non-negotiables (lead pipeline, poster API, nonce CSP, SEO URLs, honesty, no live badges or tickers, mid-range Android performance, WCAG AA) apply to every line below.
 
 ---
@@ -71,7 +73,7 @@ Grafts (each kept inside that one language):
   --bg-elev: #FFFFFF;     /* header when scrolled, mobile menu sheet, native popups. Never cards. */
   --bg-sunk: #EAF1FC;     /* selected table row, active read-mode note, input autofill */
   --bg-ink: #040C21;      /* only consumed by .surface-ink */
-  --header-bg: color-mix(in srgb, var(--bg) 94%, transparent);
+  --header-bg: var(--bg); /* opaque since iteration 5: headlines and icons showed through 94% */
 
   /* Text */
   --fg: #061433;
@@ -152,7 +154,7 @@ Grafts (each kept inside that one language):
   --bg-elev: #071430;
   --bg-sunk: #0B1D42;
   --bg-ink: #040C21;
-  --header-bg: color-mix(in srgb, var(--bg-elev) 94%, transparent);
+  --header-bg: var(--bg-elev);
 
   --fg: #EAF1FF;
   --fg-muted: #A7B6D3;
@@ -913,9 +915,9 @@ JSON-LD (`serviceSchema`, `breadcrumbSchema`, `faqSchema`) unchanged, with local
 ### 8.1 Shared rules
 
 - **Two sample organisations, named generically:** "Sample lender (microfinance)" / "Taasisi ya mfano ya mikopo" for views 1, 2, 4; "Sample distributor (consumer goods)" / "Msambazaji wa mfano" for view 3. No real organisation names. Loan officers appear only as codes (`LO-014`). Branch and region names are real places (they are geography, not clients).
-- **SAMPLE stamp inside every chart SVG** (`SampleStamp`): top-right of each figure's SVG, `.t-eyebrow` size, text `dash.stamp` ("SAMPLE DATA" / "DATA YA MFANO"), `fill="var(--fg-subtle)"`, with a 1px `--rule-strong` line under it (one line, not a box). Every figure SVG also includes a `<title>` with the figure summary.
+- **SAMPLE stamp inside every chart SVG** (`SampleStamp`): top-right of each figure's SVG, `.t-eyebrow` size, text `dash.stamp` ("SAMPLE DATA" / "DATA YA MFANO"), `fill="var(--fg-subtle)"`, the text alone (iteration-5 §A removed the 1px `--rule-strong` line that sat under it; no box either). Every figure SVG also includes a `<title>` with the figure summary.
 - **Credit line under every figure:** `.t-data` `dash.credit` with `{period}` ("Source: DataHub sample data · TZS · Sep 2026"). Notice once per plate: `dash.footnote`.
-- **Home teaser (iteration 2):** the home page's teaser (`TeaserPlate`) is a shortened plate: one credit line (the figure's) at every width, and below 640px only the chart and its credit line; the KPI strip, summary, table, stamp line and footnote are on `/dashboards`. See docs/design/iteration-2.md, section A. Every other plate follows the rules here.
+- **Home teaser (iteration 2; superseded by iteration-5 §H/§I: the teaser and `/dashboards` are gone, the home page shows a live sample dashboard instead):** the home page's teaser (`TeaserPlate`) is a shortened plate: one credit line (the figure's) at every width, and below 640px only the chart and its credit line; the KPI strip, summary, table, stamp line and footnote are on `/dashboards`. See docs/design/iteration-2.md, section A. Every other plate follows the rules here.
 - **Figure anatomy:** `<figure>`: `.t-eyebrow` `Fig. 02.n` + `.t-title` title; readout line `.t-data` (crosshair value, `aria-live="polite"`; idle text = latest point); the SVG; credit line; `<details>` `dash.showTable` with a booktabs `<table>` of the data (R2 top/bottom, R3 under header, R1 rows, numbers right-aligned tabular). `<figcaption>` = one-sentence summary (`dash.views.*.figures.*.summary`).
 - **Rendering:** server components emit SVG with fills/strokes from CSS variables (`var(--s1)` etc.); text in SVG uses `font-family: var(--font-mono)`, 11px, `fill: var(--fg-subtle)`. A theme switch needs no JS. Charts set `viewBox` and `width:100%`; text sizes stay constant by using `vector-effect` on strokes and placing axis labels in HTML where scaling would distort them (KPI strip, tables) or in SVG with a fixed `viewBox` width of 640 (main charts) / 320 (half charts).
 - **Line/area:** 2px stroke `--s1`, area `--s-fill`, target dashed `--s-ref`. **Bars:** 4px-radius-free rects, 2px gap. **Breach zone:** 45° hatch pattern `--s-hatch`. Series are labelled directly at their ends; no legends with swatches unless 3 series.

@@ -1,23 +1,14 @@
 /*
- * The header's two threads on its bottom hairline (HeaderShell): reading
- * progress, and the page-change thread that takes its place while the next
- * page is on its way (<header data-navigating>).
+ * The header's page-change thread on its bottom edge (HeaderShell), shown
+ * while the next page is on its way (<header data-navigating>). A loading
+ * state, so it outlived the reading-progress thread (iteration-5 §A).
  *
  * Nothing changes for the first 150ms, so a quick page change stays quiet.
- * Then the progress thread fades and the page-change thread draws from the
- * left, quickly at first and ever slower, never reaching the end on its own:
- * the next page arriving ends it. With reduced motion, or motion paused
- * (data-still), it is simply there at full width and does not move.
- * Transform and opacity only.
+ * Then the thread draws from the left, quickly at first and ever slower,
+ * never reaching the end on its own: the next page arriving ends it. With
+ * reduced motion, or motion paused (data-still), it is simply there at full
+ * width and does not move. Transform and opacity only.
  */
-
-.progress {
-  transition: opacity 160ms;
-}
-[data-navigating] > .progress {
-  opacity: 0;
-  transition-delay: 150ms;
-}
 
 .pending {
   opacity: 0;

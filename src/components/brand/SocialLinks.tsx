@@ -8,11 +8,12 @@ import { BRAND_GLYPH_VIEWBOX, INSTAGRAM_GRADIENT_ID, socialRef } from "./social-
 import styles from "./SocialLinks.module.css";
 
 /**
- * Hit area and glyph size: the header's compact row (a little tighter from
- * 1024 to 1279px, where the header is fullest), the footer's, the mobile menu's.
+ * Hit area and glyph size: the header's compact row (not shown from 1024 to
+ * 1279px, where the header is fullest: Header.tsx), the footer's, the mobile
+ * menu's.
  */
 const SIZES = {
-  header: { box: "size-9 lg:size-8 xl:size-9", glyph: "size-[18px]" },
+  header: { box: "size-9", glyph: "size-[18px]" },
   footer: { box: "size-11", glyph: "size-[22px]" },
   menu: { box: "size-12", glyph: "size-6" },
 } as const;

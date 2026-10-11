@@ -34,7 +34,9 @@
   --bg-elev: #ffffff; /* header when scrolled, mobile menu sheet, native popups. Never cards. */
   --bg-sunk: #eaf1fc; /* selected table row, active read-mode note, input autofill */
   --bg-ink: #040c21; /* only consumed by .surface-ink */
-  --header-bg: color-mix(in srgb, var(--bg) 94%, transparent);
+  /* Opaque: the big Poppins headlines and the colour icons showed through a
+     94% bar, ghosting behind the nav's glass pills. Also the phone action rail. */
+  --header-bg: var(--bg);
 
   /* Text */
   --fg: #061433;
@@ -127,6 +129,13 @@
   --mesh-opacity: 0.85;
   --mesh-safe: 0.08;
 
+  /* The primary button's liquid-metal ring (iteration 5 §E; read only by
+     src/components/ui/glass/Glass.module.css): its glints. The ring takes
+     its light and dark stripes from the --metal-* tokens above, so it
+     follows the hand in either theme; these two are the same in both. */
+  --button-metal-glint: #ffffff;
+  --button-metal-ice: #d6ebfe;
+
   /* The footer's word is written with a pen nib (iteration 3): navy at the
      tip to royal at the heel, a sky light along its edge, the page showing
      through its slit. */
@@ -162,7 +171,14 @@
   --gutter-x: 20px;
   --col-gap: 16px;
   --section-y: clamp(4.5rem, 2.6rem + 8vw, 9rem);
+  /* Top of a page's first section: close under the header (iteration-5 §C). */
+  --section-y-first: clamp(1.5rem, 1rem + 2vw, 3rem);
   --header-h: 56px;
+}
+/* While the language hint shows (set before first paint: lang-hint.ts), the
+   first section also makes room for its 45px line, which overlays the top. */
+:root[data-lang-hint] {
+  --section-y-first: calc(clamp(1.5rem, 1rem + 2vw, 3rem) + 45px);
 }
 @media (min-width: 640px) {
   :root {
@@ -185,7 +201,7 @@
   --bg-elev: #071430;
   --bg-sunk: #0b1d42;
   --bg-ink: #040c21;
-  --header-bg: color-mix(in srgb, var(--bg-elev) 94%, transparent);
+  --header-bg: var(--bg-elev);
 
   --fg: #eaf1ff;
   --fg-muted: #a7b6d3;
@@ -271,7 +287,7 @@
     --bg-elev: #071430;
     --bg-sunk: #0b1d42;
     --bg-ink: #040c21;
-    --header-bg: color-mix(in srgb, var(--bg-elev) 94%, transparent);
+    --header-bg: var(--bg-elev);
     --fg: #eaf1ff;
     --fg-muted: #a7b6d3;
     --fg-subtle: #8292b4;
@@ -405,8 +421,9 @@ body {
   --color-s3: var(--s3);
   --color-s-ref: var(--s-ref);
 
-  --font-display: var(--font-outfit);
-  --font-sans: var(--font-manrope);
+  /* Poppins (headings, UI labels) over Lato (body): iteration-5 §F, fonts.ts. */
+  --font-display: var(--font-poppins);
+  --font-sans: var(--font-lato);
   --font-mono: var(--font-geist-mono);
 
   --ease-silk: var(--ease-silk);
@@ -416,82 +433,89 @@ body {
 /* ─────────────────────────────────────────────────────────────
    Type scale — fluid between 360px and 1440px. Use these classes;
    do not hand-roll sizes.
+
+   Poppins is wider than the old display face and has a taller x-height,
+   so heading sizes sit about a tenth below the old scale for the same
+   footprint. Headings are 600 with gentle tracking (-0.02em); labels 500.
+   Lato has only 400 and 700 here: body classes stay at 400 (a 500 would
+   quietly fall back to 400, a 600 jump to 700).
    ───────────────────────────────────────────────────────────── */
 @layer components {
+  /* 600: the hero's word is written with the Poppins 600 outlines
+     (src/components/hero/glyphs.ts), laid exactly over this text. */
   .t-display {
-    --fs: clamp(2.75rem, 1rem + 7.6vw, 7.5rem);
+    --fs: clamp(2.5rem, 0.9rem + 6.6vw, 6.5rem);
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 600;
     font-size: calc(var(--fs) * var(--display-scale, 1));
-    line-height: 0.95;
-    letter-spacing: -0.04em;
+    line-height: 1;
+    letter-spacing: -0.02em;
     text-wrap: balance;
   }
   .t-sub {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.875rem);
-    line-height: 1.2;
-    letter-spacing: -0.015em;
+    font-size: clamp(1.125rem, 0.95rem + 0.8vw, 1.625rem);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
     color: var(--fg-muted);
     text-wrap: balance;
   }
   .t-h1-page {
-    --fs: clamp(2.25rem, 1.2rem + 4.4vw, 4.5rem);
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: calc(var(--fs) * var(--display-scale, 1));
-    line-height: 1;
-    letter-spacing: -0.035em;
-    text-wrap: balance;
-  }
-  .t-h2 {
-    --fs: clamp(2.125rem, 1.4rem + 3.1vw, 4rem);
+    --fs: clamp(2rem, 1.1rem + 3.9vw, 4rem);
     font-family: var(--font-display);
     font-weight: 600;
     font-size: calc(var(--fs) * var(--display-scale, 1));
-    line-height: 1.04;
-    letter-spacing: -0.03em;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .t-h2 {
+    --fs: clamp(1.875rem, 1.25rem + 2.7vw, 3.5rem);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: calc(var(--fs) * var(--display-scale, 1));
+    line-height: 1.12;
+    letter-spacing: -0.02em;
     text-wrap: balance;
   }
   .t-h3 {
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: clamp(1.75rem, 1.35rem + 1.7vw, 2.75rem);
-    line-height: 1.08;
-    letter-spacing: -0.02em;
+    font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.375rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
     text-wrap: balance;
   }
   .t-title {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
-    line-height: 1.25;
+    font-size: clamp(1.125rem, 1rem + 0.55vw, 1.5rem);
+    line-height: 1.3;
     letter-spacing: -0.01em;
     text-wrap: balance;
   }
   .t-kpi {
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
-    line-height: 1;
+    font-size: clamp(1.625rem, 1.3rem + 1.4vw, 2.375rem);
+    line-height: 1.05;
     letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums;
   }
   .t-result {
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: clamp(2.5rem, 1.6rem + 3.8vw, 4.75rem);
-    line-height: 1;
-    letter-spacing: -0.03em;
+    font-size: clamp(2.25rem, 1.45rem + 3.4vw, 4.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums;
   }
   .t-lead {
     font-family: var(--font-sans);
     font-weight: 400;
     font-size: clamp(1.125rem, 1.02rem + 0.45vw, 1.375rem);
-    line-height: 1.5;
-    letter-spacing: -0.005em;
+    line-height: 1.55;
     color: var(--fg-muted);
     max-width: 60ch;
     text-wrap: pretty;
@@ -506,7 +530,7 @@ body {
   }
   .t-small {
     font-family: var(--font-sans);
-    font-weight: 500;
+    font-weight: 400;
     font-size: 0.875rem;
     line-height: 1.5;
   }
@@ -535,14 +559,15 @@ body {
     font-variant-numeric: tabular-nums;
     color: var(--fg-subtle);
   }
-  /* 700, not 800: the footer's word is written with the Outfit 700 outlines
-     (src/components/hero/glyphs.ts), laid exactly over this text. */
+  /* 600, as the hero: the footer's word is written with the Poppins 600
+     outlines (src/components/hero/glyphs-upper.ts), laid exactly over this
+     text. A little more tracking off than the headings: it is set far larger. */
   .t-footer-mark {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 600;
     font-size: clamp(3rem, 0.5rem + 12.2vw, 12rem);
-    line-height: 0.86;
-    letter-spacing: -0.045em;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
   }
 
   /* ── Rules: the only structure on the site ─────────────────── */
@@ -560,7 +585,10 @@ body {
     align-self: stretch;
     background: var(--rule);
   }
-  /* R2 section rule: 1px strong line whose first 48px is a 2px thread. */
+  /* R2 section rule: 1px strong line, plain (iteration-5 §A: no short
+     "pointing" thread at its start, no sheen running along it). Its 2px
+     thread has no width by default; only the hero's floor gives it one, at
+     the spot the silk's filament lands (.landing in Hero.module.css). */
   .rule-section {
     position: relative;
     display: block;
@@ -574,47 +602,44 @@ body {
     position: absolute;
     left: 0;
     top: -0.5px;
-    width: 48px;
+    width: 0;
     height: 2px;
     background: var(--thread);
   }
-  /* Thread: 2px "you are here" line that draws from the left. */
+  /* Thread: 2px royal→sky line for functional states only — a form field's
+     focus line, the header's page-change line. Never a decoration. */
   .thread {
     display: block;
     height: 2px;
     background: var(--thread);
     transform-origin: left;
   }
-  /* Thread underline for links: grows from the left on hover/focus. */
-  .link-thread {
-    background-image: var(--thread);
-    background-repeat: no-repeat;
-    background-position: 0 100%;
-    background-size: 0% 2px;
-    transition: background-size var(--dur-ui) var(--ease-thread);
+  /* A link inside running text (a sentence, the form's privacy note): a
+     quiet static underline is its non-colour cue; it turns accent on hover.
+     Standalone links (footer lists, "See all →", breadcrumbs) carry no
+     underline at all: hover changes their colour, and an arrow nudges. */
+  .link-inline {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--rule-strong);
+    transition:
+      color var(--dur-micro),
+      text-decoration-color var(--dur-micro);
   }
-  .link-thread:hover,
-  .link-thread:focus-visible,
-  .link-thread[data-active="true"] {
-    background-size: 100% 2px;
+  .link-inline:hover {
+    text-decoration-color: var(--accent);
   }
-}
 
-/* Scroll-lit section rules (zero JS, progressive). */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .rule-section::after {
-      content: "";
-      position: absolute;
-      inset: -0.5px 0 auto 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgb(104 212 251 / 0.55), transparent) no-repeat;
-      background-size: 120px 2px;
-      animation: dh-rule-sheen linear both;
-      animation-timeline: view();
-      animation-range: entry 20% cover 60%;
-      pointer-events: none;
-    }
+  /* ── Section rhythm (Section) ──────────────────────────────── */
+  .section-y {
+    padding-block: var(--section-y);
+  }
+  /* A page's first section starts close under the header; the rhythm
+     between sections is unchanged. The home page opens on the hero, which is
+     not a Section, so this never reaches it. */
+  #main > .section-y:first-child {
+    padding-top: var(--section-y-first);
   }
 }
 
@@ -668,14 +693,6 @@ body {
 @keyframes dh-sending {
   to {
     stroke-dashoffset: -1;
-  }
-}
-@keyframes dh-rule-sheen {
-  from {
-    background-position: -120px 0;
-  }
-  to {
-    background-position: calc(100% + 120px) 0;
   }
 }
 
@@ -733,8 +750,7 @@ body {
   }
 }
 @media (forced-colors: active) {
-  .silk-layer,
-  .rule-section::after {
+  .silk-layer {
     display: none;
   }
   .thread,

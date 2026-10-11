@@ -2,6 +2,9 @@
 
 - `spec.md` — the implementation spec for the 2026 redesign (tokens, type, the
   no-box rule system, motion, every section, the sample dashboards).
+- `iteration-2.md` … `iteration-5.md` — the owner's later briefs, in order;
+  each overrides `spec.md` (and the briefs before it) where they disagree.
+  Iteration 5 removed the sample-dashboards page and the closing band.
 - `copy.en.md`, `copy.sw.md` — the copy decks. **These are the source of the
   dictionaries**; `src/i18n/dictionaries/en.ts` and `sw.ts` are generated:
 

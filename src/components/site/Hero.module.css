@@ -31,9 +31,12 @@
 
 /* The headline sizes itself to its column: its widest line (--fit-em, from
    the font's advances, set by Hero.tsx) fits, so neither line wraps, down
-   to a 320px phone. The H1 is the size container. */
+   to a 320px phone. The H1 is the size container. Below 1024px the
+   headline is centred, and so is the written word inside the slot
+   (HeroWords.module.css), which is as wide as the longest word. */
 .title {
   container-type: inline-size;
+  --word-align: center;
 }
 .display {
   font-size: min(calc(var(--fs) * var(--display-scale, 1)), 100cqi / var(--fit-em));
@@ -62,6 +65,9 @@
       transparent 72%
     );
   }
+  .title {
+    --word-align: start;
+  }
   .text {
     padding-top: clamp(96px, 14vh, 160px);
     /* Small: the text block must fit min(100svh - header, 920px) on
@@ -85,10 +91,10 @@
 }
 
 /* The hero's floor (desktop): a full-bleed R2 (spec §3.2; .rule-section
-   draws it, with the scroll-lit sheen and the forced-colors fallback), the
-   line the silk's decision filament lands on. Only the thread moves: it
-   starts at 96% of the width, where the filament touches down (the end of
-   the landing in src/lib/silk.ts), instead of the first 48px. */
+   draws it, with the forced-colors fallback), the line the silk's decision
+   filament lands on. Its 2px thread, which no other R2 shows any more
+   (iteration-5 §A), lights only here: from 96% of the width, where the
+   filament touches down (the end of the landing in src/lib/silk.ts). */
 .landing::before {
   left: 96%;
   right: 0;

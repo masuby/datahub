@@ -2,6 +2,7 @@ import { localePath, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { pagesExtra } from "@/i18n/extra/pages";
 import { servicesFor } from "@/lib/services";
+import { bindAmpersands } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { Reveal } from "@/components/ui/Reveal";
@@ -11,13 +12,14 @@ import { SERVICE_ICON } from "./home-art";
 import { HOME_SECTION_Y, HomeOpener, HomeTiles } from "./HomeTiles";
 
 /**
- * Home · 01 — What we do, short (iteration-3 §C): the opener — the eyebrow
- * as the section's h2 (the section title, "Three ways we turn data into
- * decisions", stays on /services rather than repeating the hero line right
- * under it) with "All services →" to /services on the same line — then the
- * three services as tiles, side by side between vertical hairlines: a 3D
- * icon, the index, the title, the tagline and an arrow, each tile a link to
- * its service page. Phones: one row per service, no rules.
+ * Home · 01 — What we do, short (iteration-3 §C, centred in iteration-5
+ * §B): the opener — the eyebrow as the section's h2 (the section title,
+ * "Three ways we turn data into decisions", stays on /services rather than
+ * repeating the hero line right under it) — then the three services as
+ * centred tiles, side by side between vertical hairlines: the owner's 3D
+ * icon, the index, the title with its arrow and the tagline, each tile a
+ * link to its service page; then "All services →" to /services, centred
+ * under them. Phones: the tiles stack, no rules.
  */
 export async function HomeServices({ lang }: { lang: Locale }) {
   const t = await getDictionary(lang);
@@ -30,7 +32,7 @@ export async function HomeServices({ lang }: { lang: Locale }) {
       key: svc.slug,
       href: localePath(lang, `/services/${svc.slug}`),
       index: item.index,
-      title: item.title,
+      title: bindAmpersands(item.title),
       line: item.tagline,
       icon: SERVICE_ICON[svc.slug],
     };
@@ -40,10 +42,11 @@ export async function HomeServices({ lang }: { lang: Locale }) {
     <Section id="services" labelledBy="services-title" compact className={HOME_SECTION_Y}>
       <Container>
         <Reveal>
-          <HomeOpener id="services-title" aside={<LinkArrow href={localePath(lang, "/services")}>{x.servicesAll}</LinkArrow>}>
-            {s.eyebrow}
-          </HomeOpener>
+          <HomeOpener id="services-title">{s.eyebrow}</HomeOpener>
           <HomeTiles tiles={tiles} ordered />
+          <div className="mt-3 flex justify-center sm:mt-6">
+            <LinkArrow href={localePath(lang, "/services")}>{x.servicesAll}</LinkArrow>
+          </div>
         </Reveal>
       </Container>
     </Section>

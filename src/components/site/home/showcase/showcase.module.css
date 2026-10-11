@@ -1,0 +1,1016 @@
+/*
+  The home page's live dashboard (iteration-5 §H, Showcase.tsx): a screen in
+  the spirit of github.com's product shots, on the page background.
+
+  The stage: a glow rising behind the screen's top edge (royal into sky,
+  a hint of violet at its rim) with a few tiny stars, then the device — a
+  thick rounded bezel with a fine rim, lit along its top edge — and in it
+  the screen. Light theme: a light screen on a silver bezel, a soft glow.
+  Dark: a dark screen on graphite, a strong glow. Brand colours come from
+  the tokens; the screen's own shades are local (--sc-*).
+
+  The screen lays itself out by its own width (a size container):
+    narrow (phones)   top bar; KPIs 2 × 2; the line graph; the donut;
+                      the feed as a strip running along the bottom
+    from 34rem        ¾ analytics (KPIs 2 × 2, line, bars beside donut)
+                      and ¼ feed, a column scrolling up
+    from 58rem        the four KPIs in one row, taller charts
+
+  Motion: only transforms and opacity move. The CSS loops (the feed, the
+  "Live" pulses, the stars' twinkle) are paused until the figure carries
+  data-live="run" (Showcase.tsx), and globals.css switches them off under
+  reduced motion; held, each shows a complete frame. Transitions carry the
+  bars, the donut's turns and the line's tip to each new value.
+
+  The loops keep one beat, 2.4 s: every period is a multiple of it (the
+  pulses 1, the stars 2, the feed 15 or 20) and none has a delay, so all of
+  them start a new iteration in the same frame. Each iteration costs the
+  main thread a few frames (the browser dispatches animationiteration),
+  and loops out of step would each take their own.
+*/
+
+/* ── Theme ─────────────────────────────────────────────────────────────── */
+.stage {
+  /* Every move a tick starts (the line's slide, the rolls, the bars, the
+     donut's turns); SLIDE and EASE in Showcase.tsx match. */
+  --sc-slide: 800ms;
+  --sc-ease: cubic-bezier(0.45, 0, 0.2, 1);
+
+  /* Light: a soft glow, royal stars, a silver bezel, a white screen. */
+  --sc-glow-core: rgb(104 212 251 / 0.55);
+  --sc-glow-mid: rgb(3 107 251 / 0.2);
+  --sc-glow-rim: rgb(106 92 255 / 0.08);
+  --sc-star: rgb(3 107 251 / 0.6);
+  --sc-bezel: linear-gradient(180deg, #ffffff, #e5ecf8);
+  --sc-rim: #cfdbef;
+  --sc-rim-light: #ffffff;
+  --sc-rim-glow: rgb(104 212 251 / 0.45);
+  --sc-shadow: 0 2.5rem 5rem -2rem rgb(2 41 112 / 0.3), 0 0.75rem 1.75rem -0.75rem rgb(2 41 112 / 0.18);
+  --sc-screen: #ffffff;
+  --sc-panel: #f4f7fd;
+  --sc-edge: #e1e8f4;
+  --sc-text: var(--fg);
+  --sc-muted: var(--fg-muted);
+  --sc-grid: rgb(2 41 112 / 0.07);
+  --sc-line: var(--royal);
+  --sc-area: rgb(3 107 251 / 0.24);
+  --sc-bar: linear-gradient(to top, #0257d6, #3f9dfc);
+  --sc-bar-top: linear-gradient(to top, var(--royal), var(--sky));
+  --sc-track: rgb(3 107 251 / 0.06);
+  --sc-c1: var(--royal);
+  --sc-c2: var(--sky);
+  --sc-c3: var(--navy);
+  --sc-up: var(--accent);
+  --sc-up-bg: rgb(3 107 251 / 0.1);
+  --sc-live: var(--royal);
+
+  /* Room above the screen for the glow to rise into: the gap under the
+     section header. */
+  --rise: clamp(3rem, 2rem + 3.6vw, 6rem);
+  --sc-dots: #d5def0;
+}
+/* Dark: a strong glow, white stars, graphite, a deep navy screen. */
+:global(.dark) .stage {
+  --sc-glow-core: rgb(214 243 255 / 0.85);
+  --sc-glow-mid: rgb(3 107 251 / 0.5);
+  --sc-glow-rim: rgb(98 76 245 / 0.22);
+  --sc-star: #e6f8ff;
+  --sc-bezel: linear-gradient(180deg, #1c2c55, #0b1636 55%, #081129);
+  --sc-rim: rgb(148 180 255 / 0.16);
+  --sc-rim-light: rgb(222 246 255 / 0.95);
+  --sc-rim-glow: rgb(104 212 251 / 0.6);
+  --sc-shadow: 0 2.5rem 7rem -1.5rem rgb(3 107 251 / 0.38), 0 1.5rem 3rem -1rem rgb(0 0 0 / 0.65);
+  --sc-screen: #050d24;
+  --sc-panel: #0a1533;
+  --sc-edge: #16244a;
+  --sc-dots: #2a3b66;
+  --sc-grid: rgb(148 180 255 / 0.09);
+  --sc-line: var(--sky);
+  --sc-area: rgb(104 212 251 / 0.3);
+  --sc-bar: linear-gradient(to top, #0a4db8, var(--royal));
+  --sc-bar-top: linear-gradient(to top, var(--royal), var(--sky));
+  --sc-track: rgb(104 212 251 / 0.05);
+  --sc-c1: #3d8bff;
+  --sc-c2: var(--sky);
+  --sc-c3: #8a7dff;
+  --sc-up: var(--sky);
+  --sc-up-bg: rgb(104 212 251 / 0.12);
+  --sc-live: var(--sky);
+}
+/* No-JS fallback, mirrors globals.css (ThemeScript sets .light/.dark when JS runs). */
+@media (prefers-color-scheme: dark) {
+  :global(:root:not(.light):not(.dark)) .stage {
+    --sc-glow-core: rgb(214 243 255 / 0.85);
+    --sc-glow-mid: rgb(3 107 251 / 0.5);
+    --sc-glow-rim: rgb(98 76 245 / 0.22);
+    --sc-star: #e6f8ff;
+    --sc-bezel: linear-gradient(180deg, #1c2c55, #0b1636 55%, #081129);
+    --sc-rim: rgb(148 180 255 / 0.16);
+    --sc-rim-light: rgb(222 246 255 / 0.95);
+    --sc-rim-glow: rgb(104 212 251 / 0.6);
+    --sc-shadow: 0 2.5rem 7rem -1.5rem rgb(3 107 251 / 0.38), 0 1.5rem 3rem -1rem rgb(0 0 0 / 0.65);
+    --sc-screen: #050d24;
+    --sc-panel: #0a1533;
+    --sc-edge: #16244a;
+    --sc-dots: #2a3b66;
+    --sc-grid: rgb(148 180 255 / 0.09);
+    --sc-line: var(--sky);
+    --sc-area: rgb(104 212 251 / 0.3);
+    --sc-bar: linear-gradient(to top, #0a4db8, var(--royal));
+    --sc-bar-top: linear-gradient(to top, var(--royal), var(--sky));
+    --sc-track: rgb(104 212 251 / 0.05);
+    --sc-c1: #3d8bff;
+    --sc-c2: var(--sky);
+    --sc-c3: #8a7dff;
+    --sc-up: var(--sky);
+    --sc-up-bg: rgb(104 212 251 / 0.12);
+    --sc-live: var(--sky);
+  }
+}
+
+/* ── The stage: sky, glow, stars ───────────────────────────────────────── */
+.stage {
+  position: relative;
+  isolation: isolate;
+  max-width: 75rem;
+  margin: 0 auto;
+  padding-top: var(--rise);
+}
+
+/* Wider than the page container (the section clips it at the viewport). */
+.sky {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 50%;
+  width: min(100vw, 100rem);
+  height: calc(var(--rise) * 3);
+  transform: translateX(-50%);
+  pointer-events: none;
+  container-type: inline-size;
+}
+/* The light, centred on the screen's top edge: the screen hides its lower
+   half, so it rises from behind. */
+.glow {
+  position: absolute;
+  left: 50%;
+  top: var(--rise);
+  width: min(96%, 72rem);
+  height: calc(var(--rise) * 3.4);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    closest-side,
+    var(--sc-glow-core),
+    var(--sc-glow-mid) 38%,
+    var(--sc-glow-rim) 68%,
+    transparent
+  );
+}
+
+/* Tiny stars: three groups of five, each one element whose stars are copies
+   of it (box-shadow, placed in % of the sky's width across and in steps of
+   --rise down), so only three elements twinkle. The element itself is a
+   star too. Opacity only. The groups share one period (two beats) and dim
+   at different points of it, so they twinkle in turn but turn over
+   together. */
+.stars {
+  --dot: 0 0.5px var(--sc-star);
+  position: absolute;
+  left: 50%;
+  top: calc(var(--rise) * 0.3);
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--sc-star);
+  animation: twinkle-a 4.8s ease-in-out infinite both paused;
+}
+.starsA {
+  left: 38%;
+  box-shadow:
+    -14cqi calc(var(--rise) * 0.35) var(--dot),
+    21cqi calc(var(--rise) * 0.12) var(--dot),
+    29cqi calc(var(--rise) * 0.55) var(--dot),
+    -27cqi calc(var(--rise) * 0.62) var(--dot);
+}
+.starsB {
+  animation-name: twinkle-b;
+  left: 61%;
+  top: calc(var(--rise) * 0.55);
+  box-shadow:
+    -32cqi calc(var(--rise) * -0.3) var(--dot),
+    -6cqi calc(var(--rise) * 0.25) var(--dot),
+    9cqi calc(var(--rise) * -0.18) var(--dot),
+    -45cqi calc(var(--rise) * 0.12) var(--dot);
+}
+.starsC {
+  animation-name: twinkle-c;
+  left: 50%;
+  top: calc(var(--rise) * 0.15);
+  width: 3px;
+  height: 3px;
+  box-shadow:
+    -19cqi calc(var(--rise) * 0.5) 0 0 var(--sc-star),
+    17cqi calc(var(--rise) * 0.4) 0 0 var(--sc-star),
+    -36cqi calc(var(--rise) * 0.15) 0 -0.5px var(--sc-star),
+    36cqi calc(var(--rise) * 0.3) 0 -0.5px var(--sc-star);
+}
+.stage[data-live="run"] .stars {
+  animation-play-state: running;
+}
+@keyframes twinkle-a {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+@keyframes twinkle-b {
+  0%,
+  45%,
+  100% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.2;
+  }
+}
+@keyframes twinkle-c {
+  0%,
+  55%,
+  100% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 0.2;
+  }
+}
+
+/* ── The device ────────────────────────────────────────────────────────── */
+.device {
+  --radius: clamp(0.875rem, 0.55rem + 1.3vw, 1.75rem);
+  --bezel: clamp(0.3125rem, 0.15rem + 0.75vw, 0.8125rem);
+  position: relative;
+  padding: var(--bezel);
+  border: 1px solid var(--sc-rim);
+  border-radius: var(--radius);
+  background: var(--sc-bezel);
+  box-shadow: var(--sc-shadow);
+}
+/* The rim lit along the top edge, brightest in the middle… */
+.device::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sc-rim-light) 50%, transparent);
+}
+/* …and the haze just above it. */
+.device::after {
+  content: "";
+  position: absolute;
+  top: -0.75rem;
+  left: 20%;
+  right: 20%;
+  height: 1.5rem;
+  background: radial-gradient(closest-side, var(--sc-rim-glow), transparent);
+  pointer-events: none;
+}
+
+/* ── The screen ────────────────────────────────────────────────────────── */
+.screen {
+  container: screen / inline-size;
+  contain: content;
+  overflow: hidden;
+  border-radius: calc(var(--radius) - var(--bezel));
+  border: 1px solid var(--sc-edge);
+  background: var(--sc-screen);
+  color: var(--sc-text);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--sc-edge);
+  white-space: nowrap;
+}
+.lights {
+  display: flex;
+  gap: 0.3125rem;
+}
+.lights i {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background: var(--sc-dots);
+}
+.app {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+.entity {
+  display: none;
+  color: var(--sc-muted);
+}
+.stamp {
+  margin-left: auto;
+  padding: 0.125rem 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sc-up);
+}
+.clock {
+  display: none;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--sc-muted);
+}
+
+/* A dot that sends out a ring now and then. Held, the ring sits on the dot. */
+.pulse {
+  position: relative;
+  flex: none;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background: var(--sc-live);
+}
+.pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  opacity: 0.6;
+  animation: ring 2.4s ease-out infinite both paused;
+}
+.stage[data-live="run"] .pulse::after {
+  animation-play-state: running;
+}
+@keyframes ring {
+  from {
+    opacity: 0.6;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: scale(3.2);
+  }
+}
+
+/* ── Layout ────────────────────────────────────────────────────────────── */
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+.main {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.kpis {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.linePanel,
+.donutPanel {
+  grid-column: 1 / -1;
+}
+/* Phones: no bar chart (the brief lets it go there). */
+.barsPanel {
+  display: none;
+}
+
+.panel,
+.kpi {
+  min-width: 0;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--sc-edge);
+  border-radius: 0.625rem;
+  background: var(--sc-panel);
+}
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.6875rem;
+  color: var(--sc-muted);
+  white-space: nowrap;
+}
+.head > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.headValue {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--sc-text);
+}
+.headValue small,
+.kpiValue small {
+  font-size: max(0.6em, 0.625rem);
+  font-weight: 500;
+  color: var(--sc-muted);
+}
+.headValue small:first-child,
+.kpiValue small:first-child {
+  margin-right: 0.25em;
+}
+.headValue small:last-child,
+.kpiValue small:last-child {
+  margin-left: 0.25em;
+}
+.unit {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 0.625rem;
+}
+.roll {
+  display: inline-block;
+}
+
+/* ── KPIs ──────────────────────────────────────────────────────────────── */
+/* A little light in the far corner, from the glow outside the screen. */
+.kpi {
+  background:
+    radial-gradient(130% 100% at 100% 0%, color-mix(in srgb, var(--sky) 14%, transparent), transparent 62%),
+    var(--sc-panel);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+/* A label may take two lines in a narrow box; the value and its change sit
+   at the foot, so a row of boxes keeps its numbers on one line. */
+.kpiLabel {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.6875rem;
+  line-height: 1.25;
+  color: var(--sc-muted);
+}
+.kpiValue {
+  margin-top: auto;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.0625rem, 0.6rem + 1.5cqi, 1.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* The change: a small pill with a triangle, up in the accent, down muted. */
+.delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.0625rem 0.4375rem;
+  border-radius: 9999px;
+  background: var(--sc-up-bg);
+  color: var(--sc-up);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-variant-numeric: tabular-nums;
+}
+.delta::before {
+  content: "";
+  width: 0.55em;
+  height: 0.45em;
+  background: currentColor;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+.delta.down {
+  background: transparent;
+  color: var(--sc-muted);
+}
+.delta.down::before {
+  transform: rotate(180deg);
+}
+
+/* ── The line graph ────────────────────────────────────────────────────── */
+.plot {
+  --tip-gap: 0.625rem;
+  position: relative;
+  height: 6rem;
+  margin-top: 0.5rem;
+  /* Gridlines at 0, 25, 50 and 75%, and the floor. */
+  background: repeating-linear-gradient(to bottom, var(--sc-grid) 0 1px, transparent 1px 25%);
+  border-bottom: 1px solid var(--sc-edge);
+}
+/* The tip sits just inside the right edge, outside the clip, so the line's
+   newest point is visible whole while the next one waits beyond the edge. */
+.clip {
+  position: absolute;
+  inset: 0 var(--tip-gap) 0 0;
+  overflow: hidden;
+}
+.lineSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.areaTop {
+  stop-color: var(--sc-area);
+}
+.areaFoot {
+  stop-color: var(--sc-area);
+  stop-opacity: 0;
+}
+.lineStroke,
+.lineGlow {
+  fill: none;
+  stroke: var(--sc-line);
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.lineStroke {
+  stroke-width: 2;
+}
+.lineGlow {
+  stroke-width: 7;
+  stroke-opacity: 0.16;
+}
+/* The tip: a full-height box at the right edge moved down to the newest
+   value (% of its own height, so of the plot's), eased like the slide so
+   it rides the line. */
+.tip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: var(--tip-gap);
+  width: 0;
+  transition: transform var(--sc-slide) var(--sc-ease);
+}
+.tip .pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0.5625rem;
+  height: 0.5625rem;
+  margin: -0.28125rem 0 0 -0.28125rem;
+  background: var(--sc-line);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--sc-line) 22%, transparent),
+    0 0 0.75rem var(--sc-line);
+}
+
+/* ── The bar chart ─────────────────────────────────────────────────────── */
+.bars {
+  display: flex;
+  gap: clamp(0.375rem, 1.6cqi, 1rem);
+  margin-top: 0.5rem;
+}
+.bar {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.track {
+  position: relative;
+  height: 7rem;
+  overflow: hidden;
+  border-radius: 0.375rem 0.375rem 0.125rem 0.125rem;
+  background: var(--sc-track);
+}
+.fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--sc-bar);
+  transition: transform var(--sc-slide) var(--sc-ease);
+}
+/* The tallest bar lights up (opacity, so the compositor fades it). */
+.fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--sc-bar-top);
+  opacity: 0;
+  transition: opacity var(--sc-slide) var(--sc-ease);
+}
+.fill.top::after {
+  opacity: 1;
+}
+.barLabel {
+  margin-top: 0.375rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  color: var(--sc-muted);
+}
+
+/* ── The donut ─────────────────────────────────────────────────────────── */
+.donutRow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-top: 0.5rem;
+}
+.donut {
+  --d: 5.5rem;
+  position: relative;
+  flex: none;
+  width: var(--d);
+  height: var(--d);
+}
+.arc {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform var(--sc-slide) var(--sc-ease);
+}
+.arc circle {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 12;
+}
+.c1 {
+  --c: var(--sc-c1);
+}
+.c2 {
+  --c: var(--sc-c2);
+}
+.c3 {
+  --c: var(--sc-c3);
+}
+/* A cut across the ring at a boundary, in the panel's colour. */
+.cut {
+  position: absolute;
+  inset: 0;
+  transition: transform var(--sc-slide) var(--sc-ease);
+}
+.cut::before {
+  content: "";
+  position: absolute;
+  left: calc(50% - 1px);
+  top: 2.5%;
+  width: 2px;
+  height: 15%;
+  background: var(--sc-panel);
+}
+.centre {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.centreValue {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: calc(var(--d) * 0.2);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.centreLabel {
+  margin-top: 0.125rem;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  color: var(--sc-muted);
+}
+.legend {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 0.375rem;
+}
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.4375rem;
+}
+.legend i,
+.entry i {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--c);
+}
+.legendName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--sc-muted);
+  font-size: 0.6875rem;
+}
+.legendValue {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── The feed ──────────────────────────────────────────────────────────── */
+/* Phones: a strip along the bottom, running left. */
+.feed {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding-block: 0.5rem;
+}
+.feed > .head {
+  flex: none;
+  gap: 0.375rem;
+}
+.window {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+.reel {
+  display: flex;
+  width: max-content;
+  animation: run-left 48s linear infinite both paused;
+}
+.stage[data-live="run"] .reel {
+  animation-play-state: running;
+}
+/* Spacing inside each entry (not a gap), so the two copies are exactly
+   equal and the loop's -50% lands on the second's start. */
+.entry {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding-right: 1rem;
+  white-space: nowrap;
+}
+.amount {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+.meta {
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--sc-muted);
+}
+@keyframes run-left {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes run-up {
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+/* Small phones: the top bar keeps the title, the stamp and the live dot. */
+@container screen (max-width: 23.99rem) {
+  .lights {
+    display: none;
+  }
+}
+@container screen (max-width: 19.99rem) {
+  .liveText {
+    display: none;
+  }
+}
+
+/* ── From 34rem of screen: ¾ analytics, ¼ feed ─────────────────────────── */
+@container screen (min-width: 34rem) {
+  .topbar {
+    padding: 0.625rem 1rem;
+  }
+  .entity {
+    display: inline;
+  }
+  .clock {
+    display: inline;
+  }
+  .body {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+  .main {
+    gap: 0.75rem;
+  }
+  .kpis {
+    gap: 0.75rem;
+  }
+  .plot {
+    height: 7.5rem;
+  }
+  /* The bars grow to the height of the donut's panel beside them. */
+  .barsPanel {
+    display: flex;
+    flex-direction: column;
+    grid-column: span 7;
+  }
+  .bars {
+    flex: 1;
+  }
+  .track {
+    flex: 1;
+  }
+  .donutPanel {
+    grid-column: span 5;
+  }
+  .donutRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .donut {
+    --d: 6.5rem;
+    align-self: center;
+  }
+  .track {
+    height: auto;
+    min-height: 6.75rem;
+  }
+
+  /* The feed: a column, its window filling the height the analytics set
+     (the reel is out of flow, so it never sets the height itself). */
+  .feed {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    padding-block: 0.625rem;
+  }
+  .feed > .head {
+    justify-content: space-between;
+  }
+  .window {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 88%, transparent);
+  }
+  .reel {
+    position: absolute;
+    inset: 0 0 auto;
+    display: block;
+    width: auto;
+    animation-name: run-up;
+    animation-duration: 36s;
+  }
+  .entry {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.5rem;
+    row-gap: 0.0625rem;
+    padding: 0.4375rem 0 0.5rem;
+    border-bottom: 1px solid var(--sc-edge);
+  }
+  .entry i {
+    grid-row: span 2;
+    align-self: center;
+  }
+  .amount,
+  .meta {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .amount {
+    font-size: 0.8125rem;
+  }
+}
+
+/* ── From 58rem: the KPIs in one row, taller charts ────────────────────── */
+@container screen (min-width: 58rem) {
+  .body {
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .main {
+    gap: 0.875rem;
+  }
+  .kpis {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.875rem;
+  }
+  .kpi,
+  .panel {
+    padding: 0.75rem 0.875rem;
+    border-radius: 0.75rem;
+  }
+  .head,
+  .kpiLabel {
+    font-size: 0.75rem;
+  }
+  .headValue {
+    font-size: 1.0625rem;
+  }
+  .delta {
+    font-size: 0.6875rem;
+  }
+  .plot {
+    height: 9.5rem;
+    margin-top: 0.625rem;
+  }
+  .track {
+    min-height: 8.5rem;
+  }
+  .barLabel {
+    font-size: 0.625rem;
+  }
+  .donutRow {
+    flex-direction: row;
+    align-items: center;
+  }
+  .donut {
+    --d: 7.75rem;
+  }
+  .legendName {
+    font-size: 0.75rem;
+  }
+  .legendValue {
+    font-size: 0.8125rem;
+  }
+  .amount {
+    font-size: 0.875rem;
+  }
+  .meta {
+    font-size: 0.75rem;
+  }
+  .entry {
+    padding: 0.5625rem 0 0.625rem;
+  }
+}
+
+/* ── Forced colours and print: the screen as a plain outline ───────────── */
+@media (forced-colors: active) {
+  .sky,
+  .device::before,
+  .device::after {
+    display: none;
+  }
+  .device,
+  .screen,
+  .panel,
+  .kpi {
+    border-color: CanvasText;
+  }
+  .fill,
+  .fill::after,
+  .pulse,
+  .legend i,
+  .entry i,
+  .delta::before {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+  .arc circle {
+    stroke: CanvasText;
+  }
+}
+@media print {
+  .sky,
+  .device::after {
+    display: none;
+  }
+  .device {
+    box-shadow: none;
+  }
+}

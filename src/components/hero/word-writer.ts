@@ -11,9 +11,11 @@ import { frameGeneration, onFrames } from "./frame-clock";
  * then, right to left, each letter comes apart into fine sparks that rise
  * and fade, and the next word writes.
  *
- * The outlines are the real Outfit 700 contours (glyphs.ts), placed exactly
+ * The outlines are the real Poppins 600 contours (glyphs.ts), placed exactly
  * where the browser laid out the same letters in the slot's hidden copy of
- * every word. So the canvas word sits on the text word to the pixel, and the
+ * every word. So the canvas word sits on the text word to within a pixel
+ * (the browser snaps the text and the canvas to the pixel grid each its own
+ * way; outlines and advances match the served font exactly), and the
  * two hand over without a jump: the text shows first (server HTML, no
  * JavaScript) and again whenever the writer is frozen.
  *
@@ -302,11 +304,12 @@ type Word = {
 };
 
 /**
- * Outfit's ascent (hhea = typo = win = 1000 of 1000), in em: the baseline
- * sits this far below the top of a letter's text box. measure() asks the
- * served font where the browser reports it; this is the fallback.
+ * Poppins' ascent (hhea = typo = 1050 of 1000, USE_TYPO_METRICS set), in em:
+ * the baseline sits this far below the top of a letter's text box.
+ * measure() asks the served font where the browser reports it; this is the
+ * fallback.
  */
-const ASCENT = 1;
+const ASCENT = 1.05;
 
 type Palette = {
   from: string;
@@ -1103,6 +1106,9 @@ export function createWriter({
     return null;
   }
   ro.observe(slot);
+  // Its line too: where the words are centred in the slot (the hero below
+  // 1024px), crossing that width moves them inside a slot of the same size.
+  if (slot.parentElement) ro.observe(slot.parentElement);
   mo.observe(slot, { childList: true, characterData: true, subtree: true });
   watchRatio();
 

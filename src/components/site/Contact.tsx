@@ -16,7 +16,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ContactForm } from "./ContactForm";
 
 /**
- * 08 — Contact: the /contact page (`headingLevel` 1 there, where its title
+ * 07 — Contact: the /contact page (`headingLevel` 1 there, where its title
  * is the page's h1 and the headings under it step up to h2).
  *
  * Desktop: direct lines in columns 1–5 (WhatsApp, email, location as R1 rows,
@@ -24,17 +24,24 @@ import { ContactForm } from "./ContactForm";
  * the order a phone visitor needs it: the WhatsApp row, the form, then email,
  * location and next steps. Grid placement does the reordering, so the DOM
  * (and the tab order) matches the mobile reading order.
+ *
+ * The contact options and the next steps are short, so they centre in their
+ * column (iteration-5 §B); the form keeps its fields and labels left-aligned.
+ * Hover/focus on an option turns its label and value accent and nudges the
+ * arrow beside the value; no line draws.
  */
 
 const ARROW_MOVE =
   "inline-block transition-transform duration-[280ms] ease-[var(--ease-silk)] group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5";
 
-/** "You are here" thread over a row's top hairline, on hover/focus only. */
-const ROW_THREAD =
-  "thread pointer-events-none absolute inset-x-0 top-[-1.5px] scale-x-0 transition-transform duration-[280ms] ease-[var(--ease-thread)] group-hover:scale-x-100 group-focus-visible:scale-x-100";
+/** A contact option: one centred link, label over value. */
+const OPTION = "group flex flex-col items-center py-6 text-center text-fg";
+/** Label and value turn accent on hover/focus (colour only). */
+const ON_HOVER =
+  "transition-colors duration-[160ms] group-hover:text-accent group-focus-visible:text-accent";
 
-/** Chapter 08 (spec §3.4): the eyebrow's number, and the prefix of the next steps (08.1, 08.2…). */
-const INDEX = "08";
+/** Chapter 07 (spec §3.4, renumbered in iteration-5 §I): the eyebrow's number, and the prefix of the next steps (07.1, 07.2…). */
+const INDEX = "07";
 
 export async function Contact({
   lang,
@@ -51,31 +58,16 @@ export async function Contact({
 
   const whatsapp = whatsappHref(lang);
   const whatsappRow = hasWhatsapp && (
-    <a
-      href={whatsapp}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group relative flex items-center justify-between gap-6 py-6 text-fg"
-    >
-      <span aria-hidden="true" className={ROW_THREAD} />
-      <span className="min-w-0">
-        <span className="t-eyebrow block transition-colors duration-[160ms] group-hover:text-accent group-focus-visible:text-accent">
-          {c.lines.whatsapp.label}
+    <a href={whatsapp} target="_blank" rel="noopener noreferrer" className={OPTION}>
+      <span className={`t-eyebrow ${ON_HOVER}`}>{c.lines.whatsapp.label}</span>
+      <span className={`t-title tnum mt-2 inline-flex items-baseline gap-2 whitespace-nowrap ${ON_HOVER}`}>
+        {WHATSAPP_DISPLAY}
+        <span aria-hidden="true" className={`${ARROW_MOVE} font-sans text-lg leading-none`}>
+          ↗
         </span>
-        <span className="t-title tnum mt-2 block whitespace-nowrap">
-          {WHATSAPP_DISPLAY}
-        </span>
-        <span className="t-small mt-1 block text-muted">
-          {c.lines.whatsapp.action}
-        </span>
-        <span className="sr-only"> {t.a11y.opensNewTab}</span>
       </span>
-      <span
-        aria-hidden="true"
-        className={`${ARROW_MOVE} font-sans text-lg leading-none`}
-      >
-        ↗
-      </span>
+      <span className="t-small mt-1 text-muted">{c.lines.whatsapp.action}</span>
+      <span className="sr-only"> {t.a11y.opensNewTab}</span>
     </a>
   );
 
@@ -132,30 +124,19 @@ export async function Contact({
               <ul role="list" className="list-none p-0">
                 <li>
                   <Rule />
-                  <a
-                    href={`mailto:${CONTACT_EMAIL}`}
-                    className="group relative flex items-center justify-between gap-6 py-6 text-fg"
-                  >
-                    <span aria-hidden="true" className={ROW_THREAD} />
-                    <span className="min-w-0">
-                      <span className="t-eyebrow block transition-colors duration-[160ms] group-hover:text-accent group-focus-visible:text-accent">
-                        {c.lines.email.label}
+                  <a href={`mailto:${CONTACT_EMAIL}`} className={OPTION}>
+                    <span className={`t-eyebrow ${ON_HOVER}`}>{c.lines.email.label}</span>
+                    <span className={`t-title mt-2 inline-flex max-w-full items-baseline gap-2 ${ON_HOVER}`}>
+                      <span className="min-w-0 break-words">{CONTACT_EMAIL}</span>
+                      <span aria-hidden="true" className={`${ARROW_MOVE} font-sans text-lg leading-none`}>
+                        →
                       </span>
-                      <span className="t-title mt-2 block break-words">
-                        {CONTACT_EMAIL}
-                      </span>
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className={`${ARROW_MOVE} font-sans text-lg leading-none`}
-                    >
-                      →
                     </span>
                   </a>
                 </li>
                 <li>
                   <Rule />
-                  <div className="py-6">
+                  <div className="py-6 text-center">
                     <p className="t-eyebrow">{c.lines.location.label}</p>
                     <p className="t-title mt-2">{c.lines.location.value}</p>
                     <p className="t-small mt-1 text-muted">
@@ -166,8 +147,8 @@ export async function Contact({
               </ul>
               <Rule />
 
-              <SubHeading className="t-eyebrow mt-12 lg:mt-16">{c.next.title}</SubHeading>
-              <ol role="list" className="mt-4 list-none p-0">
+              <SubHeading className="t-eyebrow mt-12 text-center lg:mt-16">{c.next.title}</SubHeading>
+              <ol role="list" className="mt-4 list-none p-0 text-center">
                 {c.next.steps.map((step, i) => (
                   <li
                     key={i}
@@ -175,14 +156,11 @@ export async function Contact({
                     style={{ animationDelay: `${i * 60}ms` }}
                   >
                     {i > 0 && <Rule />}
-                    <div className="flex gap-5 py-4">
-                      <span
-                        className="t-data shrink-0 pt-[0.3em]"
-                        aria-hidden="true"
-                      >
+                    <div className="py-4">
+                      <span className="t-data block" aria-hidden="true">
                         {INDEX}.{i + 1}
                       </span>
-                      <p className="t-body text-fg">{step}</p>
+                      <p className="t-body mx-auto mt-1 max-w-[32ch] text-fg">{step}</p>
                     </div>
                   </li>
                 ))}

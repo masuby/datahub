@@ -1,0 +1,172 @@
+/*
+  01 — What we do (/services): the three services as centred columns.
+
+  Desktop (>=1024): three columns side by side, divided by vertical
+  hairlines that fade out at both ends (lines that stop; nothing closes into
+  a box). The columns share their rows (subgrid): icon, index, title,
+  tagline, description, deliverables and "Read more" line up across the
+  three even when one title wraps, as on the home page's tiles.
+  Below 1024px: one centred column per service, a fading hairline between
+  them.
+
+  Hover and keyboard focus: the index and title turn accent and the arrow
+  moves 6px; where hover is real and motion is allowed the icon also lifts
+  a few pixels. Nothing draws, nothing underlines.
+*/
+
+.list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.item {
+  position: relative;
+}
+/* Stacked: a hairline between services, fading in and out. */
+.item + .item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rule) 18%, var(--rule) 82%, transparent);
+  pointer-events: none;
+}
+
+.link {
+  display: grid;
+  justify-items: center;
+  max-width: 36rem;
+  margin-inline: auto;
+  padding-block: 2.5rem;
+  text-align: center;
+  color: var(--fg);
+}
+.item:first-child .link {
+  padding-top: 0;
+}
+.item:last-child .link {
+  padding-bottom: 0;
+}
+
+/* The icon's box is sized here at every width, so nothing shifts. */
+.visual {
+  display: block;
+  width: 5rem;
+  height: 5rem;
+}
+.icon {
+  width: 100%;
+  transition: transform var(--dur-ui) var(--ease-silk);
+}
+
+.index {
+  margin-top: 1.25rem;
+  transition: color var(--dur-micro) var(--ease-silk);
+}
+.title {
+  margin-top: 0.75rem;
+  transition: color var(--dur-micro) var(--ease-silk);
+}
+.tagline {
+  margin-top: 1rem;
+}
+.description {
+  margin-top: 0.5rem;
+  max-width: 34ch;
+}
+/* One deliverable per line: centred lines read better than bullets. */
+.deliverables {
+  margin-top: 1.25rem;
+  display: grid;
+  row-gap: 0.25rem;
+}
+
+/* "Read more →": a UI label, in the display face. */
+.more {
+  margin-top: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: end;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.arrow {
+  display: inline-block;
+  transition: transform 280ms var(--ease-silk);
+}
+
+.link:hover :is(.index, .title),
+.link:focus-visible :is(.index, .title) {
+  color: var(--accent);
+}
+.link:hover .arrow,
+.link:focus-visible .arrow {
+  transform: translateX(6px);
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .link:hover .icon {
+    transform: translateY(-4px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .link:focus-visible .icon {
+    transform: translateY(-4px);
+  }
+}
+
+@media (min-width: 640px) {
+  .link {
+    padding-block: 3rem;
+  }
+  .visual {
+    width: 6rem;
+    height: 6rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* icon · index · title · tagline · description · deliverables · more */
+    grid-template-rows: repeat(7, auto);
+    column-gap: var(--col-gap);
+  }
+  .item {
+    grid-row: span 7;
+    display: grid;
+    grid-template-rows: subgrid;
+  }
+  .link,
+  .item:first-child .link,
+  .item:last-child .link {
+    grid-row: 1 / -1;
+    grid-template-rows: subgrid;
+    max-width: none;
+    margin-inline: 0;
+    padding: 0.5rem 1.5rem;
+  }
+  /* The vertical hairline sits in the middle of the column gap. */
+  .item + .item::before {
+    top: 0;
+    bottom: 0;
+    left: calc(var(--col-gap) / -2);
+    right: auto;
+    width: 1px;
+    height: auto;
+    background: linear-gradient(180deg, transparent, var(--rule) 18%, var(--rule) 82%, transparent);
+  }
+  .title {
+    align-self: start;
+  }
+}
+
+@media (forced-colors: active) {
+  .item + .item::before {
+    background: CanvasText;
+  }
+}

@@ -35,6 +35,7 @@ export function BrandMark({
 /**
  * Mark + wordmark lockup. "Data" in royal blue and "Hub" in sky blue, as on
  * the brand board; both are tokens so they hold contrast in either theme.
+ * The wordmark is the display face's heaviest loaded weight, 700 (fonts.ts).
  */
 export function BrandLockup({
   className,
@@ -48,7 +49,7 @@ export function BrandLockup({
   return (
     <span className={`inline-flex items-center gap-2.5 ${className ?? ""}`}>
       <BrandMark className={markClassName} />
-      <span className={`font-display font-extrabold leading-none tracking-[-0.02em] ${wordClassName}`}>
+      <span className={`font-display font-bold leading-none tracking-[-0.02em] ${wordClassName}`}>
         <span style={{ color: "var(--wordmark-data)" }}>Data</span>
         <span style={{ color: "var(--wordmark-hub)" }}>Hub</span>
       </span>

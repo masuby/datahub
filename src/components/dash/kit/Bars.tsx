@@ -11,9 +11,7 @@ import { band, linear, ticks } from "./scales";
 export function Bars({
   ctx,
   id,
-  label,
   summary,
-  readoutId,
   values,
   xLabels,
   max,
@@ -22,15 +20,12 @@ export function Bars({
   flagIndex,
   flagLabel,
   reference,
-  reads,
   marks,
   height = 240,
 }: {
   ctx: DashCtx;
   id: string;
-  label: string;
   summary: string;
-  readoutId: string;
   values: readonly number[];
   xLabels: string[];
   max: number;
@@ -39,7 +34,6 @@ export function Bars({
   flagIndex?: number;
   flagLabel?: string;
   reference?: { value: number; label: string };
-  reads: string[];
   marks: Mark[];
   height?: number;
 }) {
@@ -48,16 +42,10 @@ export function Bars({
   const y = linear(0, max, PB, PT);
   const b = band(values.length, 5, 100, 0.28);
   const xs = values.map((_, i) => b.centre(i));
-  const last = values.length - 1;
 
   return (
-    <ChartArea
-      ctx={ctx}
-      label={label}
-      readoutId={readoutId}
-      cross={{ axis: "x", pos: xs, reads, idle: last }}
-    >
-      <ChartSvg ctx={ctx} titleId={`${id}-title`} summary={summary} height={height} crosshair={[PT - 6, PB]}>
+    <ChartArea>
+      <ChartSvg ctx={ctx} titleId={`${id}-title`} summary={summary} height={height}>
         <YGrid
           values={ticks(0, max, step)}
           y={y}
@@ -69,7 +57,6 @@ export function Bars({
           {values.map((v, i) => (
             <rect
               key={i}
-              data-k={i}
               x={`${b.start(i)}%`}
               width={`${b.width}%`}
               y={y(v)}
@@ -111,7 +98,7 @@ export function Bars({
         )}
         <XLabels xs={xs} labels={xLabels} y={height - 6} thin={values.length > 9} />
       </ChartSvg>
-      <Markers ctx={ctx} marks={marks} at={(i) => [xs[i], y(values[i]) - 14]} />
+      <Markers marks={marks} at={(i) => [xs[i], y(values[i]) - 14]} />
     </ChartArea>
   );
 }

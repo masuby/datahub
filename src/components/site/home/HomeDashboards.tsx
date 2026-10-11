@@ -1,70 +1,65 @@
 import Image from "next/image";
 import { localePath, type Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/get-dictionary";
 import { pagesExtra } from "@/i18n/extra/pages";
-import { makeDashCtx } from "@/components/dash/make-ctx";
+import { showcaseExtra } from "@/i18n/extra/showcase";
 import { Container } from "@/components/ui/Container";
 import { LinkArrow } from "@/components/ui/LinkArrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { cn } from "@/lib/utils";
-import dashStyles from "@/components/dash/dash.module.css";
 import { DASHBOARDS_ICON } from "./home-art";
-import { HOME_SECTION_Y, HomeOpener } from "./HomeTiles";
-import { TeaserPlate, type TeaserCtx } from "./TeaserPlate";
+import { CommittedPicture } from "./CommittedPicture";
+import { HOME_SECTION_Y } from "./HomeTiles";
+import { Showcase } from "./showcase/Showcase";
 import styles from "./home.module.css";
 
 /**
- * Home · 02 — Sample dashboards, short, in the rhythm of the tiles around
- * it (iteration-3 §C): the opener (the eyebrow), then from 1440px a 3D bar
- * chart, the title, the honesty notice and "Explore the sample dashboards →"
- * to /dashboards, one under the other in the first third, and one plate
- * (View 1's KPI strip and revenue chart; on phones the chart and its credit
- * line, see TeaserPlate) in the other two, behind a vertical hairline on the
- * line of the tiles' first divider. Below 1440px (where two thirds would
- * squeeze the KPI strip): title, notice, plate and link, stacked, without
- * the bar chart. No horizontal rules.
- * In the visitor's own theme, like the dashboards page.
+ * Home · the sample dashboard as a live, shining screen (iteration-5 §H):
+ * the dashboards icon crowning a centred header (eyebrow, title, and the
+ * notice that it is sample data), then the Showcase — a device with a glow
+ * rising behind it and a dashboard inside that ticks along by itself — and
+ * "How we build dashboards →" to the dashboards service page under it.
+ *
+ * It replaced the sample-dashboards page (iteration-5 §I), so its eyebrow
+ * carries no chapter number. Keep id="dashboards": /dashboards redirects to
+ * it (src/proxy.ts, MOVED) and the hero's "See a live sample ↓" jumps to it.
+ *
+ * The section clips sideways (overflow-x: clip) so the glow can spread past
+ * the page container to the edges of the window, never beyond them.
+ *
+ * The icon is a srcset image, so CommittedPicture makes it (see there).
  */
 export async function HomeDashboards({ lang }: { lang: Locale }) {
-  const full = await makeDashCtx(lang, "home", false);
-  const t = full.t;
-  // View 1's strings only: the teaser shows nothing from the other three views.
-  const ctx: TeaserCtx = { ...full, t: { ...t, views: { overview: t.views.overview } } };
+  const t = (await getDictionary(lang)).dash;
 
   return (
-    <Section id="dashboards" labelledBy="dashboards-title" compact className={HOME_SECTION_Y}>
+    <Section id="dashboards" labelledBy="dashboards-title" compact className={cn(HOME_SECTION_Y, "overflow-x-clip")}>
       <Container>
-        <Reveal>
-          <HomeOpener as="p">{t.eyebrow}</HomeOpener>
+        <Reveal className="flex justify-center">
+          <span aria-hidden="true" className={cn(styles.visual, "a-rise")} style={{ animationDelay: "60ms" }}>
+            <CommittedPicture>
+              <Image src={DASHBOARDS_ICON} alt="" width={104} height={104} className={styles.icon} />
+            </CommittedPicture>
+          </span>
         </Reveal>
-        <div className={cn(styles.teaser, "mt-3 min-[90rem]:mt-8")}>
-          <Reveal className={styles.teaserText}>
-            {/* From 1440px: a 3D bar chart over the title, as the tiles carry theirs. */}
-            <div
-              aria-hidden="true"
-              className="mb-8 hidden a-rise min-[90rem]:block"
-              style={{ animationDelay: "120ms" }}
-            >
-              <span className={styles.visual}>
-                <Image src={DASHBOARDS_ICON} alt="" width={96} height={96} className={styles.icon} />
-              </span>
-            </div>
-            <h2 id="dashboards-title" className="t-h3 a-rise" style={{ animationDelay: "180ms" }}>
-              {t.title}
-            </h2>
-            <p className="t-eyebrow mt-4 text-accent a-rise" style={{ animationDelay: "240ms" }}>
-              {t.notice}
-            </p>
-          </Reveal>
-          <div className={cn(dashStyles.root, styles.teaserPlate)}>
-            <Reveal>
-              <TeaserPlate ctx={ctx} />
-            </Reveal>
-          </div>
-          {/* After the plate; from 1440px right under the notice (home.module.css). */}
-          <LinkArrow href={localePath(lang, "/dashboards")} className={cn(styles.teaserLink, "mt-2")}>
-            {pagesExtra[lang].home.dashboardsExplore}
-          </LinkArrow>
+        {/* No margin under the header: the stage's own room for the glow is the gap. */}
+        <SectionHeader
+          index="02"
+          eyebrow={t.eyebrow}
+          title={t.title}
+          titleId="dashboards-title"
+          compact
+          className="mt-3 mb-0 sm:mb-0"
+        >
+          <p className="t-eyebrow mt-4 text-accent">{t.notice}</p>
+        </SectionHeader>
+        <Reveal>
+          <Showcase t={showcaseExtra[lang]} />
+        </Reveal>
+        <div className="mt-6 flex justify-center sm:mt-8">
+          <LinkArrow href={localePath(lang, "/services/dashboards")}>{pagesExtra[lang].home.dashboardsService}</LinkArrow>
         </div>
       </Container>
     </Section>

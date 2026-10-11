@@ -6,7 +6,6 @@ import { getDictionary } from "@/i18n/get-dictionary";
 import { CONTACT_EMAIL } from "@/lib/contact-info";
 import { pageMetadata } from "@/lib/seo";
 import { Container } from "@/components/ui/Container";
-import { Grid } from "@/components/ui/Grid";
 import { Reveal } from "@/components/ui/Reveal";
 import { Rule } from "@/components/ui/Rule";
 import { Header } from "@/components/site/Header";
@@ -21,7 +20,12 @@ import { LangHint } from "@/components/system/LangHint";
  * used for rate limiting, why, no sale or sharing, how to ask for deletion,
  * written with Tanzania's Personal Data Protection Act, 2022 in mind. No
  * retention period, storage location or named officer until the owner
- * supplies them. Sections are separated by R2 rules; no boxes.
+ * supplies them.
+ *
+ * The title, date and intro centre like every page header (iteration-5 §B);
+ * the notice itself is reading text, so it stays left-aligned in one centred
+ * column, its sections separated by R2 rules; no boxes. The email address is
+ * a link inside a sentence: it carries the quiet static underline.
  */
 
 // Dynamic like every other page, so the per-request CSP nonce reaches the
@@ -85,7 +89,7 @@ export default async function PrivacyPage({ params }: Props) {
   const email = (
     <a
       href={`mailto:${CONTACT_EMAIL}`}
-      className="link-thread font-semibold text-fg transition-colors duration-[160ms] hover:text-accent"
+      className="link-inline font-bold text-fg hover:text-accent"
     >
       {CONTACT_EMAIL}
     </a>
@@ -99,39 +103,35 @@ export default async function PrivacyPage({ params }: Props) {
       <main id="main" className="flex-1">
         <article
           aria-labelledby="privacy-title"
-          style={{ paddingBlock: "var(--section-y)" }}
+          // Close under the header, like every page's first section (Section).
+          style={{ paddingTop: "var(--section-y-first)", paddingBottom: "var(--section-y)" }}
         >
           <Container>
-            <Reveal>
-              <Rule variant="section" animate />
-              <Grid className="mt-8 lg:mt-12">
-                <div className="col-span-4 sm:col-span-8 lg:col-span-9">
-                  <h1
-                    id="privacy-title"
-                    className="t-h1-page a-rise"
-                    style={{ animationDelay: "120ms" }}
-                  >
-                    {p.title}
-                  </h1>
-                  <p
-                    className="t-data mt-6 a-fade"
-                    style={{ animationDelay: "180ms" }}
-                  >
-                    <time dateTime={UPDATED}>
-                      {p.updated.replace("{date}", updated)}
-                    </time>
-                  </p>
-                  <p
-                    className="t-lead mt-8 a-rise"
-                    style={{ animationDelay: "240ms" }}
-                  >
-                    {p.intro}
-                  </p>
-                </div>
-              </Grid>
+            <Reveal className="mx-auto max-w-[40rem] text-center">
+              <h1
+                id="privacy-title"
+                className="t-h1-page a-rise"
+                style={{ animationDelay: "120ms" }}
+              >
+                {p.title}
+              </h1>
+              <p
+                className="t-data mt-5 a-fade"
+                style={{ animationDelay: "180ms" }}
+              >
+                <time dateTime={UPDATED}>
+                  {p.updated.replace("{date}", updated)}
+                </time>
+              </p>
+              <p
+                className="t-lead mx-auto mt-6 a-rise"
+                style={{ animationDelay: "240ms" }}
+              >
+                {p.intro}
+              </p>
             </Reveal>
 
-            <div className="mt-[clamp(3rem,2rem+4vw,6rem)]">
+            <div className="mx-auto mt-[clamp(2.5rem,1.8rem+3vw,4.5rem)] max-w-[44rem]">
               {p.sections.map((section, i) => {
                 const headingId = `privacy-${i + 1}`;
                 return (
@@ -141,23 +141,15 @@ export default async function PrivacyPage({ params }: Props) {
                       className="pb-10 lg:pb-14"
                     >
                       <Rule variant="section" animate />
-                      <Grid className="mt-5 lg:mt-6">
-                        <p
-                          aria-hidden="true"
-                          className="t-eyebrow col-span-4 sm:col-span-2 lg:col-span-1 lg:pt-[0.55em]"
-                        >
-                          {String(i + 1).padStart(2, "0")}
-                        </p>
-                        <h2
-                          id={headingId}
-                          className="t-title col-span-4 mt-2 sm:col-span-6 sm:mt-0 lg:col-span-3"
-                        >
-                          {section.title}
-                        </h2>
-                        <p className="t-body col-span-4 mt-4 text-muted sm:col-span-6 sm:col-start-3 lg:col-span-7 lg:col-start-6 lg:mt-0 lg:pt-[0.2em]">
-                          {fillNode(section.body, { email })}
-                        </p>
-                      </Grid>
+                      <p aria-hidden="true" className="t-eyebrow mt-5 lg:mt-6">
+                        {String(i + 1).padStart(2, "0")}
+                      </p>
+                      <h2 id={headingId} className="t-title mt-2">
+                        {section.title}
+                      </h2>
+                      <p className="t-body mt-3 text-muted">
+                        {fillNode(section.body, { email })}
+                      </p>
                     </section>
                   </Reveal>
                 );

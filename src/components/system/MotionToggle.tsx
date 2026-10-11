@@ -57,11 +57,12 @@ export function MotionToggle({
             type="button"
             aria-pressed={o.pressed}
             onClick={() => setMotionPaused(o.value)}
+            // The pressed one in the text colour and bold, as the language
+            // switch marks its current language: no underline (iteration-5 §A).
             className={cn(
-              "t-small link-thread min-h-11 transition-colors duration-[160ms]",
-              o.pressed ? "text-fg" : "text-muted hover:text-fg",
+              "t-small min-h-11 transition-colors duration-[160ms]",
+              o.pressed ? "font-bold text-fg" : "text-muted hover:text-fg",
             )}
-            data-active={o.pressed ? "true" : undefined}
           >
             {o.text}
           </button>

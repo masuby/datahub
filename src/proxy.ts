@@ -24,6 +24,10 @@ import { isServiceSlug } from "@/lib/service-slugs";
  *    (/index.html matches [lang] with lang "index.html"). Both are sent to a
  *    path no route matches instead.
  *
+ *    A page that was folded into another (MOVED) answers 308 with its new
+ *    place in the same language, query string kept, so a link shared with a
+ *    `?ref=` or UTM tag still lands and still attributes.
+ *
  * 2. Per-request Content-Security-Policy. Production uses a strict nonce-based
  *    policy with 'strict-dynamic' — only scripts carrying the request nonce (and
  *    scripts they load) may execute. No 'unsafe-inline' for scripts. Next.js
@@ -62,6 +66,23 @@ const APP_FILES = new Set([
 /** A path that matches no route, so the global 404 answers it on the server. */
 const UNMATCHED = "/_not-found-page";
 
+/**
+ * Pages folded into another, by locale-free path, and where each went.
+ * /dashboards became the home page's live showcase (iteration-5 §I), which
+ * is the section with id="dashboards" there.
+ */
+const MOVED = new Map<string, { path: string; hash: string }>([["/dashboards", { path: "/", hash: "#dashboards" }]]);
+
+/** The new place of a page that moved, in the same language; null if it did not move. */
+function movedTo(pathname: string): { pathname: string; hash: string } | null {
+  const locale = PREFIXED_LOCALES.find((l) => pathname.startsWith(`/${l}/`));
+  const to = MOVED.get(locale ? pathname.slice(locale.length + 1) : pathname);
+  if (!to) return null;
+  // The home page has no trailing slash: /sw, not /sw/.
+  const path = locale ? `/${locale}${to.path === "/" ? "" : to.path}` : to.path;
+  return { pathname: path, hash: to.hash };
+}
+
 /** Requests that are not pages: they get the CSP, never a locale. */
 function isNonPage(pathname: string): boolean {
   return (
@@ -92,6 +113,15 @@ export function proxy(request: NextRequest) {
   if (pathname === `/${DEFAULT_LOCALE}` || pathname.startsWith(`/${DEFAULT_LOCALE}/`)) {
     const url = request.nextUrl.clone();
     url.pathname = pathname.slice(DEFAULT_LOCALE.length + 1) || "/";
+    return NextResponse.redirect(url, 308);
+  }
+
+  // A page that moved: one permanent hop to its new place, query kept.
+  const moved = movedTo(pathname);
+  if (moved) {
+    const url = request.nextUrl.clone();
+    url.pathname = moved.pathname;
+    url.hash = moved.hash;
     return NextResponse.redirect(url, 308);
   }
 

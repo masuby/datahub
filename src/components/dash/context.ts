@@ -9,33 +9,25 @@ export type DashExtra = Widen<(typeof dashExtra)["en"]>;
 export type ViewKey = keyof DashT["views"];
 
 /**
- * Everything a dashboard figure needs to render, built once per page on the
- * server. `live` is true on /dashboards, where the DashboardShowcase island
- * wires up tabs, crosshairs and read mode; on service pages the same figures
- * render as static server HTML with read-mode notes always shown.
+ * Everything a sample figure needs to render, built once per page on the
+ * server. The figures live on the service pages' sample bands only (the
+ * sample-dashboards page and its interactive views went in iteration-5
+ * §I): static HTML, read-mode notes always shown, no crosshairs or tabs.
  */
 export type DashCtx = {
   lang: Locale;
   t: DashT;
   x: DashExtra;
-  a11y: Dictionary["a11y"];
   figurePrefix: string;
-  /** Unique id prefix for this rendering of the figures ("dh", "sb"). */
+  /** Unique id prefix for this rendering of the figures ("sb-automation"). */
   idp: string;
-  live: boolean;
   /**
-   * Set when a few figures are shown outside the dashboards section 02 (a
-   * service page's sample band): the figure numbers they show instead
-   * ("02.10" -> "03.1"), and which read-mode figures are on the plate, so
-   * the notes count 1, 2… on the plate rather than across the whole view.
+   * The plate's figures: the numbers they show (the dictionary's view
+   * numbering, "02.10", becomes the band's own, "03.1"), and which
+   * read-mode figures are on the plate, so the notes count 1, 2… on the
+   * plate rather than across the whole view.
    */
   plate?: { numbers: Record<string, string>; figures: readonly string[] };
-  /**
-   * Heading level of the figure titles: one below the section heading they
-   * sit under — h3 under a section's h2 (default), h2 where the dashboards
-   * section heading is the page's h1 (/dashboards).
-   */
-  figureLevel?: 2 | 3;
 };
 
 export type Note = { n: number; anchor: string; shows: string; decision: string; noteId: string };
@@ -56,12 +48,12 @@ export function notesFor(ctx: DashCtx, view: ViewKey, figure: string): Note[] {
 }
 
 /** A marker to place on a chart: note number + the data index it points at. */
-export type Mark = { n: number; i: number; noteId: string };
+export type Mark = { n: number; i: number };
 
 export function marksFor(notes: Note[], indexOf: (anchor: string) => number): Mark[] {
   return notes.flatMap((note) => {
     const i = indexOf(note.anchor);
-    return i < 0 ? [] : [{ n: note.n, i, noteId: note.noteId }];
+    return i < 0 ? [] : [{ n: note.n, i }];
   });
 }
 

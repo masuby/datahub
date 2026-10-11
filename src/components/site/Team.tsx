@@ -22,9 +22,9 @@ const PORTRAITS = [
 ] as const;
 
 /**
- * Section 06, id=team: the /team page (`headingLevel` 1 there, where its
+ * Section 05, id=team: the /team page (`headingLevel` 1 there, where its
  * title is the page's h1 and the names step up to h2). Line-up on one shared
- * floor rule (spec §6.7).
+ * floor rule (spec §6.7), each member centred (iteration-5 §B).
  */
 export async function Team({ lang, headingLevel = 2 }: { lang: Locale; headingLevel?: 1 | 2 }) {
   const t = (await getDictionary(lang)).team;
@@ -34,7 +34,7 @@ export async function Team({ lang, headingLevel = 2 }: { lang: Locale; headingLe
     <Section id="team" labelledBy="team-title">
       <Container>
         <SectionHeader
-          index="06"
+          index="05"
           eyebrow={t.eyebrow}
           title={t.title}
           titleId="team-title"
@@ -73,14 +73,14 @@ export async function Team({ lang, headingLevel = 2 }: { lang: Locale; headingLe
                           alt={m.alt}
                           width={740}
                           height={990}
-                          sizes="(min-width: 1024px) 360px, 40vw"
+                          sizes="(min-width: 1024px) 360px, (min-width: 640px) 272px, 240px"
                           quality={80}
-                          loading="lazy"
+                          // On /team the portraits are the first thing under the title.
+                          loading={headingLevel === 1 ? "eager" : "lazy"}
                           className={styles.img}
                         />
                       </div>
-                      {/* Equal for all three: plain R2, no thread (the section
-                          opener carries this section's thread). */}
+                      {/* Equal for all three: a plain R2, no implied hierarchy. */}
                       <Rule variant="floor" animate className={styles.shortFloor} />
                     </div>
 
