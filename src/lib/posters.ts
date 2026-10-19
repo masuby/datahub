@@ -233,6 +233,13 @@ const STATUS: Poster[] = [
     headline: "Not theory. Working systems.",
     sub: "Reporting platforms, automated data pipelines, multi-agency bulletins.",
   },
+  {
+    kind: "status",
+    slug: "15-how-long-does-it-take",
+    eyebrow: "TIMELINE",
+    headline: "How long does it take to build?",
+    sub: "Depends on the system. You get a real date once we know the scope.",
+  },
 ];
 
 export const POSTERS: Poster[] = [...POSTS, ...STATUS];
