@@ -233,6 +233,13 @@ const STATUS: Poster[] = [
     headline: "Not theory. Working systems.",
     sub: "Reporting platforms, automated data pipelines, multi-agency bulletins.",
   },
+  {
+    kind: "status",
+    slug: "15-start-with-one-report",
+    eyebrow: "ONE STEP AT A TIME",
+    headline: "You do not have to switch everything at once.",
+    sub: "Start with the one report that costs you the most time.",
+  },
 ];
 
 export const POSTERS: Poster[] = [...POSTS, ...STATUS];
