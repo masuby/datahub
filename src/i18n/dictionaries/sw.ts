@@ -556,7 +556,7 @@ const sw = {
       },
       {
         "q": "Dashibodi inagharimu kiasi gani?",
-        "a": "Inategemea kazi, kwa hiyo tunapanga wigo kabla ya kutaja bei. Mazungumzo ya kwanza ni bure."
+        "a": "Dashibodi ya Kuanzia ni bei maalum ya TZS 2,500,000 kwa dashibodi moja ya uongozi, ndani ya wiki tatu, na kuotomatisha ripoti moja ya kila wiki ni TZS 1,200,000. Kila kifurushi na bei yake kiko kwenye ukurasa wa Vifurushi. Kazi kubwa zaidi hupewa bei baada ya mazungumzo ya bure ya dakika 15."
       },
       {
         "q": "Je, data yetu iko salama?",

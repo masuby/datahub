@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { localePath, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { offersExtra } from "@/i18n/extra/offers";
 import { BrandLockup } from "@/components/brand/BrandMark";
 import { SocialLinks } from "@/components/brand/SocialLinks";
 import { Container } from "@/components/ui/Container";
@@ -38,13 +39,15 @@ const MENU_PATHS = [
  * state, current-page marking, theme and language controls and the mobile
  * menu are small client islands.
  *
- *   ≥1024  lockup · Services Process Security Team FAQ · EN SW ◐ [Start a conversation]
+ *   ≥1280  lockup · Services Packages Training Process Security Team FAQ · EN SW ◐ [Start a conversation]
+ *   ≥1024  lockup · EN SW ◐ [Start a conversation] Menu
  *   <1024  lockup · EN SW ◐ Menu
  *
  * No social icons in the header (owner, 2 Nov 2026): they are in the
- * footer's Contact column and the mobile menu. From 1024 to 1279px, where
- * the header is fullest and there is no Menu button, the spacing tightens a
- * little so every page link fits inside the gutters.
+ * footer's Contact column and the mobile menu. Seven page links (Packages
+ * and Training joined on 2 Nov 2026) fit only from 1280px, and there
+ * tightly in Kiswahili, so below it the Menu button carries them and the
+ * spacing opens up again only from 1536px.
  *
  * Every item is a page; the one showing carries aria-current="page" and
  * sits in a sky liquid-glass pill with a navy label (a service page lights
@@ -58,11 +61,14 @@ const MENU_PATHS = [
  */
 export async function Header({ lang }: { lang: Locale }) {
   const t = await getDictionary(lang);
+  const o = offersExtra[lang];
   const home = localePath(lang, "/");
   const contact = localePath(lang, "/contact");
 
   const nav: { path: string; label: string; also?: readonly string[] }[] = [
     { path: "/services", label: t.nav.services, also: SERVICE_PATHS },
+    { path: "/packages", label: o.nav.packages },
+    { path: "/training", label: o.nav.training },
     { path: "/process", label: t.nav.process },
     { path: "/security", label: t.nav.security },
     { path: "/team", label: t.nav.team },
@@ -74,6 +80,14 @@ export async function Header({ lang }: { lang: Locale }) {
     label: t.menu.items[i] ?? path,
     also: path === "/services" ? SERVICE_PATHS : undefined,
   }));
+  // Packages and Training follow Services (their labels are not in the
+  // dictionary's menu list, which MENU_PATHS mirrors).
+  menuItems.splice(
+    1,
+    0,
+    { href: localePath(lang, "/packages"), label: o.menu.packages },
+    { href: localePath(lang, "/training"), label: o.menu.training },
+  );
 
   return (
     <HeaderShell>
@@ -83,7 +97,7 @@ export async function Header({ lang }: { lang: Locale }) {
       >
         {t.a11y.skip}
       </a>
-      <Container className="flex h-[var(--header-h)] items-center gap-2 min-[360px]:gap-4 lg:gap-6 xl:gap-8">
+      <Container className="flex h-[var(--header-h)] items-center gap-2 min-[360px]:gap-4 lg:gap-6 2xl:gap-8">
         <Link
           href={home}
           aria-label={t.brand.homeLink}
@@ -96,8 +110,8 @@ export async function Header({ lang }: { lang: Locale }) {
           />
         </Link>
 
-        <nav aria-label={t.nav.label} className="hidden h-full flex-1 justify-center lg:flex">
-          <ul className="flex h-full items-center gap-1 xl:gap-2">
+        <nav aria-label={t.nav.label} className="hidden h-full flex-1 justify-center xl:flex">
+          <ul className="flex h-full items-center gap-1 2xl:gap-2">
             {nav.map((item) => (
               <li key={item.path} className="flex">
                 <NavLink
@@ -105,7 +119,7 @@ export async function Header({ lang }: { lang: Locale }) {
                   also={item.also}
                   className={cn(
                     glassClasses.nav,
-                    "inline-flex h-9 items-center whitespace-nowrap px-3 font-display text-sm font-medium xl:px-3.5",
+                    "inline-flex h-9 items-center whitespace-nowrap px-3 font-display text-sm font-medium 2xl:px-3.5",
                   )}
                 >
                   <NavPill />
@@ -116,7 +130,7 @@ export async function Header({ lang }: { lang: Locale }) {
           </ul>
         </nav>
 
-        <div className="ml-auto flex shrink-0 items-center gap-0 min-[360px]:gap-1 sm:gap-2 lg:ml-0 xl:gap-3">
+        <div className="ml-auto flex shrink-0 items-center gap-0 min-[360px]:gap-1 sm:gap-2 xl:ml-0 2xl:gap-3">
           <LangSwitch lang={lang} labels={t.lang} variant="short" />
           <ThemeToggle labels={t.theme.toggle} />
           <PrimaryLink href={contact} size="compact" className="hidden lg:inline-flex">

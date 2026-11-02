@@ -555,7 +555,7 @@ const en = {
       },
       {
         "q": "How much does a dashboard cost?",
-        "a": "It depends on the work, so we scope it before quoting. The first conversation is free."
+        "a": "Our Dashboard Starter is a fixed TZS 2,500,000 for one management dashboard, delivered in three weeks, and automating one recurring report is TZS 1,200,000. Every package and its price is on the Packages page. Bigger work is quoted after a free 15-minute call."
       },
       {
         "q": "Is our data safe?",

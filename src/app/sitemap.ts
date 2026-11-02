@@ -16,6 +16,8 @@ const PAGES: Page[] = [
   { path: "/", priority: 1, changeFrequency: "monthly" },
   { path: "/services", priority: 0.9, changeFrequency: "monthly" },
   ...SERVICES.map((s) => ({ path: `/services/${s.slug}`, priority: 0.8, changeFrequency: "monthly" as const })),
+  { path: "/packages", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/training", priority: 0.7, changeFrequency: "monthly" },
   { path: "/contact", priority: 0.8, changeFrequency: "monthly" },
   { path: "/process", priority: 0.6, changeFrequency: "monthly" },
   { path: "/security", priority: 0.6, changeFrequency: "monthly" },

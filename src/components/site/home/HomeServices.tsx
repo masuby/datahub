@@ -1,5 +1,6 @@
 import { localePath, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { offersExtra } from "@/i18n/extra/offers";
 import { pagesExtra } from "@/i18n/extra/pages";
 import { servicesFor } from "@/lib/services";
 import { bindAmpersands } from "@/lib/utils";
@@ -18,8 +19,9 @@ import { HOME_SECTION_Y, HomeOpener, HomeTiles } from "./HomeTiles";
  * repeating the hero line right under it) — then the three services as
  * centred tiles, side by side between vertical hairlines: the owner's 3D
  * icon, the title with its arrow and the tagline, each tile a
- * link to its service page; then "All services →" to /services, centred
- * under them. Phones: the tiles stack, no rules.
+ * link to its service page; then "All services →" to /services and
+ * "Packages and prices →" to /packages, centred under them. Phones: the
+ * tiles stack, no rules.
  */
 export async function HomeServices({ lang }: { lang: Locale }) {
   const t = await getDictionary(lang);
@@ -43,8 +45,9 @@ export async function HomeServices({ lang }: { lang: Locale }) {
         <Reveal>
           <HomeOpener id="services-title">{s.eyebrow}</HomeOpener>
           <HomeTiles tiles={tiles} ordered />
-          <div className="mt-3 flex justify-center sm:mt-6">
+          <div className="mt-3 flex flex-wrap justify-center gap-x-8 sm:mt-6">
             <LinkArrow href={localePath(lang, "/services")}>{x.servicesAll}</LinkArrow>
+            <LinkArrow href={localePath(lang, "/packages")}>{offersExtra[lang].menu.packages}</LinkArrow>
           </div>
         </Reveal>
       </Container>

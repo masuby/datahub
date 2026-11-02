@@ -1,0 +1,224 @@
+/*
+  Training (/training): the two formats as centred columns (in-house, open
+  class), then the two days, three short facts and the trainer.
+
+  Desktop (>=1024): the formats side by side, sharing their rows (subgrid)
+  so prices and links line up; the days side by side from 768px; the three
+  facts side by side from 1024px. Vertical hairlines that fade at both ends
+  between columns, horizontal ones between stacked blocks below. Lines that
+  stop; nothing closes into a box.
+*/
+
+/* A fading hairline: horizontal between stacked blocks. */
+.format + .format::before,
+.day + .day::before,
+.fact + .fact::before,
+.block::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rule) 18%, var(--rule) 82%, transparent);
+  pointer-events: none;
+}
+
+/* No margin here: the gap above each list is a utility on it (mt-8). */
+.formats,
+.days,
+.facts {
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.format,
+.day,
+.fact {
+  position: relative;
+}
+
+.formatCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 30rem;
+  margin-inline: auto;
+  padding-block: 2.5rem;
+  text-align: center;
+}
+.format:first-child .formatCard {
+  padding-top: 0;
+}
+.priceBlock {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+.price {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 1.25rem + 0.8vw, 1.875rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.lines {
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  row-gap: 0.45rem;
+}
+.cta {
+  margin-top: 0.75rem;
+}
+.openNext {
+  margin-top: 0.5rem;
+  max-width: 40rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* A block of the page after the formats: the days, the facts, the trainer. */
+.block {
+  position: relative;
+  margin-top: 3rem;
+  padding-top: 3rem;
+  text-align: center;
+}
+
+.dayCard {
+  max-width: 30rem;
+  margin-inline: auto;
+  padding-block: 1.75rem;
+}
+.day:first-child .dayCard {
+  padding-top: 0;
+}
+.dayList {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  row-gap: 0.45rem;
+}
+
+.factCard {
+  max-width: 30rem;
+  margin-inline: auto;
+  padding-block: 1.75rem;
+}
+.fact:first-child .factCard {
+  padding-top: 0;
+}
+.fact:last-child .factCard {
+  padding-bottom: 0;
+}
+
+.trainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.avatarBox {
+  display: block;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin-top: 1rem;
+}
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  object-fit: cover;
+  background: radial-gradient(circle at 50% 32%, color-mix(in srgb, var(--sky) 30%, var(--bg-sunk)), var(--bg-sunk) 70%);
+  filter: drop-shadow(0 0.25rem 0.9rem rgb(3 107 251 / 0.18));
+}
+
+@media (min-width: 640px) {
+  .formatCard {
+    padding-block: 3rem;
+  }
+  .block {
+    margin-top: 4rem;
+    padding-top: 4rem;
+  }
+}
+
+/* The two days side by side. */
+@media (min-width: 768px) {
+  .days {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+  }
+  .dayCard,
+  .day:first-child .dayCard {
+    max-width: none;
+    padding: 0.25rem 1.5rem;
+  }
+  .day + .day::before {
+    top: 0;
+    bottom: 0;
+    left: calc(var(--col-gap) / -2);
+    right: auto;
+    width: 1px;
+    height: auto;
+    background: linear-gradient(180deg, transparent, var(--rule-strong) 12%, var(--rule-strong) 88%, transparent);
+  }
+}
+
+@media (min-width: 1024px) {
+  /* The formats: two columns sharing name · price · lines · link. */
+  .formats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(4, auto);
+    column-gap: var(--col-gap);
+    max-width: 56rem;
+    margin-inline: auto;
+  }
+  .format {
+    grid-row: span 4;
+    display: grid;
+    grid-template-rows: subgrid;
+  }
+  .formatCard,
+  .format:first-child .formatCard {
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-rows: subgrid;
+    justify-items: center;
+    align-items: start;
+    max-width: none;
+    margin-inline: 0;
+    padding: 0.5rem 1.5rem;
+  }
+  .cta {
+    align-self: end;
+  }
+  .format + .format::before,
+  .fact + .fact::before {
+    top: 0;
+    bottom: 0;
+    left: calc(var(--col-gap) / -2);
+    right: auto;
+    width: 1px;
+    height: auto;
+    background: linear-gradient(180deg, transparent, var(--rule-strong) 12%, var(--rule-strong) 88%, transparent);
+  }
+
+  .facts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+  }
+  .factCard,
+  .fact:first-child .factCard,
+  .fact:last-child .factCard {
+    max-width: none;
+    padding: 0.25rem 1.25rem;
+  }
+}

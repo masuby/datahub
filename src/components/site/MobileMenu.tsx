@@ -415,7 +415,7 @@ export type MenuItem = {
 };
 
 /**
- * "Menu" text button (below 1024px) that opens a full-screen sheet: links in
+ * "Menu" text button (below 1280px) that opens a full-screen sheet: links in
  * the display face at 2rem, unnumbered, separated by R1, each a full-row
  * 56px target, the current page in the accent colour (no underline) and
  * announced; then the primary
@@ -513,8 +513,8 @@ export function MobileMenu({
         first.focus();
       }
     };
-    // The sheet only exists below 1024px; widening the window closes it.
-    const wide = window.matchMedia("(min-width: 1024px)");
+    // The sheet only exists below 1280px; widening the window closes it.
+    const wide = window.matchMedia("(min-width: 1280px)");
     const onWide = () => {
       if (wide.matches) close(false);
     };
@@ -541,7 +541,7 @@ export function MobileMenu({
       role="dialog"
       aria-modal="true"
       aria-label={labels.dialog}
-      className="fixed inset-0 z-50 flex flex-col overflow-y-auto overscroll-contain bg-elev text-fg lg:hidden"
+      className="fixed inset-0 z-50 flex flex-col overflow-y-auto overscroll-contain bg-elev text-fg xl:hidden"
     >
       <Container className="flex h-[var(--header-h)] shrink-0 items-center justify-between gap-4">
         <BrandLockup markClassName="h-6 w-6" wordClassName="text-[1.2rem]" />
@@ -612,7 +612,7 @@ export function MobileMenu({
         aria-expanded={open}
         aria-controls={open ? sheetId : undefined}
         onClick={() => setOpen(true)}
-        className="t-small -mr-1 inline-flex min-h-11 items-center px-1 font-display font-semibold text-fg transition-colors duration-[160ms] hover:text-accent sm:px-2 lg:hidden"
+        className="t-small -mr-1 inline-flex min-h-11 items-center px-1 font-display font-semibold text-fg transition-colors duration-[160ms] hover:text-accent sm:px-2 xl:hidden"
       >
         {labels.open}
       </button>

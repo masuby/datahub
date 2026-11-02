@@ -420,7 +420,7 @@ Word order differs from English: Kiswahili puts the noun before the number ("rip
 - `faq.items[1].q` → Mnapatikana wapi?
 - `faq.items[1].a` → Dar es Salaam. Tunafanya kazi kote Tanzania na nje ya nchi, mara nyingi kwa mbali, na ofisini kwako inapohitajika.
 - `faq.items[2].q` → Dashibodi inagharimu kiasi gani?
-- `faq.items[2].a` → Inategemea kazi, kwa hiyo tunapanga wigo kabla ya kutaja bei. Mazungumzo ya kwanza ni bure.
+- `faq.items[2].a` → Dashibodi ya Kuanzia ni bei maalum ya TZS 2,500,000 kwa dashibodi moja ya uongozi, ndani ya wiki tatu, na kuotomatisha ripoti moja ya kila wiki ni TZS 1,200,000. Kila kifurushi na bei yake kiko kwenye ukurasa wa Vifurushi. Kazi kubwa zaidi hupewa bei baada ya mazungumzo ya bure ya dakika 15.
 - `faq.items[3].q` → Je, data yetu iko salama?
 - `faq.items[3].a` → Ndiyo. Kila mtu anaona tu kile ambacho nafasi yake ya kazi inaruhusu, na data yako haishirikishwi wala kuuzwa kamwe.
 - `faq.items[4].q` → Mradi unachukua muda gani?

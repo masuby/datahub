@@ -3,6 +3,7 @@ import Link from "next/link";
 import { localePath, type Locale } from "@/i18n/config";
 import { fill, getDictionary } from "@/i18n/get-dictionary";
 import { chromeExtra } from "@/i18n/extra/chrome";
+import { offersExtra } from "@/i18n/extra/offers";
 import { BrandLockup } from "@/components/brand/BrandMark";
 import { SocialLinks } from "@/components/brand/SocialLinks";
 import { FooterMark } from "@/components/footer/FooterMark";
@@ -54,7 +55,8 @@ function Column({ title, children, className }: { title: string; children: React
  *
  * Every page of the site is linked from here; the one showing is marked
  * aria-current="page" and set in the text colour (NavLink). Services: the
- * three service pages and all services. Company (§6.10): process, security,
+ * three service pages, all services, packages and prices, and training.
+ * Company (§6.10): process, security,
  * team, FAQ, privacy. Contact: WhatsApp, e-mail, the contact form, and
  * DataHub's social profiles.
  *
@@ -65,6 +67,7 @@ export async function Footer({ lang }: { lang: Locale }) {
   const t = await getDictionary(lang);
   const f = t.footer;
   const x = chromeExtra[lang].footer;
+  const o = offersExtra[lang].footer;
   const home = localePath(lang, "/");
   const services = servicesFor(lang);
   /** Paths of the dictionary's company links, in its order. */
@@ -105,6 +108,16 @@ export async function Footer({ lang }: { lang: Locale }) {
             <li>
               <NavLink href={localePath(lang, "/services")} className={linkClass}>
                 {x.allServices}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink href={localePath(lang, "/packages")} className={linkClass}>
+                {o.packages}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink href={localePath(lang, "/training")} className={linkClass}>
+                {o.training}
               </NavLink>
             </li>
           </Column>

@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { localePath, type Locale } from "@/i18n/config";
 import { getDictionary, type Dictionary } from "@/i18n/get-dictionary";
+import { offersExtra } from "@/i18n/extra/offers";
 import { servicesFor } from "@/lib/services";
 import type { ServiceSlug } from "@/lib/service-slugs";
 import { Container } from "@/components/ui/Container";
+import { LinkArrow } from "@/components/ui/LinkArrow";
 import { Section } from "@/components/ui/Section";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
@@ -93,6 +95,9 @@ export async function Services({ lang, headingLevel = 2 }: { lang: Locale; headi
             })}
           </ol>
         </Reveal>
+        <div className="mt-10 flex justify-center lg:mt-14">
+          <LinkArrow href={localePath(lang, "/packages")}>{offersExtra[lang].menu.packages}</LinkArrow>
+        </div>
       </Container>
     </Section>
   );

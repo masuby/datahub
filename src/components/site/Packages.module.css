@@ -1,0 +1,242 @@
+/*
+  Packages (/packages): the four fixed-price packages as centred columns,
+  then the training in brief.
+
+  Wide desktop (>=1280): four columns divided by vertical hairlines that
+  fade out at both ends, sharing their rows (subgrid) so name, promise,
+  price, time, what is included, care and the link line up across the four
+  even when one promise wraps. 1024-1279: two columns, two rows. Below
+  1024px: one centred column per package, a fading hairline between them,
+  as on /services. Lines that stop; nothing closes into a box.
+*/
+
+/* The four steps of a package, under the lead: words and arrows, no boxes. */
+.steps {
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 0.25rem;
+}
+.step {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--fg);
+}
+/* The arrow ends each step but the last, so a wrapped line starts with a step. */
+.step:not(:last-child)::after {
+  content: "→" / "";
+  margin-inline: 0.6rem;
+  color: var(--accent);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.item {
+  position: relative;
+}
+/* Stacked: a hairline between packages, fading in and out. */
+.item + .item::before,
+.training::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rule) 18%, var(--rule) 82%, transparent);
+  pointer-events: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 30rem;
+  margin-inline: auto;
+  padding-block: 2.5rem;
+  text-align: center;
+}
+.item:first-child .card {
+  padding-top: 0;
+}
+
+/* The package name: between a title and an h3, so the longest fits in two lines. */
+.name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.promise {
+  margin-top: 0.5rem;
+  max-width: 30ch;
+}
+.priceBlock {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+.price {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 1.25rem + 0.8vw, 1.875rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  text-wrap: balance;
+}
+.priceNote {
+  max-width: 28ch;
+}
+.time {
+  margin-top: 0.75rem;
+}
+/* What is included: one item per line, centred, no bullets. */
+.includes {
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  row-gap: 0.45rem;
+  max-width: 34ch;
+}
+.care {
+  margin-top: 1.25rem;
+}
+.cta {
+  margin-top: 0.5rem;
+}
+
+/* The training, in brief, under the packages. */
+.training {
+  position: relative;
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.trainingPrices {
+  margin-top: 1rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--accent);
+  text-wrap: balance;
+}
+
+@media (min-width: 640px) {
+  .card {
+    padding-block: 3rem;
+  }
+  .training {
+    margin-top: 3rem;
+    padding-top: 3rem;
+  }
+}
+
+/* Two by two: each card a column whose link sits at its foot. */
+@media (min-width: 1024px) {
+  .list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+  }
+  .card,
+  .item:first-child .card {
+    height: 100%;
+    max-width: none;
+    margin-inline: 0;
+    padding: 2.5rem 1.5rem;
+  }
+  .item:nth-child(-n + 2) .card {
+    padding-top: 0.5rem;
+  }
+  .cta {
+    margin-top: auto;
+    padding-top: 0.5rem;
+  }
+  /* Vertical hairline in the middle of the column gap, beside the right column. */
+  .item:nth-child(2n)::before {
+    top: 0;
+    bottom: 0;
+    left: calc(var(--col-gap) / -2);
+    right: auto;
+    width: 1px;
+    height: auto;
+    background: linear-gradient(180deg, transparent, var(--rule-strong) 12%, var(--rule-strong) 88%, transparent);
+  }
+  /* The second row opens with a horizontal hairline; the right column has
+     its vertical one, so it draws the horizontal on ::after. */
+  .item:nth-child(3)::before {
+    top: 0;
+  }
+  .item:nth-child(4)::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--rule) 18%, var(--rule) 82%, transparent);
+    pointer-events: none;
+  }
+}
+
+/* Four across, the rows shared so prices and links line up. */
+@media (min-width: 1280px) {
+  .list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* name · promise · price · time · included · care · link */
+    grid-template-rows: repeat(7, auto);
+  }
+  .item {
+    grid-row: span 7;
+    display: grid;
+    grid-template-rows: subgrid;
+  }
+  .card,
+  .item:first-child .card,
+  .item:nth-child(-n + 2) .card {
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-rows: subgrid;
+    justify-items: center;
+    align-items: start;
+    height: auto;
+    padding: 0.5rem 1.25rem;
+  }
+  .cta {
+    align-self: end;
+    margin-top: 0.5rem;
+    padding-top: 0;
+  }
+  /* Every column after the first has its vertical hairline; no horizontals. */
+  .item + .item::before {
+    top: 0;
+    bottom: 0;
+    left: calc(var(--col-gap) / -2);
+    right: auto;
+    width: 1px;
+    height: auto;
+    background: linear-gradient(180deg, transparent, var(--rule-strong) 12%, var(--rule-strong) 88%, transparent);
+  }
+  .item:nth-child(4)::after {
+    content: none;
+  }
+}

@@ -417,7 +417,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `faq.items[1].q` → Where are you based?
 - `faq.items[1].a` → Dar es Salaam. We work across Tanzania and beyond, mostly remotely, on site when needed.
 - `faq.items[2].q` → How much does a dashboard cost?
-- `faq.items[2].a` → It depends on the work, so we scope it before quoting. The first conversation is free.
+- `faq.items[2].a` → Our Dashboard Starter is a fixed TZS 2,500,000 for one management dashboard, delivered in three weeks, and automating one recurring report is TZS 1,200,000. Every package and its price is on the Packages page. Bigger work is quoted after a free 15-minute call.
 - `faq.items[3].q` → Is our data safe?
 - `faq.items[3].a` → Yes. Each person sees only what their role allows, and your data is never shared or resold.
 - `faq.items[4].q` → How long does a project take?
