@@ -22,12 +22,10 @@ export type DashCtx = {
   /** Unique id prefix for this rendering of the figures ("sb-automation"). */
   idp: string;
   /**
-   * The plate's figures: the numbers they show (the dictionary's view
-   * numbering, "02.10", becomes the band's own, "03.1"), and which
-   * read-mode figures are on the plate, so the notes count 1, 2… on the
-   * plate rather than across the whole view.
+   * The read-mode figures on a service page's plate, so the notes count
+   * 1, 2… on the plate rather than across the whole view.
    */
-  plate?: { numbers: Record<string, string>; figures: readonly string[] };
+  plate?: { figures: readonly string[] };
 };
 
 export type Note = { n: number; anchor: string; shows: string; decision: string; noteId: string };
@@ -76,10 +74,6 @@ export const STATUS_TONE: Record<Status | "sent" | "awaiting" | "queued", string
   breach: "text-error",
   queued: "text-subtle",
 };
-
-/** "02.1" -> "Fig. 02.1" / "Kielelezo 02.1" (renumbered on a service page's plate). */
-export const figLabel = (ctx: DashCtx, number: string) =>
-  `${ctx.t.figPrefix} ${ctx.plate?.numbers[number] ?? number}`;
 
 /** Fixed-decimal number with a dot, for sample values (same in both languages). */
 export const dec = (v: number, d = 1) => v.toFixed(d);

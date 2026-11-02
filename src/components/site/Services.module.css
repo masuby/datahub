@@ -1,15 +1,16 @@
 /*
-  01 — What we do (/services): the three services as centred columns.
+  What we do (/services): the three services as centred columns.
 
   Desktop (>=1024): three columns side by side, divided by vertical
   hairlines that fade out at both ends (lines that stop; nothing closes into
-  a box). The columns share their rows (subgrid): icon, index, title,
-  tagline, description, deliverables and "Read more" line up across the
-  three even when one title wraps, as on the home page's tiles.
+  a box). The columns share their rows (subgrid): icon, title, tagline,
+  description, deliverables and "Read more" line up across the three even
+  when one title wraps, as on the home page's tiles. No numbers (owner,
+  2 Nov 2026).
   Below 1024px: one centred column per service, a fading hairline between
   them.
 
-  Hover and keyboard focus: the index and title turn accent and the arrow
+  Hover and keyboard focus: the title turns accent and the arrow
   moves 6px; where hover is real and motion is allowed the icon also lifts
   a few pixels. Nothing draws, nothing underlines.
 */
@@ -61,12 +62,8 @@
   transition: transform var(--dur-ui) var(--ease-silk);
 }
 
-.index {
-  margin-top: 1.25rem;
-  transition: color var(--dur-micro) var(--ease-silk);
-}
 .title {
-  margin-top: 0.75rem;
+  margin-top: 1.25rem;
   transition: color var(--dur-micro) var(--ease-silk);
 }
 .tagline {
@@ -100,8 +97,8 @@
   transition: transform 280ms var(--ease-silk);
 }
 
-.link:hover :is(.index, .title),
-.link:focus-visible :is(.index, .title) {
+.link:hover .title,
+.link:focus-visible .title {
   color: var(--accent);
 }
 .link:hover .arrow,
@@ -132,12 +129,12 @@
 @media (min-width: 1024px) {
   .list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    /* icon · index · title · tagline · description · deliverables · more */
-    grid-template-rows: repeat(7, auto);
+    /* icon · title · tagline · description · deliverables · more */
+    grid-template-rows: repeat(6, auto);
     column-gap: var(--col-gap);
   }
   .item {
-    grid-row: span 7;
+    grid-row: span 6;
     display: grid;
     grid-template-rows: subgrid;
   }

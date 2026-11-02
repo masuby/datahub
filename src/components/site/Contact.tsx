@@ -16,7 +16,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ContactForm } from "./ContactForm";
 
 /**
- * 07 — Contact: the /contact page (`headingLevel` 1 there, where its title
+ * Contact: the /contact page (`headingLevel` 1 there, where its title
  * is the page's h1 and the headings under it step up to h2).
  *
  * Desktop: direct lines in columns 1–5 (WhatsApp, email, location as R1 rows,
@@ -39,9 +39,6 @@ const OPTION = "group flex flex-col items-center py-6 text-center text-fg";
 /** Label and value turn accent on hover/focus (colour only). */
 const ON_HOVER =
   "transition-colors duration-[160ms] group-hover:text-accent group-focus-visible:text-accent";
-
-/** Chapter 07 (spec §3.4, renumbered in iteration-5 §I): the eyebrow's number, and the prefix of the next steps (07.1, 07.2…). */
-const INDEX = "07";
 
 export async function Contact({
   lang,
@@ -75,7 +72,6 @@ export async function Contact({
     <Section id="contact" labelledBy="contact-title">
       <Container>
         <SectionHeader
-          index={INDEX}
           eyebrow={c.eyebrow}
           title={c.title}
           titleId="contact-title"
@@ -157,10 +153,7 @@ export async function Contact({
                   >
                     {i > 0 && <Rule />}
                     <div className="py-4">
-                      <span className="t-data block" aria-hidden="true">
-                        {INDEX}.{i + 1}
-                      </span>
-                      <p className="t-body mx-auto mt-1 max-w-[32ch] text-fg">{step}</p>
+                      <p className="t-body mx-auto max-w-[32ch] text-fg">{step}</p>
                     </div>
                   </li>
                 ))}

@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { fill } from "@/i18n/fill";
 import { cn } from "@/lib/utils";
-import { STATUS_GLYPH, STATUS_TONE, figLabel, type DashCtx, type Note } from "./context";
+import { STATUS_GLYPH, STATUS_TONE, type DashCtx, type Note } from "./context";
 import { ReadNotes } from "./ReadMarker";
 import styles from "./dash.module.css";
 
@@ -17,7 +17,7 @@ export type TableSpec = {
 /**
  * Figure anatomy (spec §8.1):
  *
- *   <figcaption>  Fig. 03.n · title (h3) · one-sentence summary
+ *   <figcaption>  title (h3) · one-sentence summary (no figure number)
  *   readout       the latest point, in words
  *   chart         server SVG (stamp + <title> inside)   | read-mode notes
  *   credit        "Source: DataHub sample data · TZS · {period}"
@@ -26,7 +26,6 @@ export type TableSpec = {
 export function Figure({
   ctx,
   id,
-  number,
   title,
   summary,
   creditPeriod,
@@ -38,7 +37,6 @@ export function Figure({
 }: {
   ctx: DashCtx;
   id: string;
-  number: string;
   title: string;
   summary: string;
   creditPeriod: string;
@@ -51,10 +49,7 @@ export function Figure({
   return (
     <figure className={cn(styles.fig, "min-w-0", className)} aria-labelledby={`${id}-h`}>
       <figcaption>
-        <p className="t-eyebrow">{figLabel(ctx, number)}</p>
-        <FigureTitle id={`${id}-h`} className="mt-2">
-          {title}
-        </FigureTitle>
+        <FigureTitle id={`${id}-h`}>{title}</FigureTitle>
         <p className="t-small mt-2 max-w-[60ch] font-normal text-muted">{summary}</p>
       </figcaption>
       {readout !== undefined && <p className="t-data mt-3 min-h-[1.4em] text-muted">{readout}</p>}

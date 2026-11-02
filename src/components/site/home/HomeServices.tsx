@@ -12,12 +12,12 @@ import { SERVICE_ICON } from "./home-art";
 import { HOME_SECTION_Y, HomeOpener, HomeTiles } from "./HomeTiles";
 
 /**
- * Home · 01 — What we do, short (iteration-3 §C, centred in iteration-5
- * §B): the opener — the eyebrow as the section's h2 (the section title,
+ * Home · What we do, short (iteration-3 §C, centred in iteration-5 §B):
+ * the opener — the eyebrow as the section's h2 (the section title,
  * "Three ways we turn data into decisions", stays on /services rather than
  * repeating the hero line right under it) — then the three services as
  * centred tiles, side by side between vertical hairlines: the owner's 3D
- * icon, the index, the title with its arrow and the tagline, each tile a
+ * icon, the title with its arrow and the tagline, each tile a
  * link to its service page; then "All services →" to /services, centred
  * under them. Phones: the tiles stack, no rules.
  */
@@ -31,7 +31,6 @@ export async function HomeServices({ lang }: { lang: Locale }) {
     return {
       key: svc.slug,
       href: localePath(lang, `/services/${svc.slug}`),
-      index: item.index,
       title: bindAmpersands(item.title),
       line: item.tagline,
       icon: SERVICE_ICON[svc.slug],

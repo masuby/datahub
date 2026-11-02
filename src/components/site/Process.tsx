@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import styles from "./Process.module.css";
 
 /**
- * 03 — How we work: the /process page (`headingLevel` 1 there, where its
+ * How we work: the /process page (`headingLevel` 1 there, where its
  * title is the page's h1 and the step titles step up to h2).
  *
  * Four centred steps (iteration-5 §B), each under its node. Desktop: the
@@ -32,7 +32,6 @@ export async function Process({ lang, headingLevel = 2 }: { lang: Locale; headin
     <Section id="process" labelledBy={titleId}>
       <Container>
         <SectionHeader
-          index="03"
           eyebrow={t.eyebrow}
           title={t.title}
           titleId={titleId}
@@ -49,14 +48,13 @@ export async function Process({ lang, headingLevel = 2 }: { lang: Locale; headin
             <Grid as="ol" className="list-none">
               {t.steps.map((step, i) => (
                 <li
-                  key={step.index}
+                  key={step.title}
                   className={cn(styles.step, "col-span-4 sm:col-span-8 lg:col-span-3")}
                 >
                   {i > 0 && <span aria-hidden="true" className={styles.between} />}
                   <span aria-hidden="true" className={styles.node} />
 
-                  <p className="t-eyebrow">{step.index}</p>
-                  <StepHeading className="t-title mt-3">{step.title}</StepHeading>
+                  <StepHeading className="t-title">{step.title}</StepHeading>
                   <p className="t-body mt-3 max-w-[32ch] text-balance text-muted">{step.description}</p>
                   <p className="t-small mt-5 max-w-[32ch] text-balance text-fg">
                     <span className="t-data">{t.receivePrefix}</span> {step.receive}

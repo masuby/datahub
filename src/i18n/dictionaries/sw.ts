@@ -115,25 +115,22 @@ const sw = {
     "ctaSecondary": "Tazama onyesho la moja kwa moja"
   },
   "services": {
-    "eyebrow": "01 — Tunachofanya",
+    "eyebrow": "Tunachofanya",
     "title": "Njia tatu za kugeuza data kuwa maamuzi.",
     "lead": "Kila moja inaanzia kwenye kazi ambayo timu yako hufanya kwa mkono.",
     "readMore": "Soma zaidi",
     "items": {
       "dashboards": {
-        "index": "01.1",
         "title": "Dashibodi na takwimu za biashara (BI)",
         "tagline": "Sehemu moja ya kufanyia maamuzi",
         "description": "Takwimu za sasa dhidi ya lengo, kwa kila tawi, idara au afisa."
       },
       "automation": {
-        "index": "01.2",
         "title": "Otomatiki ya ripoti",
         "tagline": "Kazi ya saa nyingi, kwa sekunde",
         "description": "Ripoti zako za kila wiki za Excel na PowerPoint, zinajitengeneza zenyewe."
       },
       "aiAgents": {
-        "index": "01.3",
         "title": "Mawakala wa AI",
         "tagline": "Husoma data, huandaa hatua ijayo",
         "description": "Mawakala wanaofuatilia data yako, kufupisha kilichobadilika na kusubiri mtu aidhinishe."
@@ -147,7 +144,6 @@ const sw = {
     "stamp": "DATA YA MFANO",
     "footnote": "Majina na namba zote hapa ni za kubuni.",
     "credit": "Chanzo: data ya mfano ya DataHub · TZS · {period}",
-    "figPrefix": "Kielelezo",
     "showTable": "Tazama kama jedwali",
     "read": {
       "listLabel": "Chati hii inakuambia nini",
@@ -204,7 +200,6 @@ const sw = {
         ],
         "figures": {
           "revenue": {
-            "number": "02.1",
             "title": "Mapato dhidi ya lengo, kwa mwezi",
             "axis": "TZS bilioni",
             "seriesActual": "Mapato",
@@ -213,7 +208,6 @@ const sw = {
             "summary": "Mapato yalikuwa chini ya lengo la mwezi la TZS bilioni 2.18 hadi Septemba (TZS bilioni 2.30)."
           },
           "branches": {
-            "number": "02.2",
             "title": "Matawi, % ya lengo la mapato",
             "axis": "% ya lengo",
             "readout": "{branch} · {pct}% ya lengo",
@@ -268,7 +262,6 @@ const sw = {
         ],
         "figures": {
           "schedule": {
-            "number": "02.10",
             "title": "Ratiba ya Jumatatu",
             "lanes": [
               "Ripoti",
@@ -286,7 +279,6 @@ const sw = {
             "summary": "Kazi tano zinaendeshwa kuanzia 05:30 hadi 18:30."
           },
           "runs": {
-            "number": "02.11",
             "title": "Muda wa kutengeneza, mizunguko 14 ya mwisho",
             "axis": "sekunde",
             "readout": "Mzunguko {n} · sekunde {value}",
@@ -349,7 +341,7 @@ const sw = {
     }
   },
   "estimator": {
-    "eyebrow": "02 — Hesabu zako",
+    "eyebrow": "Hesabu zako",
     "title": "Saa za kazi zinakwenda wapi?",
     "lead": "Weka namba za ripoti moja uone inavyoigharimu timu yako.",
     "sentence": [
@@ -421,31 +413,27 @@ const sw = {
     }
   },
   "process": {
-    "eyebrow": "03 — Tunavyofanya kazi",
+    "eyebrow": "Tunavyofanya kazi",
     "title": "Jinsi mradi unavyoendeshwa.",
     "lead": "Kila mfumo ni tofauti; njia yetu ya kuujenga haibadiliki.",
     "receivePrefix": "Unapokea:",
     "steps": [
       {
-        "index": "03.1",
         "title": "Kuchunguza",
         "description": "Tunaelewa mtiririko wako wa kazi na kubaini kazi ya mkono.",
         "receive": "takwimu muhimu, na tathmini ya wazi kama mfumo unastahili kujengwa."
       },
       {
-        "index": "03.2",
         "title": "Kusanifu",
         "description": "Tunapanga mfumo kulingana na jinsi unavyofanya kazi.",
         "receive": "mpango unaouidhinisha kabla hatujaanza kujenga."
       },
       {
-        "index": "03.3",
         "title": "Kujenga",
         "description": "Tunaujenga kwa usalama, katika miundo ambayo timu yako tayari inaitumia.",
         "receive": "mfumo unaofanya kazi, tayari kutumika."
       },
       {
-        "index": "03.4",
         "title": "Kusaidia",
         "description": "Tunaifundisha timu yako na kurekebisha mfumo kadri mahitaji yanavyobadilika.",
         "receive": "mafunzo, na mabadiliko unapoyahitaji."
@@ -527,26 +515,23 @@ const sw = {
     }
   },
   "team": {
-    "eyebrow": "05 — Timu",
+    "eyebrow": "Timu",
     "title": "Watu utakaofanya nao kazi.",
     "lead": "Hivi ndivyo tunavyogawana kazi kwenye mradi wako.",
     "members": {
       "cto": {
-        "index": "05.1",
         "name": "Daniel C. Masubi",
         "role": "Afisa Mkuu wa Teknolojia",
         "bio": "Anajenga mifumo, kuanzia mitiririko ya data hadi mawakala, na anawajibika kwa usalama wa data yako.",
         "alt": "Daniel C. Masubi, Afisa Mkuu wa Teknolojia, DataHub"
       },
       "operations": {
-        "index": "05.2",
         "name": "Kanuda L. Sasi",
         "role": "Mkuu wa Uendeshaji",
         "bio": "Anasimamia utekelezaji, kuanzia wigo wa kazi hadi msaada, ili kilichokubaliwa ndicho kifike.",
         "alt": "Kanuda L. Sasi, Mkuu wa Uendeshaji, DataHub"
       },
       "marketing": {
-        "index": "05.3",
         "name": "Yohana K. Mussa",
         "role": "Mkuu wa Masoko",
         "bio": "Mara nyingi ndiye utakayezungumza naye kwanza: anabainisha tatizo lako halisi na anakujulisha maendeleo.",
@@ -555,12 +540,11 @@ const sw = {
     }
   },
   "faq": {
-    "eyebrow": "06 — Maswali",
+    "eyebrow": "Maswali",
     "title": "Maswali ambayo watu huuliza kabla ya kuanza.",
     "aside": "Hujapata jibu hapa?",
     "asideWhatsapp": "Tuulize kupitia WhatsApp",
     "asideEmail": "Tutumie barua pepe",
-    "indexPrefix": "S",
     "items": [
       {
         "q": "DataHub inafanya nini?",
@@ -585,7 +569,7 @@ const sw = {
     ]
   },
   "contact": {
-    "eyebrow": "07 — Mawasiliano",
+    "eyebrow": "Mawasiliano",
     "title": "Anza na ripoti moja.",
     "lead": "Tueleze unachotumia sasa na unachotaka badala yake.",
     "lines": {
@@ -738,24 +722,24 @@ const sw = {
     "cta": "Anza mazungumzo",
     "allServices": "Tazama huduma zote",
     "signals": {
-      "eyebrow": "01 — Tatizo",
+      "eyebrow": "Tatizo",
       "title": "Dalili kwamba unaihitaji"
     },
     "deliverables": {
-      "eyebrow": "02 — Matokeo",
+      "eyebrow": "Matokeo",
       "title": "Utakachopata"
     },
     "sample": {
-      "eyebrow": "03 — Mfano",
+      "eyebrow": "Mfano",
       "title": "Ione kwenye mfano",
       "lead": "Chati kutoka dashibodi zetu za mfano, na uamuzi ambao kila moja inausaidia."
     },
     "faq": {
-      "eyebrow": "04 — Maswali",
+      "eyebrow": "Maswali",
       "title": "Maswali kuhusu {service}"
     },
     "others": {
-      "eyebrow": "05 — Huduma zaidi",
+      "eyebrow": "Huduma zaidi",
       "title": "Pia kutoka DataHub"
     }
   },

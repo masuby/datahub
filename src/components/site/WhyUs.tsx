@@ -35,7 +35,7 @@ function splitLabel(line: string): [string | null, string] {
 const PART_GAP = "mt-[clamp(3.5rem,2.4rem+4vw,6rem)]";
 
 /**
- * 04 — Security: the /security page (`headingLevel` 1 there, where its
+ * Security: the /security page (`headingLevel` 1 there, where its
  * title is the page's h1 and the parts' headings are h2). It opens
  * on what the nav item, the page title and the home page's "Security first"
  * promise:
@@ -68,7 +68,6 @@ export async function WhyUs({ lang, headingLevel = 2 }: { lang: Locale; headingL
     <Section id="security" labelledBy={titleId}>
       <Container>
         <SectionHeader
-          index="04"
           eyebrow={pagesExtra[lang].security.eyebrow}
           title={t.data.title}
           titleId={titleId}

@@ -120,19 +120,16 @@ The suggestion is shown in the target language on purpose.
 
 ## services (01)
 
-- `services.eyebrow` → 01 — What we do
+- `services.eyebrow` → What we do
 - `services.title` → Three ways we turn data into decisions.
 - `services.lead` → Each starts from work your team already does by hand.
 - `services.readMore` → Read more
-- `services.items.dashboards.index` → 01.1
 - `services.items.dashboards.title` → Dashboards & business intelligence
 - `services.items.dashboards.tagline` → One place your team decides from
 - `services.items.dashboards.description` → Current figures against target, by branch, department or officer.
-- `services.items.automation.index` → 01.2
 - `services.items.automation.title` → Reporting automation
 - `services.items.automation.tagline` → Hours of manual work, done in seconds
 - `services.items.automation.description` → Your weekly Excel and PowerPoint reports, generated for you.
-- `services.items.aiAgents.index` → 01.3
 - `services.items.aiAgents.title` → AI agents
 - `services.items.aiAgents.tagline` → Reads your data, drafts the next step
 - `services.items.aiAgents.description` → Agents that watch your data, summarise what changed and wait for a person to approve.
@@ -151,7 +148,6 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.stamp` → SAMPLE DATA
 - `dash.footnote` → Every name and number here is invented.
 - `dash.credit` → Source: DataHub sample data · TZS · {period}
-- `dash.figPrefix` → Fig.
 - `dash.showTable` → View as table
 - `dash.read.listLabel` → What this chart tells you
 - `dash.read.decisionPrefix` → Decision:
@@ -189,14 +185,12 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.overview.kpis[2].context` → +6.1% since end of June
 - `dash.views.overview.kpis[3].label` → Cost-to-income
 - `dash.views.overview.kpis[3].context` → Ceiling 60.0%
-- `dash.views.overview.figures.revenue.number` → 02.1
 - `dash.views.overview.figures.revenue.title` → Revenue against target, by month
 - `dash.views.overview.figures.revenue.axis` → TZS bn
 - `dash.views.overview.figures.revenue.seriesActual` → Revenue
 - `dash.views.overview.figures.revenue.seriesTarget` → Target
 - `dash.views.overview.figures.revenue.readout` → {month} · TZS {value} bn · {pct}% of target
 - `dash.views.overview.figures.revenue.summary` → Revenue was below the TZS 2.18 bn monthly target until September (TZS 2.30 bn).
-- `dash.views.overview.figures.branches.number` → 02.2
 - `dash.views.overview.figures.branches.title` → Branches, % of revenue target
 - `dash.views.overview.figures.branches.axis` → % of target
 - `dash.views.overview.figures.branches.readout` → {branch} · {pct}% of target
@@ -228,7 +222,6 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.operations.kpis[2].context` → Estimate, against manual work
 - `dash.views.operations.kpis[3].label` → Failed runs
 - `dash.views.operations.kpis[3].context` → Both re-run the same morning
-- `dash.views.operations.figures.schedule.number` → 02.10
 - `dash.views.operations.figures.schedule.title` → Monday schedule
 - `dash.views.operations.figures.schedule.lanes[0]` → Reports
 - `dash.views.operations.figures.schedule.lanes[1]` → Alerts
@@ -240,7 +233,6 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.operations.figures.schedule.items[4]` → 18:30 Daily close
 - `dash.views.operations.figures.schedule.timeAxis` → East Africa Time
 - `dash.views.operations.figures.schedule.summary` → Five jobs run from 05:30 to 18:30.
-- `dash.views.operations.figures.runs.number` → 02.11
 - `dash.views.operations.figures.runs.title` → Generation time, last 14 runs
 - `dash.views.operations.figures.runs.axis` → seconds
 - `dash.views.operations.figures.runs.readout` → Run {n} · {value} s
@@ -280,7 +272,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 
 ## estimator (02, advanced feature B)
 
-- `estimator.eyebrow` → 02 — Your numbers
+- `estimator.eyebrow` → Your numbers
 - `estimator.title` → Where do the hours go?
 - `estimator.lead` → Enter one report’s numbers to see what it costs your team.
 - `estimator.sentence[0]` → We prepare␠
@@ -331,23 +323,19 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 
 ## process (03)
 
-- `process.eyebrow` → 03 — How we work
+- `process.eyebrow` → How we work
 - `process.title` → How a project runs.
 - `process.lead` → Every system differs; the way we build it does not.
 - `process.receivePrefix` → You receive:
-- `process.steps[0].index` → 03.1
 - `process.steps[0].title` → Discover
 - `process.steps[0].description` → We learn your workflow and find the manual work.
 - `process.steps[0].receive` → the figures that matter, and an honest view on whether to build.
-- `process.steps[1].index` → 03.2
 - `process.steps[1].title` → Design
 - `process.steps[1].description` → We plan the system around how you work.
 - `process.steps[1].receive` → a plan you approve before we build.
-- `process.steps[2].index` → 03.3
 - `process.steps[2].title` → Build
 - `process.steps[2].description` → We build it securely, in formats your team already uses.
 - `process.steps[2].receive` → a working system, ready to use.
-- `process.steps[3].index` → 03.4
 - `process.steps[3].title` → Support
 - `process.steps[3].description` → We train your team and adapt the system as needs change.
 - `process.steps[3].receive` → training, and changes when you need them.
@@ -399,20 +387,17 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 
 ## team (05)
 
-- `team.eyebrow` → 05 — Team
+- `team.eyebrow` → Team
 - `team.title` → The people you will work with.
 - `team.lead` → Here is who does what on your project.
-- `team.members.cto.index` → 05.1
 - `team.members.cto.name` → Daniel C. Masubi
 - `team.members.cto.role` → Chief Technology Officer
 - `team.members.cto.bio` → Builds the systems, from pipelines to agents, and owns your data’s security.
 - `team.members.cto.alt` → Daniel C. Masubi, Chief Technology Officer, DataHub
-- `team.members.operations.index` → 05.2
 - `team.members.operations.name` → Kanuda L. Sasi
 - `team.members.operations.role` → Head of Operations
 - `team.members.operations.bio` → Runs delivery, from scoping to support, so what was agreed is what arrives.
 - `team.members.operations.alt` → Kanuda L. Sasi, Head of Operations, DataHub
-- `team.members.marketing.index` → 05.3
 - `team.members.marketing.name` → Yohana K. Mussa
 - `team.members.marketing.role` → Head of Marketing
 - `team.members.marketing.bio` → Usually your first contact: scopes the problem you actually have and keeps you informed.
@@ -422,12 +407,11 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 
 ## faq (06)
 
-- `faq.eyebrow` → 06 — Questions
+- `faq.eyebrow` → Questions
 - `faq.title` → What people ask before they start.
 - `faq.aside` → Not answered here?
 - `faq.asideWhatsapp` → Ask us on WhatsApp
 - `faq.asideEmail` → Email us
-- `faq.indexPrefix` → Q
 - `faq.items[0].q` → What does DataHub do?
 - `faq.items[0].a` → We build dashboards, automated reports and AI agents for organisations in Tanzania.
 - `faq.items[1].q` → Where are you based?
@@ -443,7 +427,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 
 ## contact (07)
 
-- `contact.eyebrow` → 07 — Contact
+- `contact.eyebrow` → Contact
 - `contact.title` → Start with one report.
 - `contact.lead` → Tell us what you work with today and what you want instead.
 - `contact.lines.whatsapp.label` → WhatsApp
@@ -547,16 +531,16 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `servicePage.home` → Home
 - `servicePage.cta` → Start a conversation
 - `servicePage.allServices` → See all services
-- `servicePage.signals.eyebrow` → 01 — The problem
+- `servicePage.signals.eyebrow` → The problem
 - `servicePage.signals.title` → Signs you need this
-- `servicePage.deliverables.eyebrow` → 02 — Deliverables
+- `servicePage.deliverables.eyebrow` → Deliverables
 - `servicePage.deliverables.title` → What you get
-- `servicePage.sample.eyebrow` → 03 — Sample
+- `servicePage.sample.eyebrow` → Sample
 - `servicePage.sample.title` → See it in a sample
 - `servicePage.sample.lead` → Charts from our sample dashboards, with the decision each one supports.
-- `servicePage.faq.eyebrow` → 04 — Questions
+- `servicePage.faq.eyebrow` → Questions
 - `servicePage.faq.title` → Questions about {service}
-- `servicePage.others.eyebrow` → 05 — More services
+- `servicePage.others.eyebrow` → More services
 - `servicePage.others.title` → Also from DataHub
 
 ---

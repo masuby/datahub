@@ -18,11 +18,10 @@ import { HeaderShell, MobileMenu, NavLink, PrimaryLink, type MenuItem } from "./
 const SERVICE_PATHS = SERVICE_SLUGS.map((slug) => `/services/${slug}`);
 
 /**
- * The menu's seven chapters, in their old home-page order, so the numbers
- * 01–07 still match the eyebrows of the pages they open. "Your numbers"
- * (02) is the hours estimator, a part of the services page. The sample
- * dashboards are no chapter since their page became the home page's live
- * showcase (iteration-5 §I).
+ * The menu's seven entries, in their old home-page order, unnumbered (owner,
+ * 2 Nov 2026). "Your numbers" is the hours estimator, a part of the services
+ * page. The sample dashboards have no entry since their page became the home
+ * page's live showcase (iteration-5 §I).
  */
 const MENU_PATHS = [
   "/services",
@@ -73,7 +72,6 @@ export async function Header({ lang }: { lang: Locale }) {
   const menuItems: MenuItem[] = MENU_PATHS.map((path, i) => ({
     href: localePath(lang, path),
     label: t.menu.items[i] ?? path,
-    index: String(i + 1).padStart(2, "0"),
     also: path === "/services" ? SERVICE_PATHS : undefined,
   }));
 

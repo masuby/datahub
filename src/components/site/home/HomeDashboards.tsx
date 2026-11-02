@@ -22,8 +22,8 @@ import styles from "./home.module.css";
  * rising behind it and a dashboard inside that ticks along by itself — and
  * "How we build dashboards →" to the dashboards service page under it.
  *
- * It replaced the sample-dashboards page (iteration-5 §I), so its eyebrow
- * carries no chapter number. Keep id="dashboards": /dashboards redirects to
+ * It replaced the sample-dashboards page (iteration-5 §I). Keep
+ * id="dashboards": /dashboards redirects to
  * it (src/proxy.ts, MOVED) and the hero's "See a live sample ↓" jumps to it.
  *
  * The section clips sideways (overflow-x: clip) so the glow can spread past
@@ -46,7 +46,6 @@ export async function HomeDashboards({ lang }: { lang: Locale }) {
         </Reveal>
         {/* No margin under the header: the stage's own room for the glow is the gap. */}
         <SectionHeader
-          index="02"
           eyebrow={t.eyebrow}
           title={t.title}
           titleId="dashboards-title"

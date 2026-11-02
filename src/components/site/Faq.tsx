@@ -14,9 +14,8 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import styles from "./Faq.module.css";
 
 /**
- * 06 — Questions: the /faq page (`headingLevel` 1 there, where its title is
- * the page's h1). A page of its own, so the eyebrow keeps its chapter number
- * and no "06 / 07" counter.
+ * Questions: the /faq page (`headingLevel` 1 there, where its title is
+ * the page's h1). No numbers on the questions (owner, 2 Nov 2026).
  *
  * The section header centres (iteration-5 §B); the questions follow in one
  * centred reading column, left-aligned (answers are reading text), and the
@@ -36,7 +35,7 @@ export async function Faq({ lang, headingLevel = 2 }: { lang: Locale; headingLev
   return (
     <Section id="faq" labelledBy="faq-title">
       <Container>
-        <SectionHeader index="06" eyebrow={f.eyebrow} title={f.title} titleId="faq-title" headingLevel={headingLevel} />
+        <SectionHeader eyebrow={f.eyebrow} title={f.title} titleId="faq-title" headingLevel={headingLevel} />
 
         <div className="mx-auto max-w-[48rem]">
           <Reveal>
@@ -54,10 +53,7 @@ export async function Faq({ lang, headingLevel = 2 }: { lang: Locale; headingLev
                       className={`${styles.summary} flex min-h-12 cursor-pointer items-start gap-6 py-6 text-fg lg:py-7`}
                     >
                       <span className="min-w-0 flex-1">
-                        <span className="t-eyebrow block transition-colors duration-[160ms] group-open:text-accent">
-                          {f.indexPrefix} 06.{i + 1}
-                        </span>
-                        <span className="t-title mt-2 block transition-colors duration-[160ms] group-hover:text-accent">
+                        <span className="t-title block transition-colors duration-[160ms] group-hover:text-accent group-open:text-accent">
                           {item.q}
                         </span>
                       </span>

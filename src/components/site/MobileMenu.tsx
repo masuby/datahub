@@ -410,17 +410,15 @@ export function HeaderShell({ children }: { children: ReactNode }) {
 export type MenuItem = {
   href: string;
   label: string;
-  /** The chapter number, 01–07. */
-  index: string;
   /** Locale-free paths that also belong to this item (see NavLink). */
   also?: readonly string[];
 };
 
 /**
  * "Menu" text button (below 1024px) that opens a full-screen sheet: links in
- * the display face at 2rem numbered 01–07 by chapter, separated by R1, each
- * a full-row 56px target, the current page in the accent colour (number and
- * label; no underline) and announced; then the primary
+ * the display face at 2rem, unnumbered, separated by R1, each a full-row
+ * 56px target, the current page in the accent colour (no underline) and
+ * announced; then the primary
  * action, WhatsApp, DataHub's social profiles (`social`, iteration 3) and
  * the language and theme preferences (passed in as `children`).
  *
@@ -570,11 +568,8 @@ export function MobileMenu({
                   // Only acts when the link is a part of the page showing.
                   data-hash-link={it.href.includes("#") ? "" : undefined}
                   onClick={onNavigate}
-                  className="group flex min-h-14 items-baseline gap-4 py-3"
+                  className="group flex min-h-14 items-baseline py-3"
                 >
-                  <span className="t-mono w-6 shrink-0 text-subtle tnum group-data-[active=true]:text-accent">
-                    {it.index}
-                  </span>
                   <span className="font-display text-[2rem] font-medium leading-[1.15] tracking-[-0.02em] transition-colors duration-[160ms] group-hover:text-accent group-data-[active=true]:text-accent">
                     {it.label}
                   </span>

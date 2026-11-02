@@ -141,10 +141,7 @@ export default async function PrivacyPage({ params }: Props) {
                       className="pb-10 lg:pb-14"
                     >
                       <Rule variant="section" animate />
-                      <p aria-hidden="true" className="t-eyebrow mt-5 lg:mt-6">
-                        {String(i + 1).padStart(2, "0")}
-                      </p>
-                      <h2 id={headingId} className="t-title mt-2">
+                      <h2 id={headingId} className="t-title mt-5 lg:mt-6">
                         {section.title}
                       </h2>
                       <p className="t-body mt-3 text-muted">

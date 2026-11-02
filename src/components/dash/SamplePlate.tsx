@@ -14,46 +14,18 @@ export type SampleService = "dashboards" | "automation" | "ai-agents";
  * again in the React payload. It still renders into the server HTML; only
  * `ctx` (plain data) crosses over.
  *
- *   dashboards  View 1 KPI strip + Fig. 02.1 + Fig. 02.2
- *   automation  View 4 KPI strip + Fig. 02.10 + Fig. 02.11
+ *   dashboards  View 1 KPI strip + the revenue and branches figures
+ *   automation  View 4 KPI strip + the schedule and runs figures
  *   ai-agents   "What changed this week" (View 1) + the agent log (View 4)
  *
- * On the page they are renumbered within the band (Fig. 03.1, 03.2, notes
- * from 1), so they do not clash with the page's own 02.x items.
+ * Figures carry no numbers (owner, 2 Nov 2026); the read-mode notes count
+ * from 1 on the plate.
  */
-export function SamplePlate({
-  ctx: base,
-  service,
-  section,
-}: {
-  ctx: DashCtx;
-  service: SampleService;
-  /** The band's own section number ("03"): its figures read 03.1, 03.2. */
-  section: string;
-}) {
-  const v = base.t.views;
-  // [figure number in section 02, read-mode figure id] for each numbered
-  // figure on this plate, in order. The agent log carries no number.
-  const shown: [string | null, string][] =
-    service === "dashboards"
-      ? [
-          [v.overview.figures.revenue.number, "revenue"],
-          [v.overview.figures.branches.number, "branches"],
-        ]
-      : service === "automation"
-        ? [
-            [v.operations.figures.schedule.number, "schedule"],
-            [v.operations.figures.runs.number, "runs"],
-          ]
-        : [[null, "log"]];
-  const numbered = shown.flatMap(([n]) => (n ? [n] : []));
-  const ctx: DashCtx = {
-    ...base,
-    plate: {
-      numbers: Object.fromEntries(numbered.map((n, i) => [n, `${section}.${i + 1}`])),
-      figures: shown.map(([, id]) => id),
-    },
-  };
+export function SamplePlate({ ctx: base, service }: { ctx: DashCtx; service: SampleService }) {
+  // The read-mode figure ids on this plate, in order.
+  const figures =
+    service === "dashboards" ? ["revenue", "branches"] : service === "automation" ? ["schedule", "runs"] : ["log"];
+  const ctx: DashCtx = { ...base, plate: { figures } };
 
   if (service === "dashboards") {
     return (

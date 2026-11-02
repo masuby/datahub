@@ -54,8 +54,6 @@ export const dynamic = "force-dynamic";
 // (a notFound() thrown in this route would be drawn only in the browser).
 export const dynamicParams = false;
 
-/** 01 signs · 02 what you get · 03 sample · 04 questions · 05 also. */
-const TOTAL = 5;
 const SILK = PRESETS.service;
 
 /** These pages used to end with the contact form: `#contact` links shared then open /contact. */
@@ -172,18 +170,17 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
           </div>
         </section>
 
-        {/* ── 01 Signs you need this ───────────────────────────── */}
+        {/* ── Signs you need this ──────────────────────────────── */}
         <Section id="signals" labelledBy="signals-title">
           <Container>
-            <SectionHeader index="01" total={TOTAL} eyebrow={p.signals.eyebrow} title={p.signals.title} titleId="signals-title" />
+            <SectionHeader eyebrow={p.signals.eyebrow} title={p.signals.title} titleId="signals-title" />
             {/* Short lines, centred under the centred header; a fading
                 hairline between them (styles.stack). */}
             <Reveal>
               <ol className={cn(styles.stack, "mx-auto max-w-[40rem] text-center")}>
                 {service.signals.map((signal, i) => (
                   <li key={i} className="a-rise py-6 lg:py-7" style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}>
-                    <span className="t-eyebrow block">01.{i + 1}</span>
-                    <p className="t-title mt-2">{signal}</p>
+                    <p className="t-title">{signal}</p>
                   </li>
                 ))}
               </ol>
@@ -191,24 +188,17 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
           </Container>
         </Section>
 
-        {/* ── 02 What you get ──────────────────────────────────── */}
+        {/* ── What you get ─────────────────────────────────────── */}
         <Section id="deliverables" labelledBy="deliverables-title">
           <Container>
-            <SectionHeader
-              index="02"
-              total={TOTAL}
-              eyebrow={p.deliverables.eyebrow}
-              title={p.deliverables.title}
-              titleId="deliverables-title"
-            />
+            <SectionHeader eyebrow={p.deliverables.eyebrow} title={p.deliverables.title} titleId="deliverables-title" />
             {/* Four centred cards: one column on phones, two on tablets,
                 four from 1024px, divided by fading hairlines (styles.cards). */}
             <Reveal>
               <ol className={cn(styles.cards, styles.cards4)}>
                 {service.deliverables.map((d, i) => (
                   <li key={d.title} className={cn(styles.cell, styles.card, "a-rise")} style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}>
-                    <span className="t-eyebrow">02.{i + 1}</span>
-                    <h3 className="t-title mt-3 max-w-[22ch]">{d.title}</h3>
+                    <h3 className="t-title max-w-[22ch]">{d.title}</h3>
                     <p className="t-body mt-2 max-w-[32ch] text-muted">{d.desc}</p>
                   </li>
                 ))}
@@ -217,15 +207,13 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
           </Container>
         </Section>
 
-        {/* ── 03 See it in a sample (owned by the dashboards kit) ── */}
-        <SampleBand lang={lang} service={service.slug} total={TOTAL} />
+        {/* ── See it in a sample (owned by the dashboards kit) ──── */}
+        <SampleBand lang={lang} service={service.slug} />
 
-        {/* ── 04 Questions ─────────────────────────────────────── */}
+        {/* ── Questions ────────────────────────────────────────── */}
         <Section id="faq" labelledBy="faq-title">
           <Container>
             <SectionHeader
-              index="04"
-              total={TOTAL}
               eyebrow={p.faq.eyebrow}
               title={fill(p.faq.title, { service: service.navLabel })}
               titleId="faq-title"
@@ -239,12 +227,7 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
                     {i > 0 && <Rule />}
                     <details className={styles.faq}>
                       <summary className="flex items-start justify-between gap-6 py-6 lg:py-7">
-                        <span className="block">
-                          <span className="t-eyebrow block">
-                            {t.faq.indexPrefix} 04.{i + 1}
-                          </span>
-                          <span className="t-title mt-2 block">{item.q}</span>
-                        </span>
+                        <span className="t-title block">{item.q}</span>
                         <span aria-hidden="true" className={styles.plus} />
                       </summary>
                       <p className="t-body pb-7 text-muted">{item.a}</p>
@@ -257,14 +240,14 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
           </Container>
         </Section>
 
-        {/* ── 05 Also from DataHub ─────────────────────────────── */}
+        {/* ── Also from DataHub ────────────────────────────────── */}
         <Section id="more-services" labelledBy="others-title">
           <Container>
-            <SectionHeader index="05" total={TOTAL} eyebrow={p.others.eyebrow} title={p.others.title} titleId="others-title" />
+            <SectionHeader eyebrow={p.others.eyebrow} title={p.others.title} titleId="others-title" />
             <Reveal>
               <ul className={cn(styles.cards, styles.cards2)}>
                 {others.map((s, i) => (
-                  <OtherServiceCard key={s.slug} lang={lang} t={t} slug={s.slug} index={`05.${i + 1}`} delay={i * 60} />
+                  <OtherServiceCard key={s.slug} lang={lang} t={t} slug={s.slug} delay={i * 60} />
                 ))}
               </ul>
             </Reveal>
@@ -281,23 +264,21 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/service
 
 /**
  * One centred card linking to another service, like the columns on
- * /services: its 3D icon, index, title and tagline, then "Read more →". The
- * whole card is the link; the icon and "Read more" are decorative, so its
- * name is the title and tagline. The longer description stays on
- * /services, so a service page does not restate the other two in full.
- * Hover/focus: the index and title turn accent and the arrow moves 6px.
+ * /services: its 3D icon, title and tagline, then "Read more →". The whole
+ * card is the link; the icon and "Read more" are decorative, so its name is
+ * the title and tagline. The longer description stays on /services, so a
+ * service page does not restate the other two in full. Hover/focus: the
+ * title turns accent and the arrow moves 6px.
  */
 function OtherServiceCard({
   lang,
   t,
   slug,
-  index,
   delay,
 }: {
   lang: Locale;
   t: Dictionary;
   slug: ServiceSlug;
-  index: string;
   delay: number;
 }) {
   const item = t.services.items[SERVICE_ITEM_KEY[slug]];
@@ -307,10 +288,7 @@ function OtherServiceCard({
         <span aria-hidden="true" className={styles.cardIcon}>
           <ServiceIcon slug={slug} size={80} className="w-full" />
         </span>
-        <span className="t-eyebrow mt-5 transition-colors duration-[160ms] group-hover:text-accent group-focus-visible:text-accent">
-          {index}
-        </span>
-        <h3 className="t-h3 mt-3 max-w-[18ch] transition-colors duration-[160ms] group-hover:text-accent group-focus-visible:text-accent">
+        <h3 className="t-h3 mt-5 max-w-[18ch] transition-colors duration-[160ms] group-hover:text-accent group-focus-visible:text-accent">
           {bindAmpersands(item.title)}
         </h3>
         <span className="t-body mt-3 font-bold text-fg">{item.tagline}</span>

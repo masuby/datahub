@@ -12,18 +12,18 @@ import { ServiceIcon } from "./ServiceIcon";
 import styles from "./Services.module.css";
 
 /**
- * 01 — What we do: the head of /services (`headingLevel` 1 there, where its
+ * What we do: the head of /services (`headingLevel` 1 there, where its
  * title is the page's h1 and the service titles step up to h2).
  *
  * The three services as three centred columns (iteration-5 §B, §D): the
- * service's 3D icon, its index, title, tagline, description, deliverables
+ * service's 3D icon, its title, tagline, description, deliverables
  * and "Read more →", divided by vertical hairlines from 1024px and stacked
  * with a hairline between them below (layout in Services.module.css). Each
  * column is a single <a> (the whole column is the hit area) containing its
  * heading; the link's name comes from its content, so every screen reader
  * hears the tagline, description and deliverables too. The icon and the
  * "Read more" label are decorative. The section reveal comes only from
- * <Reveal>; on hover/focus the index and title turn accent, the icon's glow
+ * <Reveal>; on hover/focus the title turns accent, the icon's glow
  * lifts and the arrow moves 6px. No underlines, no threads.
  *
  * Home-page summaries come from the dictionary; deliverable labels come from
@@ -53,7 +53,6 @@ export async function Services({ lang, headingLevel = 2 }: { lang: Locale; headi
     <Section id="services" labelledBy="services-title">
       <Container>
         <SectionHeader
-          index="01"
           eyebrow={s.eyebrow}
           title={s.title}
           titleId="services-title"
@@ -72,7 +71,6 @@ export async function Services({ lang, headingLevel = 2 }: { lang: Locale; headi
                     <span aria-hidden="true" className={styles.visual}>
                       <ServiceIcon slug={slug} size={96} eager={headingLevel === 1} className={styles.icon} />
                     </span>
-                    <span className={cn("t-eyebrow", styles.index)}>{item.index}</span>
                     <ColumnHeading className={cn("t-h3", styles.title)}>{bindAmpersands(item.title)}</ColumnHeading>
                     <span className={cn("t-body font-bold text-fg", styles.tagline)}>{item.tagline}</span>
                     <span className={cn("t-body text-muted", styles.description)}>{item.description}</span>

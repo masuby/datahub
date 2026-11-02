@@ -121,19 +121,16 @@ The suggestion is shown in the target language on purpose, so these values are i
 
 ## services (01)
 
-- `services.eyebrow` → 01 — Tunachofanya
+- `services.eyebrow` → Tunachofanya
 - `services.title` → Njia tatu za kugeuza data kuwa maamuzi.
 - `services.lead` → Kila moja inaanzia kwenye kazi ambayo timu yako hufanya kwa mkono.
 - `services.readMore` → Soma zaidi
-- `services.items.dashboards.index` → 01.1
 - `services.items.dashboards.title` → Dashibodi na takwimu za biashara (BI)
 - `services.items.dashboards.tagline` → Sehemu moja ya kufanyia maamuzi
 - `services.items.dashboards.description` → Takwimu za sasa dhidi ya lengo, kwa kila tawi, idara au afisa.
-- `services.items.automation.index` → 01.2
 - `services.items.automation.title` → Otomatiki ya ripoti
 - `services.items.automation.tagline` → Kazi ya saa nyingi, kwa sekunde
 - `services.items.automation.description` → Ripoti zako za kila wiki za Excel na PowerPoint, zinajitengeneza zenyewe.
-- `services.items.aiAgents.index` → 01.3
 - `services.items.aiAgents.title` → Mawakala wa AI
 - `services.items.aiAgents.tagline` → Husoma data, huandaa hatua ijayo
 - `services.items.aiAgents.description` → Mawakala wanaofuatilia data yako, kufupisha kilichobadilika na kusubiri mtu aidhinishe.
@@ -152,7 +149,6 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.stamp` → DATA YA MFANO
 - `dash.footnote` → Majina na namba zote hapa ni za kubuni.
 - `dash.credit` → Chanzo: data ya mfano ya DataHub · TZS · {period}
-- `dash.figPrefix` → Kielelezo
 - `dash.showTable` → Tazama kama jedwali
 - `dash.read.listLabel` → Chati hii inakuambia nini
 - `dash.read.decisionPrefix` → Uamuzi:
@@ -190,14 +186,12 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.overview.kpis[2].context` → +6.1% tangu mwisho wa Juni
 - `dash.views.overview.kpis[3].label` → Uwiano wa gharama kwa mapato
 - `dash.views.overview.kpis[3].context` → Kiwango cha juu 60.0%
-- `dash.views.overview.figures.revenue.number` → 02.1
 - `dash.views.overview.figures.revenue.title` → Mapato dhidi ya lengo, kwa mwezi
 - `dash.views.overview.figures.revenue.axis` → TZS bilioni
 - `dash.views.overview.figures.revenue.seriesActual` → Mapato
 - `dash.views.overview.figures.revenue.seriesTarget` → Lengo
 - `dash.views.overview.figures.revenue.readout` → {month} · TZS bilioni {value} · {pct}% ya lengo
 - `dash.views.overview.figures.revenue.summary` → Mapato yalikuwa chini ya lengo la mwezi la TZS bilioni 2.18 hadi Septemba (TZS bilioni 2.30).
-- `dash.views.overview.figures.branches.number` → 02.2
 - `dash.views.overview.figures.branches.title` → Matawi, % ya lengo la mapato
 - `dash.views.overview.figures.branches.axis` → % ya lengo
 - `dash.views.overview.figures.branches.readout` → {branch} · {pct}% ya lengo
@@ -229,7 +223,6 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.operations.kpis[2].context` → Makadirio, dhidi ya kazi ya mkono
 - `dash.views.operations.kpis[3].label` → Mizunguko iliyoshindwa
 - `dash.views.operations.kpis[3].context` → Yote miwili ilirudiwa asubuhi ileile
-- `dash.views.operations.figures.schedule.number` → 02.10
 - `dash.views.operations.figures.schedule.title` → Ratiba ya Jumatatu
 - `dash.views.operations.figures.schedule.lanes[0]` → Ripoti
 - `dash.views.operations.figures.schedule.lanes[1]` → Tahadhari
@@ -241,7 +234,6 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 - `dash.views.operations.figures.schedule.items[4]` → 18:30 Kufunga hesabu za siku
 - `dash.views.operations.figures.schedule.timeAxis` → Saa za Afrika Mashariki
 - `dash.views.operations.figures.schedule.summary` → Kazi tano zinaendeshwa kuanzia 05:30 hadi 18:30.
-- `dash.views.operations.figures.runs.number` → 02.11
 - `dash.views.operations.figures.runs.title` → Muda wa kutengeneza, mizunguko 14 ya mwisho
 - `dash.views.operations.figures.runs.axis` → sekunde
 - `dash.views.operations.figures.runs.readout` → Mzunguko {n} · sekunde {value}
@@ -283,7 +275,7 @@ Deliverable labels under each row are read from `services.ts` (`deliverables[].t
 
 Word order differs from English: Kiswahili puts the noun before the number ("ripoti 3", "watu 2", "saa 4"). The slot order of `sentence[]` is unchanged; `{personWord}` moves into `sentence[4]` so it lands before `{people}`.
 
-- `estimator.eyebrow` → 02 — Hesabu zako
+- `estimator.eyebrow` → Hesabu zako
 - `estimator.title` → Saa za kazi zinakwenda wapi?
 - `estimator.lead` → Weka namba za ripoti moja uone inavyoigharimu timu yako.
 - `estimator.sentence[0]` → Tunaandaa ripoti␠
@@ -334,23 +326,19 @@ Word order differs from English: Kiswahili puts the noun before the number ("rip
 
 ## process (03)
 
-- `process.eyebrow` → 03 — Tunavyofanya kazi
+- `process.eyebrow` → Tunavyofanya kazi
 - `process.title` → Jinsi mradi unavyoendeshwa.
 - `process.lead` → Kila mfumo ni tofauti; njia yetu ya kuujenga haibadiliki.
 - `process.receivePrefix` → Unapokea:
-- `process.steps[0].index` → 03.1
 - `process.steps[0].title` → Kuchunguza
 - `process.steps[0].description` → Tunaelewa mtiririko wako wa kazi na kubaini kazi ya mkono.
 - `process.steps[0].receive` → takwimu muhimu, na tathmini ya wazi kama mfumo unastahili kujengwa.
-- `process.steps[1].index` → 03.2
 - `process.steps[1].title` → Kusanifu
 - `process.steps[1].description` → Tunapanga mfumo kulingana na jinsi unavyofanya kazi.
 - `process.steps[1].receive` → mpango unaouidhinisha kabla hatujaanza kujenga.
-- `process.steps[2].index` → 03.3
 - `process.steps[2].title` → Kujenga
 - `process.steps[2].description` → Tunaujenga kwa usalama, katika miundo ambayo timu yako tayari inaitumia.
 - `process.steps[2].receive` → mfumo unaofanya kazi, tayari kutumika.
-- `process.steps[3].index` → 03.4
 - `process.steps[3].title` → Kusaidia
 - `process.steps[3].description` → Tunaifundisha timu yako na kurekebisha mfumo kadri mahitaji yanavyobadilika.
 - `process.steps[3].receive` → mafunzo, na mabadiliko unapoyahitaji.
@@ -402,20 +390,17 @@ Word order differs from English: Kiswahili puts the noun before the number ("rip
 
 ## team (05)
 
-- `team.eyebrow` → 05 — Timu
+- `team.eyebrow` → Timu
 - `team.title` → Watu utakaofanya nao kazi.
 - `team.lead` → Hivi ndivyo tunavyogawana kazi kwenye mradi wako.
-- `team.members.cto.index` → 05.1
 - `team.members.cto.name` → Daniel C. Masubi
 - `team.members.cto.role` → Afisa Mkuu wa Teknolojia
 - `team.members.cto.bio` → Anajenga mifumo, kuanzia mitiririko ya data hadi mawakala, na anawajibika kwa usalama wa data yako.
 - `team.members.cto.alt` → Daniel C. Masubi, Afisa Mkuu wa Teknolojia, DataHub
-- `team.members.operations.index` → 05.2
 - `team.members.operations.name` → Kanuda L. Sasi
 - `team.members.operations.role` → Mkuu wa Uendeshaji
 - `team.members.operations.bio` → Anasimamia utekelezaji, kuanzia wigo wa kazi hadi msaada, ili kilichokubaliwa ndicho kifike.
 - `team.members.operations.alt` → Kanuda L. Sasi, Mkuu wa Uendeshaji, DataHub
-- `team.members.marketing.index` → 05.3
 - `team.members.marketing.name` → Yohana K. Mussa
 - `team.members.marketing.role` → Mkuu wa Masoko
 - `team.members.marketing.bio` → Mara nyingi ndiye utakayezungumza naye kwanza: anabainisha tatizo lako halisi na anakujulisha maendeleo.
@@ -425,12 +410,11 @@ Word order differs from English: Kiswahili puts the noun before the number ("rip
 
 ## faq (06)
 
-- `faq.eyebrow` → 06 — Maswali
+- `faq.eyebrow` → Maswali
 - `faq.title` → Maswali ambayo watu huuliza kabla ya kuanza.
 - `faq.aside` → Hujapata jibu hapa?
 - `faq.asideWhatsapp` → Tuulize kupitia WhatsApp
 - `faq.asideEmail` → Tutumie barua pepe
-- `faq.indexPrefix` → S
 - `faq.items[0].q` → DataHub inafanya nini?
 - `faq.items[0].a` → Tunajenga dashibodi, ripoti za kiotomatiki na mawakala wa AI kwa taasisi za Tanzania.
 - `faq.items[1].q` → Mnapatikana wapi?
@@ -446,7 +430,7 @@ Word order differs from English: Kiswahili puts the noun before the number ("rip
 
 ## contact (07)
 
-- `contact.eyebrow` → 07 — Mawasiliano
+- `contact.eyebrow` → Mawasiliano
 - `contact.title` → Anza na ripoti moja.
 - `contact.lead` → Tueleze unachotumia sasa na unachotaka badala yake.
 - `contact.lines.whatsapp.label` → WhatsApp
@@ -550,16 +534,16 @@ Word order differs from English: Kiswahili puts the noun before the number ("rip
 - `servicePage.home` → Mwanzo
 - `servicePage.cta` → Anza mazungumzo
 - `servicePage.allServices` → Tazama huduma zote
-- `servicePage.signals.eyebrow` → 01 — Tatizo
+- `servicePage.signals.eyebrow` → Tatizo
 - `servicePage.signals.title` → Dalili kwamba unaihitaji
-- `servicePage.deliverables.eyebrow` → 02 — Matokeo
+- `servicePage.deliverables.eyebrow` → Matokeo
 - `servicePage.deliverables.title` → Utakachopata
-- `servicePage.sample.eyebrow` → 03 — Mfano
+- `servicePage.sample.eyebrow` → Mfano
 - `servicePage.sample.title` → Ione kwenye mfano
 - `servicePage.sample.lead` → Chati kutoka dashibodi zetu za mfano, na uamuzi ambao kila moja inausaidia.
-- `servicePage.faq.eyebrow` → 04 — Maswali
+- `servicePage.faq.eyebrow` → Maswali
 - `servicePage.faq.title` → Maswali kuhusu {service}
-- `servicePage.others.eyebrow` → 05 — Huduma zaidi
+- `servicePage.others.eyebrow` → Huduma zaidi
 - `servicePage.others.title` → Pia kutoka DataHub
 
 ---

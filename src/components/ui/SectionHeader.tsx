@@ -5,29 +5,22 @@ import { cn } from "@/lib/utils";
 /**
  * Section header anatomy (iteration-5 §B), centred at every width:
  *
- *                    01 / 05 — SIGNS YOU NEED THIS
+ *                         SIGNS YOU NEED THIS
  *                  H2 (or the page's H1), centred
  *            lead, centred, at most ~40rem (about 65 characters)
  *
  * No rule above it (iteration-5 §A: the R2 with its short thread is gone);
  * the space between sections does the separating. The eyebrow is a <p> and
- * the heading carries the id the section is labelled by.
+ * the heading carries the id the section is labelled by. No chapter numbers
+ * or "01 / 05" counters anywhere (owner, 2 Nov 2026): the eyebrow is just
+ * its words.
  *
- * The "/ 05" total shows only when `total` is given: on a page with a
- * numbered run of sections (a service page). Centred, a counter of its own
- * would repeat the eyebrow's number on a second line, so the total joins the
- * eyebrow instead — "01 / 05 — Signs you need this" — where the number
- * already is. It is decoration, hidden from screen readers as before: they
- * hear the eyebrow as written. A section that is a page of its own
- * (/process, /team…) keeps its chapter number in the eyebrow and shows no
- * total. With `headingLevel` 1 the title is that page's one h1, set in the
+ * With `headingLevel` 1 the title is that page's one h1, set in the
  * page-title size, and marks where the mobile action rail may slide in.
  * `compact` (the home page's teasers) closes up the space under the title
  * and before the lead on phones; from 640px it is the same as the default.
  */
 export function SectionHeader({
-  index,
-  total,
   eyebrow,
   title,
   titleId,
@@ -37,11 +30,7 @@ export function SectionHeader({
   children,
   className,
 }: {
-  /** "02" */
-  index: string;
-  /** Sections on the page; omit for no "/ 05" total. */
-  total?: number;
-  /** Full eyebrow from the dictionary, already numbered: "03 — How we work". */
+  /** The eyebrow from the dictionary: "How we work". */
   eyebrow: string;
   title: ReactNode;
   titleId: string;
@@ -54,10 +43,6 @@ export function SectionHeader({
   children?: ReactNode;
   className?: string;
 }) {
-  const totalLabel = total ? ` / ${String(total).padStart(2, "0")}` : null;
-  // The total sits right after the eyebrow's own number; an eyebrow written
-  // without it at the front ends with the whole counter instead.
-  const numbered = eyebrow.startsWith(index);
   const Heading = headingLevel === 1 ? "h1" : "h2";
 
   return (
@@ -69,18 +54,7 @@ export function SectionHeader({
       )}
     >
       <p className="t-eyebrow a-rise" style={{ animationDelay: "120ms" }}>
-        {totalLabel && numbered ? (
-          <>
-            {index}
-            <span aria-hidden="true">{totalLabel}</span>
-            {eyebrow.slice(index.length)}
-          </>
-        ) : (
-          <>
-            {eyebrow}
-            {totalLabel && <span aria-hidden="true">{` · ${index}${totalLabel}`}</span>}
-          </>
-        )}
+        {eyebrow}
       </p>
       <Heading
         id={titleId}

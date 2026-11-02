@@ -1,8 +1,8 @@
 /*
- * 03 — How we work. Centred steps, their nodes and the track that joins them.
+ * How we work. Centred steps, their nodes and the track that joins them.
  *
  * Below 1024px the steps stack, centred: each step's node sits above its
- * index, a fading hairline runs between steps, and there is no track. From
+ * title, a fading hairline runs between steps, and there is no track. From
  * 1024px the four steps stand side by side (cols 1–3, 4–6, 7–9, 10–12); the
  * track runs through their nodes, from the centre of the first step to the
  * centre of the last, and a fading hairline divides the steps below it.

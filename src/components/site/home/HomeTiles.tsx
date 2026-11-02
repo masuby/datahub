@@ -29,8 +29,6 @@ export function HomeOpener({ id, children }: { id?: string; children: ReactNode 
 export type Tile = {
   key: string;
   href: string;
-  /** "01.1" (the services); none for the reasons. */
-  index?: string;
   title: string;
   /** The one line under the title. */
   line: string;
@@ -102,11 +100,11 @@ function TitleWithArrow({ title }: { title: string }) {
  * title wraps; on phones stacked, with space between them (layout and
  * states in home.module.css). Each tile is one link — the whole tile is the
  * hit area — holding its <h3>, so the link's name is the title and the
- * line. The pictures, the index (01.1–01.3 for the services, shown from
- * 640px) and the arrow are decorative and hidden from it, so the name is
- * the same at every width.
+ * line. The pictures and the arrow are decorative and hidden from it, so
+ * the name is the same at every width. No numbers on the tiles (owner,
+ * 2 Nov 2026).
  *
- * `ordered` for a numbered sequence (the services, 01.1–01.3): an <ol>.
+ * `ordered` for a sequence (the services): an <ol>.
  *
  * Pictures: see TileImage. Icons are 72px on phones, 88px on tablets and
  * 104px from 1024px (the 2x candidates, 256px, stay sharp at all three);
@@ -130,11 +128,6 @@ export function HomeTiles({ tiles, ordered = false }: { tiles: readonly Tile[]; 
                 tile.icon && <TileImage src={tile.icon} narrow={72} wide={104} className={styles.icon} />
               )}
             </span>
-            {tile.index && (
-              <span aria-hidden="true" className={cn("t-eyebrow", styles.index)}>
-                {tile.index}
-              </span>
-            )}
             <h3 className={cn("t-title", styles.title)}>
               <TitleWithArrow title={tile.title} />
             </h3>

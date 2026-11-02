@@ -114,25 +114,22 @@ const en = {
     "ctaSecondary": "See a live sample"
   },
   "services": {
-    "eyebrow": "01 — What we do",
+    "eyebrow": "What we do",
     "title": "Three ways we turn data into decisions.",
     "lead": "Each starts from work your team already does by hand.",
     "readMore": "Read more",
     "items": {
       "dashboards": {
-        "index": "01.1",
         "title": "Dashboards & business intelligence",
         "tagline": "One place your team decides from",
         "description": "Current figures against target, by branch, department or officer."
       },
       "automation": {
-        "index": "01.2",
         "title": "Reporting automation",
         "tagline": "Hours of manual work, done in seconds",
         "description": "Your weekly Excel and PowerPoint reports, generated for you."
       },
       "aiAgents": {
-        "index": "01.3",
         "title": "AI agents",
         "tagline": "Reads your data, drafts the next step",
         "description": "Agents that watch your data, summarise what changed and wait for a person to approve."
@@ -146,7 +143,6 @@ const en = {
     "stamp": "SAMPLE DATA",
     "footnote": "Every name and number here is invented.",
     "credit": "Source: DataHub sample data · TZS · {period}",
-    "figPrefix": "Fig.",
     "showTable": "View as table",
     "read": {
       "listLabel": "What this chart tells you",
@@ -203,7 +199,6 @@ const en = {
         ],
         "figures": {
           "revenue": {
-            "number": "02.1",
             "title": "Revenue against target, by month",
             "axis": "TZS bn",
             "seriesActual": "Revenue",
@@ -212,7 +207,6 @@ const en = {
             "summary": "Revenue was below the TZS 2.18 bn monthly target until September (TZS 2.30 bn)."
           },
           "branches": {
-            "number": "02.2",
             "title": "Branches, % of revenue target",
             "axis": "% of target",
             "readout": "{branch} · {pct}% of target",
@@ -267,7 +261,6 @@ const en = {
         ],
         "figures": {
           "schedule": {
-            "number": "02.10",
             "title": "Monday schedule",
             "lanes": [
               "Reports",
@@ -285,7 +278,6 @@ const en = {
             "summary": "Five jobs run from 05:30 to 18:30."
           },
           "runs": {
-            "number": "02.11",
             "title": "Generation time, last 14 runs",
             "axis": "seconds",
             "readout": "Run {n} · {value} s",
@@ -348,7 +340,7 @@ const en = {
     }
   },
   "estimator": {
-    "eyebrow": "02 — Your numbers",
+    "eyebrow": "Your numbers",
     "title": "Where do the hours go?",
     "lead": "Enter one report’s numbers to see what it costs your team.",
     "sentence": [
@@ -420,31 +412,27 @@ const en = {
     }
   },
   "process": {
-    "eyebrow": "03 — How we work",
+    "eyebrow": "How we work",
     "title": "How a project runs.",
     "lead": "Every system differs; the way we build it does not.",
     "receivePrefix": "You receive:",
     "steps": [
       {
-        "index": "03.1",
         "title": "Discover",
         "description": "We learn your workflow and find the manual work.",
         "receive": "the figures that matter, and an honest view on whether to build."
       },
       {
-        "index": "03.2",
         "title": "Design",
         "description": "We plan the system around how you work.",
         "receive": "a plan you approve before we build."
       },
       {
-        "index": "03.3",
         "title": "Build",
         "description": "We build it securely, in formats your team already uses.",
         "receive": "a working system, ready to use."
       },
       {
-        "index": "03.4",
         "title": "Support",
         "description": "We train your team and adapt the system as needs change.",
         "receive": "training, and changes when you need them."
@@ -526,26 +514,23 @@ const en = {
     }
   },
   "team": {
-    "eyebrow": "05 — Team",
+    "eyebrow": "Team",
     "title": "The people you will work with.",
     "lead": "Here is who does what on your project.",
     "members": {
       "cto": {
-        "index": "05.1",
         "name": "Daniel C. Masubi",
         "role": "Chief Technology Officer",
         "bio": "Builds the systems, from pipelines to agents, and owns your data’s security.",
         "alt": "Daniel C. Masubi, Chief Technology Officer, DataHub"
       },
       "operations": {
-        "index": "05.2",
         "name": "Kanuda L. Sasi",
         "role": "Head of Operations",
         "bio": "Runs delivery, from scoping to support, so what was agreed is what arrives.",
         "alt": "Kanuda L. Sasi, Head of Operations, DataHub"
       },
       "marketing": {
-        "index": "05.3",
         "name": "Yohana K. Mussa",
         "role": "Head of Marketing",
         "bio": "Usually your first contact: scopes the problem you actually have and keeps you informed.",
@@ -554,12 +539,11 @@ const en = {
     }
   },
   "faq": {
-    "eyebrow": "06 — Questions",
+    "eyebrow": "Questions",
     "title": "What people ask before they start.",
     "aside": "Not answered here?",
     "asideWhatsapp": "Ask us on WhatsApp",
     "asideEmail": "Email us",
-    "indexPrefix": "Q",
     "items": [
       {
         "q": "What does DataHub do?",
@@ -584,7 +568,7 @@ const en = {
     ]
   },
   "contact": {
-    "eyebrow": "07 — Contact",
+    "eyebrow": "Contact",
     "title": "Start with one report.",
     "lead": "Tell us what you work with today and what you want instead.",
     "lines": {
@@ -737,24 +721,24 @@ const en = {
     "cta": "Start a conversation",
     "allServices": "See all services",
     "signals": {
-      "eyebrow": "01 — The problem",
+      "eyebrow": "The problem",
       "title": "Signs you need this"
     },
     "deliverables": {
-      "eyebrow": "02 — Deliverables",
+      "eyebrow": "Deliverables",
       "title": "What you get"
     },
     "sample": {
-      "eyebrow": "03 — Sample",
+      "eyebrow": "Sample",
       "title": "See it in a sample",
       "lead": "Charts from our sample dashboards, with the decision each one supports."
     },
     "faq": {
-      "eyebrow": "04 — Questions",
+      "eyebrow": "Questions",
       "title": "Questions about {service}"
     },
     "others": {
-      "eyebrow": "05 — More services",
+      "eyebrow": "More services",
       "title": "Also from DataHub"
     }
   },

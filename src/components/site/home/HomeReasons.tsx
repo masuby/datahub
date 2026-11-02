@@ -17,9 +17,7 @@ const REASONS = [
 /**
  * Home · three short reasons in one row, each a link to the page that backs
  * it up: a clear process → /process, security first → /security, a team in
- * Dar es Salaam → /team. No index: the pages' chapter numbers (03–05) would
- * follow 01 with no 02 on this page (02 is the estimator on /services), and
- * the showcase between them carries none either.
+ * Dar es Salaam → /team.
  *
  * The same centred tiles as "What we do" (iteration-5 §B, §D): the owner's
  * notepad for the process, the shield for security and, for the team, the

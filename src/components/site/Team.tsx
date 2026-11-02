@@ -34,7 +34,6 @@ export async function Team({ lang, headingLevel = 2 }: { lang: Locale; headingLe
     <Section id="team" labelledBy="team-title">
       <Container>
         <SectionHeader
-          index="05"
           eyebrow={t.eyebrow}
           title={t.title}
           titleId="team-title"
@@ -85,8 +84,7 @@ export async function Team({ lang, headingLevel = 2 }: { lang: Locale; headingLe
                     </div>
 
                     <div className={styles.head}>
-                      <p className="t-eyebrow">{m.index}</p>
-                      <NameHeading id={nameId} className="t-title mt-3 text-fg">
+                      <NameHeading id={nameId} className="t-title text-fg">
                         {m.name}
                       </NameHeading>
                       {/* Sentence case .t-small: roles run past three words in

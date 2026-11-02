@@ -8,13 +8,11 @@
   nothing runs across and nothing closes into a box). The tiles have no gap
   of their own, so the dividers sit at exactly one and two thirds of the
   container and each tile is centred in its third. The tiles share their
-  rows (subgrid, as on /services): picture, index, title and line line up
-  across the three, so a title that wraps to two lines does not push its
-  own line below its neighbours'. The reasons have no index: their title
-  sits a little further under the picture instead.
+  rows (subgrid, as on /services): picture, title and line line up across
+  the three, so a title that wraps to two lines does not push its own line
+  below its neighbours'. No numbers on any tile (owner, 2 Nov 2026).
   Phones (<640): the tiles stack, still centred, with space between them and
-  no rules; the index is left out and the pictures are smaller, so the rows
-  stay short.
+  no rules; the pictures are smaller, so the rows stay short.
 
   Each tile carries one of the owner's 3D icons (src/assets/icons, their
   backgrounds removed) or, for the team, the three portraits as overlapping
@@ -120,9 +118,6 @@
   margin-left: -0.75rem;
 }
 
-.index {
-  display: none;
-}
 .title {
   margin-top: 0.5rem;
   transition: color var(--dur-ui) var(--ease-silk);
@@ -208,13 +203,12 @@
 @media (min-width: 640px) {
   .tiles {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    /* picture · index · title · line (a list without indices leaves the
-       last row empty) */
-    grid-template-rows: repeat(4, auto);
+    /* picture · title · line */
+    grid-template-rows: repeat(3, auto);
     row-gap: 0;
   }
   .tile {
-    grid-row: span 4;
+    grid-row: span 3;
     display: grid;
     grid-template-rows: subgrid;
   }
@@ -246,7 +240,6 @@
     justify-items: center;
     padding: 0.75rem clamp(0.75rem, 0.1rem + 1.6vw, 2rem) 0.5rem;
   }
-  /* No index between them (the reasons). */
   .visual + .title {
     margin-top: 1.25rem;
   }
@@ -254,10 +247,6 @@
   .visual {
     width: 5.5rem;
     height: 5.5rem;
-  }
-  .index {
-    display: block;
-    margin-top: 1.25rem;
   }
   .line {
     margin-top: 0.5rem;

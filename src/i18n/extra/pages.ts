@@ -68,7 +68,7 @@ export const pagesExtra = defineDict({
       },
     },
     security: {
-      eyebrow: "04 — Security",
+      eyebrow: "Security",
     },
   },
   sw: {
@@ -127,7 +127,7 @@ export const pagesExtra = defineDict({
       },
     },
     security: {
-      eyebrow: "04 — Usalama",
+      eyebrow: "Usalama",
     },
   },
 });

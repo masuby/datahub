@@ -46,7 +46,6 @@ export function RevenueFigure({ ctx }: { ctx: DashCtx }) {
     <Figure
       ctx={ctx}
       id={id}
-      number={f.number}
       title={f.title}
       summary={f.summary}
       creditPeriod={v.creditPeriod}
@@ -92,7 +91,6 @@ export function BranchesFigure({ ctx }: { ctx: DashCtx }) {
     <Figure
       ctx={ctx}
       id={id}
-      number={f.number}
       title={f.title}
       summary={f.summary}
       creditPeriod={v.creditPeriod}
