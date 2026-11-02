@@ -233,6 +233,15 @@ const STATUS: Poster[] = [
     headline: "Not theory. Working systems.",
     sub: "Reporting platforms, automated data pipelines, multi-agency bulletins.",
   },
+  {
+    kind: "status",
+    slug: "15-one-person-knows",
+    variant: "contrast",
+    contrast: { bad: "Only one person understands it", good: "Anyone on the team can open it" },
+    eyebrow: "HANDOVER RISK",
+    headline: "What happens when they leave?",
+    sub: "A spreadsheet only one person understands is not a system. It is a risk.",
+  },
 ];
 
 export const POSTERS: Poster[] = [...POSTS, ...STATUS];
