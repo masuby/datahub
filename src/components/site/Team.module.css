@@ -34,13 +34,6 @@
   --glow: color-mix(in srgb, var(--sky) 18%, transparent);
   --glow-low: color-mix(in srgb, var(--sky) 16%, transparent);
 }
-/* No-JS fallback, mirrors globals.css (ThemeScript sets .light/.dark when JS runs). */
-@media (prefers-color-scheme: dark) {
-  :global(:root:not(.light):not(.dark)) .frame {
-    --glow: color-mix(in srgb, var(--sky) 18%, transparent);
-    --glow-low: color-mix(in srgb, var(--sky) 16%, transparent);
-  }
-}
 
 /* ── Member ─────────────────────────────────────────────────────────────── */
 .member {

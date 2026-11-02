@@ -39,17 +39,13 @@ const MENU_PATHS = [
  * state, current-page marking, theme and language controls and the mobile
  * menu are small client islands.
  *
- *   ≥1280  lockup · Services Process Security Team FAQ · ig fb tt in | EN SW ◐ [Start a conversation]
  *   ≥1024  lockup · Services Process Security Team FAQ · EN SW ◐ [Start a conversation]
- *   ≥640   lockup · ig fb tt in | EN SW ◐ Menu
- *   <640   lockup · EN SW ◐ Menu (the social icons are in the menu, and the footer)
+ *   <1024  lockup · EN SW ◐ Menu
  *
- * "ig fb tt in" is DataHub's four social profiles (iteration-3 §A), in
- * their brand colours; a hairline separates them from the language and
- * theme controls. From 1024 to 1279px, where the header is fullest and
- * there is no Menu button, every page keeps its link and the social icons
- * give way (they are in the footer and, below 1024px, in the menu); the
- * spacing also tightens a little so everything fits inside the gutters.
+ * No social icons in the header (owner, 2 Nov 2026): they are in the
+ * footer's Contact column and the mobile menu. From 1024 to 1279px, where
+ * the header is fullest and there is no Menu button, the spacing tightens a
+ * little so every page link fits inside the gutters.
  *
  * Every item is a page; the one showing carries aria-current="page" and
  * sits in a sky liquid-glass pill with a navy label (a service page lights
@@ -123,8 +119,6 @@ export async function Header({ lang }: { lang: Locale }) {
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-0 min-[360px]:gap-1 sm:gap-2 lg:ml-0 xl:gap-3">
-          <SocialLinks lang={lang} size="header" className="hidden sm:flex lg:hidden xl:flex" />
-          <span aria-hidden="true" className="mr-1 hidden h-5 w-px bg-rule sm:block lg:mr-0 lg:hidden xl:block" />
           <LangSwitch lang={lang} labels={t.lang} variant="short" />
           <ThemeToggle labels={t.theme.toggle} />
           <PrimaryLink href={contact} size="compact" className="hidden lg:inline-flex">

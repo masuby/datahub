@@ -4,8 +4,8 @@ import { INSTAGRAM_GRADIENT_ID, SOCIAL_GLYPHS, socialRef } from "./social-glyphs
 
 /**
  * The social networks' glyphs and Instagram's gradient, once per page, for
- * every <SocialLinks> icon to draw with <use> — the header's, the footer's
- * and the mobile menu's would otherwise each carry the ~3 KB of path data,
+ * every <SocialLinks> icon to draw with <use> — the footer's and the
+ * mobile menu's would otherwise each carry the ~3 KB of path data,
  * twice for server components (HTML and React payload). A client component,
  * like MarkSprite, so the paths travel in a cached script chunk instead.
  *

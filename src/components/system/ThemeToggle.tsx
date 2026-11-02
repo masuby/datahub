@@ -10,10 +10,10 @@ import { cn } from "@/lib/utils";
  * Theme store, shared by the header ThemeToggle and the footer/menu
  * ThemeSettings so the two can never disagree.
  *
- * localStorage["theme"] is "light" | "dark"; absent means "follow the system"
- * (the same contract ThemeScript reads before first paint). The resolved theme
- * lives on <html> as BOTH `.dark` and `.light` so the no-JS media-query
- * fallback in globals.css can never fight an explicit choice.
+ * localStorage["theme"] is "dark" | "system"; absent means light, the site's
+ * default whatever the device prefers (owner, 2 Nov 2026) — the same
+ * contract ThemeScript reads before first paint. The resolved theme lives on
+ * <html> as BOTH `.dark` and `.light`.
  */
 
 export type ThemePref = "system" | "light" | "dark";
@@ -30,9 +30,9 @@ const REVEAL_MS = 450;
 function readPref(): ThemePref {
   try {
     const v = localStorage.getItem(THEME_STORAGE_KEY);
-    return v === "light" || v === "dark" ? v : "system";
+    return v === "dark" || v === "system" ? v : "light";
   } catch {
-    return "system";
+    return "light";
   }
 }
 
@@ -57,9 +57,9 @@ function subscribe(onChange: () => void) {
   };
 }
 
-/** The stored preference ("system" on the server and when storage is blocked). */
+/** The stored preference ("light", the default, on the server and when storage is blocked). */
 export function useThemePref(): ThemePref {
-  return useSyncExternalStore(subscribe, readPref, () => "system" as ThemePref);
+  return useSyncExternalStore(subscribe, readPref, () => "light" as ThemePref);
 }
 
 /** The theme actually on <html> right now. */
@@ -68,24 +68,24 @@ export function useResolvedTheme(): Resolved {
 }
 
 /**
- * Keeps the browser chrome colour in step. The layout ships two
- * `<meta name="theme-color" media=…>` tags for first paint; an explicit
- * choice points both at the current --bg token, "system" restores them.
+ * Keeps the browser chrome colour in step. The layout ships the light
+ * `<meta name="theme-color">` for first paint (light is the default); this
+ * points it at the --bg token of whatever theme is showing.
  */
-function syncThemeColor(pref: ThemePref) {
+function syncThemeColor() {
   const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
   document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
     if (meta.dataset.dhDefault === undefined) meta.dataset.dhDefault = meta.content;
-    meta.content = pref === "system" || !bg ? meta.dataset.dhDefault : bg;
+    meta.content = bg || meta.dataset.dhDefault;
   });
 }
 
-function paint(theme: Resolved, pref: ThemePref) {
+function paint(theme: Resolved) {
   const root = document.documentElement;
   root.classList.toggle("dark", theme === "dark");
   root.classList.toggle("light", theme === "light");
   root.style.colorScheme = theme;
-  syncThemeColor(pref);
+  syncThemeColor();
   window.dispatchEvent(new Event(CHANGE_EVENT));
 }
 
@@ -113,7 +113,7 @@ type ViewTransitionLike = { ready: Promise<void>; finished: Promise<void> };
  */
 export function setTheme(pref: ThemePref, opts: { animate?: boolean; origin?: { x: number; y: number } } = {}) {
   try {
-    if (pref === "system") localStorage.removeItem(THEME_STORAGE_KEY);
+    if (pref === "light") localStorage.removeItem(THEME_STORAGE_KEY);
     else localStorage.setItem(THEME_STORAGE_KEY, pref);
   } catch {
     /* storage blocked: the choice lasts for this page view only */
@@ -127,7 +127,7 @@ export function setTheme(pref: ThemePref, opts: { animate?: boolean; origin?: { 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (next === readResolved() || !opts.animate || reduced || typeof doc.startViewTransition !== "function") {
-    paint(next, pref);
+    paint(next);
     return;
   }
 
@@ -142,10 +142,10 @@ export function setTheme(pref: ThemePref, opts: { animate?: boolean; origin?: { 
 
   let vt: ViewTransitionLike;
   try {
-    vt = doc.startViewTransition(() => paint(next, pref));
+    vt = doc.startViewTransition(() => paint(next));
   } catch {
     done();
-    paint(next, pref);
+    paint(next);
     return;
   }
 
@@ -174,15 +174,15 @@ export function setTheme(pref: ThemePref, opts: { animate?: boolean; origin?: { 
  */
 export function useThemeSync() {
   useEffect(() => {
-    // A stored choice that differs from the OS (applied by ThemeScript before
-    // first paint) must also reach the browser chrome on load, not only on
-    // the next toggle. Idempotent, so several mounted controls are harmless.
-    syncThemeColor(readPref());
+    // The theme ThemeScript applied before first paint (dark, or the
+    // device's under "system") must also reach the browser chrome on load,
+    // not only on the next toggle. Idempotent, so several mounted controls
+    // are harmless.
+    syncThemeColor();
     const mq = window.matchMedia(DARK_MQ);
     const follow = () => {
-      const pref = readPref();
-      const want = resolve(pref);
-      if (want !== readResolved()) paint(want, pref);
+      const want = resolve(readPref());
+      if (want !== readResolved()) paint(want);
     };
     const onStorage = (e: StorageEvent) => {
       if (e.key === null || e.key === THEME_STORAGE_KEY) follow();
@@ -229,12 +229,9 @@ export function ThemeToggle({
       type="button"
       aria-label={dark ? labels.toLight : labels.toDark}
       onClick={() => {
-        // Choosing the theme the device itself uses means "follow the device"
-        // again: with the footer's preferences gone, this toggle is the only
-        // way back to System, so it never pins a choice the OS already makes.
-        const next = dark ? "light" : "dark";
-        const os = window.matchMedia(DARK_MQ).matches ? "dark" : "light";
-        setTheme(next === os ? "system" : next, { animate: motionAllowed, origin: centreOf(ref.current) });
+        // Light is the default and is stored as no choice at all; dark is an
+        // explicit choice. "System" lives in the mobile menu's settings.
+        setTheme(dark ? "light" : "dark", { animate: motionAllowed, origin: centreOf(ref.current) });
       }}
       className={cn(glassClasses.navRound, "inline-grid size-11 shrink-0 place-items-center", className)}
     >

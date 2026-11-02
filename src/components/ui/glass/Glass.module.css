@@ -537,16 +537,6 @@ a:hover > .teal {
   --n-sky-shadow: 0 0 0 0.5px rgb(104 212 251 / 0.35), 0 0 16px -3px rgb(104 212 251 / 0.5),
     0 8px 18px -10px rgb(0 0 0 / 0.8);
 }
-/* No-JS dark (globals.css's fallback): the same values. */
-@media (prefers-color-scheme: dark) {
-  :global(:root:not(.light):not(.dark)) .navGlass {
-    --n-clear-fill: linear-gradient(180deg, rgb(255 255 255 / 0.11), rgb(255 255 255 / 0.04));
-    --n-clear-edge: inset 0 0 0 1px rgb(255 255 255 / 0.1), inset 0 1px 0 rgb(255 255 255 / 0.16);
-    --n-clear-shadow: 0 6px 14px -8px rgb(0 0 0 / 0.7);
-    --n-sky-shadow: 0 0 0 0.5px rgb(104 212 251 / 0.35), 0 0 16px -3px rgb(104 212 251 / 0.5),
-      0 8px 18px -10px rgb(0 0 0 / 0.8);
-  }
-}
 
 /* The clear glass: a frosted white pill on the light page, a breath of
    light on the dark one. .navRound (the theme toggle) draws it as a circle

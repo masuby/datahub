@@ -47,15 +47,6 @@
   --icon-glow-on: drop-shadow(0 0.25rem 1.5rem rgb(104 212 251 / 0.42));
   --avatar-bg: color-mix(in srgb, var(--royal) 22%, var(--bg-sunk));
 }
-/* No-JS fallback, mirrors globals.css (ThemeScript sets .light/.dark when JS runs). */
-@media (prefers-color-scheme: dark) {
-  :global(:root:not(.light):not(.dark)) .tiles,
-  :global(:root:not(.light):not(.dark)) .visual {
-    --icon-glow: drop-shadow(0 0.25rem 1rem rgb(104 212 251 / 0.24));
-    --icon-glow-on: drop-shadow(0 0.25rem 1.5rem rgb(104 212 251 / 0.42));
-    --avatar-bg: color-mix(in srgb, var(--royal) 22%, var(--bg-sunk));
-  }
-}
 
 /* ── Tiles ─────────────────────────────────────────────────────────────── */
 /* No margin here: the opener-to-tiles space is a utility on the list. */

@@ -97,36 +97,6 @@
   --sc-up-bg: rgb(104 212 251 / 0.12);
   --sc-live: var(--sky);
 }
-/* No-JS fallback, mirrors globals.css (ThemeScript sets .light/.dark when JS runs). */
-@media (prefers-color-scheme: dark) {
-  :global(:root:not(.light):not(.dark)) .stage {
-    --sc-glow-core: rgb(214 243 255 / 0.85);
-    --sc-glow-mid: rgb(3 107 251 / 0.5);
-    --sc-glow-rim: rgb(98 76 245 / 0.22);
-    --sc-star: #e6f8ff;
-    --sc-bezel: linear-gradient(180deg, #1c2c55, #0b1636 55%, #081129);
-    --sc-rim: rgb(148 180 255 / 0.16);
-    --sc-rim-light: rgb(222 246 255 / 0.95);
-    --sc-rim-glow: rgb(104 212 251 / 0.6);
-    --sc-shadow: 0 2.5rem 7rem -1.5rem rgb(3 107 251 / 0.38), 0 1.5rem 3rem -1rem rgb(0 0 0 / 0.65);
-    --sc-screen: #050d24;
-    --sc-panel: #0a1533;
-    --sc-edge: #16244a;
-    --sc-dots: #2a3b66;
-    --sc-grid: rgb(148 180 255 / 0.09);
-    --sc-line: var(--sky);
-    --sc-area: rgb(104 212 251 / 0.3);
-    --sc-bar: linear-gradient(to top, #0a4db8, var(--royal));
-    --sc-bar-top: linear-gradient(to top, var(--royal), var(--sky));
-    --sc-track: rgb(104 212 251 / 0.05);
-    --sc-c1: #3d8bff;
-    --sc-c2: var(--sky);
-    --sc-c3: #8a7dff;
-    --sc-up: var(--sky);
-    --sc-up-bg: rgb(104 212 251 / 0.12);
-    --sc-live: var(--sky);
-  }
-}
 
 /* ── The stage: sky, glow, stars ───────────────────────────────────────── */
 .stage {

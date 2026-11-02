@@ -7,22 +7,17 @@ import { cn } from "@/lib/utils";
 import { BRAND_GLYPH_VIEWBOX, INSTAGRAM_GRADIENT_ID, socialRef } from "./social-glyphs";
 import styles from "./SocialLinks.module.css";
 
-/**
- * Hit area and glyph size: the header's compact row (not shown from 1024 to
- * 1279px, where the header is fullest: Header.tsx), the footer's, the mobile
- * menu's.
- */
+/** Hit area and glyph size: the footer's row, the mobile menu's. */
 const SIZES = {
-  header: { box: "size-9", glyph: "size-[18px]" },
   footer: { box: "size-11", glyph: "size-[22px]" },
   menu: { box: "size-12", glyph: "size-6" },
 } as const;
 
 /**
  * DataHub's four social profiles — Instagram, Facebook, TikTok, LinkedIn —
- * as their brand marks in their own colours (iteration-3 §A): in the header,
- * the footer and the mobile menu. The marks are logos, so the no-box law
- * does not apply to them.
+ * as their brand marks in their own colours (iteration-3 §A): in the
+ * footer and the mobile menu (not the header bar, since 2 Nov 2026). The
+ * marks are logos, so the no-box law does not apply to them.
  *
  * Each links to the profile set in src/lib/social.ts, in a new tab, named
  * "DataHub on Instagram" (in the page's language). A profile with no address

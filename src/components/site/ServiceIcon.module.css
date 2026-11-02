@@ -17,13 +17,6 @@
   --icon-glow: color-mix(in srgb, var(--sky) 30%, transparent);
   --icon-glow-near: color-mix(in srgb, var(--royal) 30%, transparent);
 }
-/* No-JS fallback, mirrors globals.css (ThemeScript sets .light/.dark when JS runs). */
-@media (prefers-color-scheme: dark) {
-  :global(:root:not(.light):not(.dark)) .icon {
-    --icon-glow: color-mix(in srgb, var(--sky) 30%, transparent);
-    --icon-glow-near: color-mix(in srgb, var(--royal) 30%, transparent);
-  }
-}
 
 @media (forced-colors: active) {
   .icon {

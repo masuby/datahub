@@ -18,10 +18,9 @@ export function generateStaticParams() {
 }
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F6F9FE" },
-    { media: "(prefers-color-scheme: dark)", color: "#030A1C" },
-  ],
+  // Light is the default theme whatever the device prefers; ThemeToggle
+  // repoints this at the dark --bg when dark is showing.
+  themeColor: "#F6F9FE",
 };
 
 export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Promise<Metadata> {

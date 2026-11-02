@@ -6,9 +6,10 @@ import { useMotionAllowed } from "./motion-store";
 import { cn } from "@/lib/utils";
 
 /**
- * Footer and mobile-menu theme choice: System · Light · Dark as native radios
- * (arrow keys work, no custom listbox). "System" removes the stored key and
- * follows prefers-color-scheme live. Shares the store with ThemeToggle.
+ * Mobile-menu theme choice: Light · Dark · System as native radios (arrow
+ * keys work, no custom listbox). Light is the default and removes the stored
+ * key; "System" follows prefers-color-scheme live. Shares the store with
+ * ThemeToggle.
  *
  * The ring and dot are the only rounded shapes here, as the spec allows for
  * radio controls; the input itself sits invisibly over the ring so touch,
@@ -26,9 +27,9 @@ export function ThemeSettings({
   const motionAllowed = useMotionAllowed();
   const id = useId();
   const options: { value: ThemePref; label: string }[] = [
-    { value: "system", label: labels.system },
     { value: "light", label: labels.light },
     { value: "dark", label: labels.dark },
+    { value: "system", label: labels.system },
   ];
 
   return (
